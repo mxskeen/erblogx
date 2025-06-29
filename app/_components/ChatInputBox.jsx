@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs';
 import {
   BrainCircuit,
   FileSearch,
@@ -9,7 +9,7 @@ import {
   Podcast,
   Search,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from '../../components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,8 +17,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { AiModelsOption } from "@/services/Shared";
+} from '../../components/ui/dropdown-menu';
+import { AiModelsOption } from '../../services/Shared';
 
 function ChatInputBox() {
   return (
