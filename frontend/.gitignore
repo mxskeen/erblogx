@@ -43,6 +43,7 @@ next-env.d.ts
 # clerk configuration (can include secrets)
 /.clerk/
 
+
 # --- Python/Backend Specific ---
 
 # Virtual environment

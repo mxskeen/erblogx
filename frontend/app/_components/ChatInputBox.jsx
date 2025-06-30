@@ -35,19 +35,48 @@ function ChatInputBox() {
   const { user } = useUser();
   const [searchType, setSearchType] = useState("search");
   const [loading, setLoading] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
+
+  const handleSearch = async (searchQuery) => {
+    try {
+      const apiUrl = `http://127.0.0.1:8000/search?q=${encodeURIComponent(searchQuery)}`;
+
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+
+      console.log("Data from my own backend:", data.results);
+
+      setSearchResults(data.results);
+      return data.results;
+    } catch (error) {
+      console.error("Search error:", error);
+      setSearchResults([]);
+      return [];
+    }
+  };
 
   const onSearchQuery = async () => {
+    if (!userSearchInput) return;
+    
     setLoading(true);
-    const libId = uuid();
-    const { data, error } = await supabase.from("Library").insert([
-      {
-        searchInput: userSearchInput,
-        userEmail: user?.primaryEmailAddress?.emailAddress,
-        type: searchType,
-        libId: libId,
-      },
-    ]);
-    setLoading(false);
+    
+    try {
+      await handleSearch(userSearchInput);
+      
+      const libId = uuid();
+      const { data, error } = await supabase.from("Library").insert([
+        {
+          searchInput: userSearchInput,
+          userEmail: user?.primaryEmailAddress?.emailAddress,
+          type: searchType,
+          libId: libId,
+        },
+      ]);
+    } catch (error) {
+      console.error("Error in search:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleKeyDown = (e) => {
@@ -107,7 +136,6 @@ function ChatInputBox() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                {/* <DropdownMenuLabel>My Account</DropdownMenuLabel> */}
                 {AiModelsOption.map((model, index) => (
                   <DropdownMenuItem key={index}>
                     <div>
