@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@tailwindcss/typography": "^0.5.16",
+    "react-markdown": "^10.1.0"
+  }
+}
