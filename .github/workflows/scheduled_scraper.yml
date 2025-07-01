@@ -40,7 +40,7 @@ jobs:
 
         run: |
           cd backend
-          poetry install --no-dev
+          poetry install --without-dev
       
       # Step 5: Run the scraper script
       - name: Run Python Scraper
