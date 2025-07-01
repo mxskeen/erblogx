@@ -22,7 +22,7 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_ANON)
 #sentence transformer
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print(f"Using device: {device}")
-embedding_model = SentenceTransformer('all-MiniLM-L6-v2', device=device)
+embedding_model = SentenceTransformer('all-mpnet-base-v2', device=device)
 
 # --- HELPER FUNCTIONS ---
 
