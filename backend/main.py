@@ -138,7 +138,8 @@ def summarize_search_results(request: SummarizeRequest):
         3. Emerging patterns in the engineering space
         4. Important insights that would be valuable to software engineers
 
-        Keep your summary concise but informative, focusing on actionable insights and technical trends."""
+        Keep your summary concise but informative, focusing on actionable insights and technical trends.
+        **Format your response using markdown for readability.** Use headings, bullet points, and bold text to structure the information."""
 
         user_prompt = f"""Based on the user's search query: "{request.query}"
 
@@ -152,7 +153,16 @@ def summarize_search_results(request: SummarizeRequest):
         3. Common patterns or trends you notice
         4. Practical takeaways for engineers
 
-        Keep the summary engaging and informative, around 200-300 words."""
+        Keep the summary engaging and informative, around 200-300 words.
+        **Please use markdown for formatting.** For example:
+        
+        ### Key Themes
+        - **Theme 1:** Description of the theme.
+        - **Theme 2:** Description of the theme.
+
+        ### Technical Insights
+        - **Insight 1:** Description of the insight.
+        """
 
         print(f"Prepared prompts. System prompt length: {len(system_prompt)}, User prompt length: {len(user_prompt)}")
         print(f"API Key configured: {bool(ZNAPAI_API_KEY)}, API Key length: {len(ZNAPAI_API_KEY) if ZNAPAI_API_KEY else 0}")
