@@ -3,6 +3,8 @@ import os
 from dotenv import load_dotenv
 from supabase import create_client, Client
 from fastapi.middleware.cors import CORSMiddleware
+from sentence_transformers import SentenceTransformer 
+import numpy as np
 
 load_dotenv()
 
@@ -10,6 +12,12 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_ANON = os.getenv("SUPABASE_ANON")
 
 supabase:Client=create_client(SUPABASE_URL,SUPABASE_ANON)
+
+print("Loading sentence-transformer model...")
+# Use a model that produces 768-dimensional vectors
+model = SentenceTransformer('all-mpnet-base-v2', device="cpu")
+print("Model loaded.")
+
 app = FastAPI()
 
 origins = [
@@ -34,3 +42,23 @@ def search_query(q: str):
     search_query = data[1]
 
     return {"results":search_query}
+
+
+@app.get("/ai-search")
+def semantic_search_articles(q: str):
+    """Performs AI-powered semantic search."""
+    # 1. Create an embedding for the user's search query
+    query_embedding = model.encode(q).tolist()
+
+    # 2. Call the database function to find matches
+    try:
+        data, count = supabase.rpc('match_articles', {
+            'query_embedding': query_embedding,
+            'match_threshold': 0.2,  # Lower threshold from 0.5 to 0.3 to catch more relevant results
+            'match_count': 10       # Get more matches
+        }).execute()
+
+        return {"results": data[1]}
+    except Exception as e:
+        print(f"Semantic search error: {str(e)}")
+        return {"error": str(e), "results": []}
