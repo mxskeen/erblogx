@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sentence_transformers import SentenceTransformer 
 import numpy as np
 from pydantic import BaseModel
-from typing import List
+from typing import List, Union
 import openai
 
 load_dotenv()
@@ -49,7 +49,7 @@ app.add_middleware(
 # Pydantic models for request/response
 class SummarizeRequest(BaseModel):
     query: str
-    article_ids: List[str]
+    article_ids: List[Union[str, int]]
 
 class SummarizeResponse(BaseModel):
     summary: str
@@ -104,12 +104,12 @@ def summarize_search_results(request: SummarizeRequest):
         raise HTTPException(status_code=400, detail="No articles provided for summarization")
     
     try:
-        # Convert string IDs to integers (database expects bigint)
+
         try:
-            integer_article_ids = [int(id_str) for id_str in request.article_ids]
-            print(f"Converted article IDs to integers: {integer_article_ids[:3]}..." if len(integer_article_ids) > 3 else f"Converted article IDs: {integer_article_ids}")
-        except ValueError as e:
-            raise HTTPException(status_code=400, detail=f"Invalid article ID format: {str(e)}")
+            integer_article_ids = [int(id_val) for id_val in request.article_ids]
+        except (ValueError, TypeError) as e:
+            raise HTTPException(status_code=400, detail=f"Invalid article ID format. All IDs must be convertible to integers. Error: {str(e)}")
+           
         
         # Fetch article contents from Supabase
         print(f"Fetching {len(integer_article_ids)} articles for summarization...")
