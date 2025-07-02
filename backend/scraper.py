@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 from supabase import create_client, Client
 from dotenv import load_dotenv
 import xml.etree.ElementTree as ET
+import trafilatura
 
 # --- SETUP ---
 # Load environment variables
@@ -46,19 +47,28 @@ def get_feed_urls_from_opml(opml_file_path: str) -> list:
         return []
 
 def get_full_article_content(url: str) -> str:
-    """Fetches and scrapes the full article content from a URL."""
+    """Attempts to get full text via trafilatura, then falls back to basic BeautifulSoup scrape."""
+    try:
+        downloaded = trafilatura.fetch_url(url)
+        full = trafilatura.extract(downloaded)
+        if full:
+            return clean_text(full)
+    except Exception:
+        pass
+
+    # fallback
     try:
         response = requests.get(url, timeout=15)
         response.raise_for_status()
         soup = BeautifulSoup(response.content, 'html.parser')
         main_content = (soup.find('article') or soup.find('div', class_='post-content') or soup.find('main'))
         if main_content:
-            for script_or_style in main_content(['script', 'style']):
-                script_or_style.decompose()
+            for s in main_content(['script', 'style']):
+                s.decompose()
             return clean_text(main_content.get_text(separator='\n', strip=True))
-        return ""
     except requests.RequestException:
-        return ""
+        pass
+    return ""
 
 # --- MAIN EXECUTION ---
 def main():
@@ -97,8 +107,7 @@ def main():
                     print(f"  -> Skipping article with no content: {entry.get('title', '')}")
                     continue
 
-
-                embedding = embedding_model.encode(content).tolist()
+                embedding = embedding_model.encode(content[:4000]).tolist()
 
                 article = {
                     "title": clean_text(entry.get("title", "No Title Found")),
@@ -120,6 +129,59 @@ def main():
         except Exception as e:
             print(f"  !!!!!! FAILED to process feed {feed_url}. Error: {e} !!!!!!")
             continue
+
+    # --- HACKER NEWS SCRAPING ---
+    print("\n--- Processing latest 500 Hacker News stories ---")
+    try:
+        HN_API_BASE = "https://hacker-news.firebaseio.com/v0"
+
+        latest_ids = requests.get(f"{HN_API_BASE}/newstories.json", timeout=10).json()[:500]
+        if not latest_ids:
+            print("Could not fetch newstories list. Aborting HN scrape.")
+            return
+
+        print(f"Retrieved {len(latest_ids)} story IDs.")
+
+        hn_batch = []
+        for item_id in latest_ids:
+            try:
+                data = requests.get(f"{HN_API_BASE}/item/{item_id}.json", timeout=10).json()
+                if not data or data.get("type") != "story" or data.get("deleted") or not data.get("url"):
+                    continue
+
+                url = data["url"]
+                if supabase.table('articles').select('id').eq('url', url).execute().data:
+                    continue
+
+                title = clean_text(data.get("title", ""))
+                content = get_full_article_content(url) or title
+
+                embedding = embedding_model.encode(content[:4000]).tolist()
+
+                published_ts = data.get("time")
+                from datetime import datetime, timezone
+                published_dt = datetime.fromtimestamp(published_ts, tz=timezone.utc).isoformat()
+
+                hn_batch.append({
+                    "title": title,
+                    "url": url,
+                    "published_date": published_dt,
+                    "company": "Hacker News",
+                    "content": content,
+                    "embedding": embedding
+                })
+
+                if len(hn_batch) >= 100:
+                    supabase.table('articles').insert(hn_batch, returning="minimal").execute()
+                    hn_batch = []
+
+            except Exception:
+                continue
+
+        if hn_batch:
+            supabase.table('articles').insert(hn_batch, returning="minimal").execute()
+    except Exception as e:
+        print(f"HN scraping failed: {e}")
 
 if __name__ == "__main__":
     main()
