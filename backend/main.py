@@ -3,11 +3,12 @@ import os
 from dotenv import load_dotenv
 from supabase import create_client, Client
 from fastapi.middleware.cors import CORSMiddleware
-from sentence_transformers import SentenceTransformer 
+from sentence_transformers import SentenceTransformer
 import numpy as np
 from pydantic import BaseModel
 from typing import List, Union
 import openai
+import torch
 
 load_dotenv()
 
@@ -20,12 +21,16 @@ if not ZNAPAI_API_KEY:
 
 supabase:Client=create_client(SUPABASE_URL,SUPABASE_ANON)
 
+# Set device for PyTorch
+device = "cuda" if torch.cuda.is_available() else "cpu"
+print(f"Using device: {device}")
+
+# Load the Sentence Transformer model
 print("Loading sentence-transformer model...")
-# Use a model that produces 768-dimensional vectors
-model = SentenceTransformer('all-mpnet-base-v2', device="cpu")
+model = SentenceTransformer('all-mpnet-base-v2', device=device)
 print("Model loaded.")
 
-# Initialize OpenAI client for ZnapAI
+# Initialize OpenAI client for ZnapAI for summarization
 openai_client = openai.OpenAI(
     api_key=ZNAPAI_API_KEY,
     base_url="https://api.znapai.com/"
@@ -74,7 +79,10 @@ def search_query(q: str):
 
 @app.get("/ai-search")
 def semantic_search_articles(q: str):
-    """Performs AI-powered semantic search."""
+    """Performs AI-powered semantic search using a local Sentence Transformer model."""
+    if not q:
+        return {"results": []}
+
     # 1. Create an embedding for the user's search query
     query_embedding = model.encode(q).tolist()
 
