@@ -19,6 +19,7 @@ torch = "^2.7.1"
 torchvision = "^0.22.1"
 torchaudio = "^2.7.1"
 openai = "^1.93.0"
+trafilatura = "^2.0.0"
 
 
 [build-system]

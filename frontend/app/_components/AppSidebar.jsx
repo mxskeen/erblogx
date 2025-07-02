@@ -56,7 +56,7 @@ function AppSidebar () {
     <Sidebar>
       <SidebarHeader className="bg-purple-50 flex items-center py-5">
         <a href="/">
-          <Image src="/logo.png" alt="logo" width={180} height={140} />
+        <Image src="/logo.png" alt="logo" width={180} height={140} />
         </a>
       </SidebarHeader>
 
@@ -77,16 +77,16 @@ function AppSidebar () {
                 </SidebarMenuItem>
               ))}
               {!user && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild className="p-5 py-6 hover:font-bold hover:bg-transparent">
-                    <SignInButton mode="modal">
-                      <div className="flex items-center">
-                        <LogIn className="h-8 w-8"/>
-                        <span className="text-lg ml-2">SignIn</span>
-                      </div>
-                    </SignInButton>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild className="p-5 py-6 hover:font-bold hover:bg-transparent">
+                  <SignInButton mode="modal">
+                    <div className="flex items-center">
+                      <LogIn className="h-8 w-8"/>
+                      <span className="text-lg ml-2">SignIn</span>
+                    </div>
+                  </SignInButton>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
               )}
             </SidebarMenu>
           {!user ?  <SignUpButton mode='modal'>
