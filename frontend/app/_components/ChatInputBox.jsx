@@ -5,8 +5,6 @@ import Image from "next/image";
 import {
   ArrowRight,
   BrainCircuit,
-  Paperclip,
-  Podcast,
   Search,
   X,
 } from "lucide-react";
@@ -14,6 +12,11 @@ import { Button } from "../../components/ui/button";
 import { supabase } from "../../services/supabase";
 import { useUser } from "@clerk/nextjs";
 import { v4 as uuid } from "uuid";
+import CardSpotlight from '../../components/ui/CardSpotlight';
+import ExpandableCard from '../../components/ui/ExpandableCard';
+import { useSidebar } from '../../components/ui/sidebar';
+import ExpandableCardList from '../../components/ui/ExpandableCardList';
+import MovingBorderContainer from '../../components/ui/MovingBorderContainer';
 
 // Helper function to strip HTML tags
 function stripHtml(html) {
@@ -24,14 +27,19 @@ function stripHtml(html) {
 function ChatInputBox() {
   const [userSearchInput, setUserSearchInput] = useState();
   const { user } = useUser();
+  const { setOpen } = useSidebar();
   const [loading, setLoading] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
   const [resultsSummary, setResultsSummary] = useState(null);
   const [loadingSummary, setLoadingSummary] = useState(false);
+  const expanded = !!userSearchInput;
+  const hasResultsOrSummary = showResults || showSummary;
 
   const handleSearch = async (searchQuery) => {
+    // close sidebar if open on mobile
+    setOpen(false);
     try {
       // Always use AI-powered semantic search
       const apiUrl = `http://localhost:8000/ai-search?q=${encodeURIComponent(searchQuery)}`;
@@ -133,9 +141,12 @@ function ChatInputBox() {
   };
 
   return (
-    <div className="flex flex-col h-screen items-center justify-center w-full p-4">
-        <Image src="/logo.png" alt="logo" width={300} height={250} />
-        <div className="p-2 w-full max-w-2xl border rounded-2xl -mt-2 bg-white">
+    <div className={`flex flex-col w-full p-4 items-center ${hasResultsOrSummary ? 'pt-6' : 'h-screen justify-center'}`}>
+        <a href="/">
+          <Image src="/logo.png" alt="logo" width={300} height={250} />
+        </a>
+        <MovingBorderContainer className={`transition-all duration-300 ${expanded ? 'w-[40rem]' : 'w-[32rem]' }`}>
+        <div className="p-2 w-full rounded-2xl -mt-2 bg-white relative">
           <div className="flex justify-between items-end">
             <div className="w-full relative flex items-center">
               <Search className="absolute left-4 text-gray-500" />
@@ -148,9 +159,6 @@ function ChatInputBox() {
               />
             </div>
             <div className="flex gap-2.5 items-center rounded-full color-primary">
-              <Button variant="ghost">
-                <Paperclip />
-              </Button>
               {searchResults.length > 0 && (
                 <Button 
                   variant="ghost"
@@ -160,21 +168,18 @@ function ChatInputBox() {
                   {showSummary ? <X size={18} /> : <BrainCircuit size={18} />}
                 </Button>
               )}
-              <Button onClick={onSearchQuery}>
-                {!userSearchInput ? (
-                  <Podcast className="rounded-full color-primary" />
-                ) : (
-                  <ArrowRight className='text-white' disabled={loading}/>
-                )}
+              <Button onClick={onSearchQuery} disabled={loading || !userSearchInput}>
+                <ArrowRight className='text-white'/>
               </Button>
             </div>
           </div>
         </div>
+        </MovingBorderContainer>
       
       {showSummary && (
-        <div className="w-full max-w-2xl mt-4 rounded-lg border p-4 overflow-y-auto max-h-[60vh] bg-white">
+        <CardSpotlight className="w-full max-w-2xl mt-4 p-4 overflow-y-auto max-h-[60vh]">
             {loadingSummary ? (
-                <p>Loading AI Summary Of Articles...</p>
+                <p>Loading summary...</p>
             ) : resultsSummary ? (
                 <>
                     <div className="text-sm text-gray-500 mb-3">
@@ -196,36 +201,46 @@ function ChatInputBox() {
                     </div>
                 </>
             ) : null}
-        </div>
+        </CardSpotlight>
       )}
 
       {showResults && !showSummary && (
-        <div className="w-full max-w-2xl mt-4 rounded-lg border p-4 overflow-y-auto max-h-[60vh] bg-white">
+        <>
+        {/* Mobile list */}
+        <div className="w-full max-w-2xl mt-4 overflow-y-auto max-h-[60vh] md:hidden">
           <h3 className="font-medium mb-2">{searchResults.length > 0 ? `Found ${searchResults.length} results` : 'No results found'}</h3>
-          
           {searchResults.length > 0 ? (
             <div className="space-y-4">
               {searchResults.map((result) => (
-                <div key={result.id} className="border-b pb-2">
+                <CardSpotlight key={result.id} className="mb-2">
                   <h4 className="font-bold">{result.title}</h4>
                   <p className="text-sm text-gray-600">{result.company} - {new Date(result.published_date).toLocaleDateString()}</p>
                   <p className="text-sm mt-1 line-clamp-2">{stripHtml(result.content)}</p>
-                  <a 
-                    href={result.url} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline text-sm mt-1 inline-block"
-                  >
-                    Read more
-                  </a>
-                  <p className="text-xs text-gray-500 mt-1">Similarity: {(result.similarity * 100).toFixed(1)}%</p>
-                </div>
+                  <a href={result.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-sm mt-1 inline-block">Read more</a>
+                </CardSpotlight>
               ))}
             </div>
           ) : (
             <p className="text-gray-500">Try another search query.</p>
           )}
         </div>
+
+        {/* Desktop expandable list */}
+        <div className="hidden md:block w-full mt-4 px-4">
+          <ExpandableCardList
+            items={searchResults.map((r)=>(
+              ({
+                id:r.id,
+                title:r.title,
+                subtitle:r.company,
+                image:r.image_url||'/logo.png',
+                content: stripHtml(r.content).slice(0,400)+ '...',
+                url:r.url
+              })
+            ))}
+          />
+        </div>
+        </>
       )}
     </div>
   );

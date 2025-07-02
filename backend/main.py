@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 from supabase import create_client, Client
 from fastapi.middleware.cors import CORSMiddleware
-from sentence_transformers import SentenceTransformer
+from sentence_transformers import SentenceTransformer 
 import numpy as np
 from pydantic import BaseModel
 from typing import List, Union

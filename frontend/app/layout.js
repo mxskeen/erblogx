@@ -4,6 +4,8 @@ import { SidebarProvider, SidebarTrigger } from '../components/ui/sidebar'
 import { AppSidebar } from "./_components/AppSidebar"
 import { ClerkProvider } from "@clerk/nextjs";
 import Provider from "./provider";
+import Header from "./_components/Header";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -32,6 +34,7 @@ export default function RootLayout({ children }) {
             <SidebarTrigger />
             <Provider>
               {children}
+              <Header />
             </Provider>
 
         </SidebarProvider>

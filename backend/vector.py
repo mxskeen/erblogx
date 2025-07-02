@@ -46,7 +46,7 @@ def generate_and_update_embeddings():
 
         print(f"Generating embeddings for {len(contents_to_embed)} articles...")
         embeddings = model.encode(contents_to_embed).tolist()
-        
+
         updates = [
             {'id': article['id'], 'embedding': embedding}
             for article, embedding in zip(articles, embeddings)
