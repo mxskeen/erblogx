@@ -2,8 +2,9 @@
 import { useState, useRef, useId, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useOutsideClick } from "../../hooks/useOutsideClick";
+import { BookmarkPlus, BookmarkCheck } from "lucide-react";
 
-export default function ExpandableCardList({ items = [] }) {
+export default function ExpandableCardList({ items = [], savedIds = [], onToggleSave }) {
   const [active, setActive] = useState(null);
   const ref = useRef(null);
   const id = useId();
@@ -87,9 +88,21 @@ export default function ExpandableCardList({ items = [] }) {
                 </motion.p>
               </div>
             </div>
-            <motion.button layoutId={`button-${item.id}-${id}`} className="px-4 py-2 bg-gray-100 text-black rounded-full text-sm hover:bg-purple-600 hover:text-white">
-              Read
-            </motion.button>
+            <div className="flex gap-2 items-center">
+              <button
+                onClick={(e)=>{e.stopPropagation(); onToggleSave?.(item.id)}}
+                className="p-2 rounded-full hover:bg-purple-100"
+              >
+                {savedIds.includes(item.id) ? (
+                  <BookmarkCheck className="h-5 w-5 text-purple-600" />
+                ) : (
+                  <BookmarkPlus className="h-5 w-5 text-gray-500" />
+                )}
+              </button>
+              <motion.button layoutId={`button-${item.id}-${id}`} className="px-4 py-2 bg-gray-100 text-black rounded-full text-sm hover:bg-purple-600 hover:text-white">
+                Read
+              </motion.button>
+            </div>
           </motion.li>
         ))}
       </ul>

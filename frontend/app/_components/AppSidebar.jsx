@@ -12,7 +12,7 @@ import {
     SidebarMenuItem,
   } from "../../components/ui/sidebar"
 import Image from 'next/image'
-import { ArrowUpRight, Compass, GalleryHorizontalEnd, LogIn, Search } from 'lucide-react';
+import { Github, Linkedin, LogIn, Home, Info } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { Button } from '../../components/ui/button';
 import { SignInButton, SignOutButton, SignUpButton, UserButton, useUser } from '@clerk/nextjs';
@@ -20,18 +20,13 @@ import { SignInButton, SignOutButton, SignUpButton, UserButton, useUser } from '
 const MenuOptions = [
   {
     label:"Home",
-    icon:Search,
+    icon:Home,
     path:"/"
   },
   {
-    label: "Discovery",
-    icon:Compass,
-    path:"/discover"
-  },
-  {
-    label:"Library",
-    icon:GalleryHorizontalEnd,
-    path:"/lib"
+    label:"About",
+    icon:Info,
+    path:"/about"
   }
 ]
 
@@ -68,7 +63,7 @@ function AppSidebar () {
                 <SidebarMenuItem key={index}>
                   <SidebarMenuButton asChild 
                   className={`p-5 py-6 hover:font-bold hover:bg-transparent
-                  ${path?.includes(menu.path)&&'font-bold'}`}>
+                  ${(menu.path === '/' ? path === '/' : path?.startsWith(menu.path)) && 'font-bold'}`}>
                     <a href={menu.path}>
                       <menu.icon className='h-8 w-8'/>
                       <span className='text-lg'> {menu.label}</span>
@@ -100,8 +95,17 @@ function AppSidebar () {
       </SidebarContent>
 
       <SidebarFooter className="bg-purple-50" >
-        <div className='p-3 flex flex-col'>
-          <Button variant='secondary' className= 'rounded-full' >Learn More</Button>
+        <div className="p-3 flex gap-4 justify-center">
+          <a href="https://www.linkedin.com/in/mxskeen/" target="_blank" rel="noopener noreferrer">
+            <Button variant="ghost" size="icon" className="rounded-full hover:bg-purple-200">
+              <Linkedin className="h-6 w-6" />
+            </Button>
+          </a>
+          <a href="https://github.com/mxskeen/erblogx" target="_blank" rel="noopener noreferrer">
+            <Button variant="ghost" size="icon" className="rounded-full hover:bg-purple-200">
+              <Github className="h-6 w-6" />
+            </Button>
+          </a>
         </div>
       </SidebarFooter>
     </Sidebar>

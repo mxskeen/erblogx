@@ -5,6 +5,8 @@ import { AppSidebar } from "./_components/AppSidebar"
 import { ClerkProvider } from "@clerk/nextjs";
 import Provider from "./provider";
 import Header from "./_components/Header";
+import FloatingDock from "../components/ui/FloatingDock";
+import { Compass, GalleryHorizontalEnd, Home as HomeIcon } from "lucide-react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,6 +37,26 @@ export default function RootLayout({ children }) {
             <Provider>
               {children}
               <Header />
+              {/* Floating Dock for Home, Discovery & Library */}
+              <FloatingDock
+                items={[
+                  {
+                    title: "Home",
+                    icon: <HomeIcon className="h-full w-full" />,
+                    href: "/",
+                  },
+                  {
+                    title: "Discovery",
+                    icon: <Compass className="h-full w-full" />,
+                    href: "/discover",
+                  },
+                  {
+                    title: "Library",
+                    icon: <GalleryHorizontalEnd className="h-full w-full" />,
+                    href: "/lib",
+                  },
+                ]}
+              />
             </Provider>
 
         </SidebarProvider>
