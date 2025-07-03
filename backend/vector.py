@@ -149,5 +149,5 @@ if __name__ == "__main__":
     if os.getenv("ENRICH") == "1":
         enrich_and_embed_articles()
     else:
-        generate_and_update_embeddings()
+    generate_and_update_embeddings()
 

@@ -68,7 +68,7 @@ def get_full_article_content(url: str) -> str:
             return clean_text(main_content.get_text(separator='\n', strip=True))
     except requests.RequestException:
         pass
-    return ""
+        return ""
 
 # --- MAIN EXECUTION ---
 def main():
