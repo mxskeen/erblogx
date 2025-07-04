@@ -95,6 +95,9 @@ function AppSidebar () {
       </SidebarContent>
 
       <SidebarFooter className="bg-purple-50" >
+        <div className="w-full flex flex-col items-center mb-2">
+          <span className="text-xs text-gray-500 text-center">ErBlogX : the index for everythiing engineering</span>
+        </div>
         <div className="p-3 flex gap-4 justify-center">
           <a href="https://www.linkedin.com/in/mxskeen/" target="_blank" rel="noopener noreferrer">
             <Button variant="ghost" size="icon" className="rounded-full hover:bg-purple-200">

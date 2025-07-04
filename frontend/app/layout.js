@@ -7,6 +7,7 @@ import Provider from "./provider";
 import Header from "./_components/Header";
 import FloatingDock from "../components/ui/FloatingDock";
 import { Compass, GalleryHorizontalEnd, Home as HomeIcon } from "lucide-react";
+import StartupTerminal from "./_components/StartupTerminal";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +33,8 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
             <SidebarProvider>
+            {/* Startup loading animation */}
+            <StartupTerminal />
             <AppSidebar />
             <SidebarTrigger />
             <Provider>
