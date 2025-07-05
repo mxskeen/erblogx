@@ -54,3 +54,13 @@ next-env.d.ts
 # Python cache
 __pycache__/
 *.pyc
+
+# Add to .gitignore
+.env
+*.log
+node_modules/
+.next/
+.pytest_cache/
+__pycache__/
+*.pyc
+.venv/
