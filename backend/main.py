@@ -6,9 +6,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from sentence_transformers import SentenceTransformer 
 import numpy as np
 from pydantic import BaseModel
-from typing import List, Union
+from typing import List, Union, Optional
 import openai
 import torch
+from datetime import datetime
 
 load_dotenv()
 
@@ -62,6 +63,25 @@ class SummarizeResponse(BaseModel):
     article_count: int
     themes: List[str]
 
+class ArticleCreate(BaseModel):
+    title: str
+    content: str
+    url: str
+    company: str
+    embedding: Optional[List[float]] = None
+
+# Add Pydantic model for library query logging
+class LibraryQueryLog(BaseModel):
+    query: str
+    user_id: str
+    results_count: int
+    search_type: str
+
+# Pydantic model for search queries
+class SearchRequest(BaseModel):
+    q: str
+    user_id: Optional[str] = None
+
 @app.get("/")
 def read_root():
     return "erblogx api :)"
@@ -70,31 +90,85 @@ def read_root():
 def test_function():
     return "this is test function"
 
-@app.get("/search")
-def search_query(q: str):
-    data,count = supabase.table('articles').select('*').ilike('title',f'%{q}%').execute()
-    search_query = data[1]
+async def log_search_query(query: str, user_id: str, results_count: int, search_type: str):
+    """
+    Log search query to the library table
+    """
+    try:
+        # Prepare query data for insertion
+        query_data = {
+            "query": query,
+            "user_id": user_id,
+            "results_count": results_count,
+            "search_type": search_type,
+            "created_at": datetime.utcnow().isoformat()
+        }
 
-    return {"results":search_query}
+        # Insert into Supabase library table
+        response = supabase.table('library').insert(query_data).execute()
+        
+        # Print detailed response for debugging
+        print(f"Search query logging response: {response}")
+        
+        return True
+    except Exception as e:
+        print(f"Error logging search query: {str(e)}")
+        return False
+
+@app.get("/search")
+async def search_query(q: str, user_id: Optional[str] = None):
+    """
+    Search articles and optionally log the query
+    """
+    try:
+        data, count = supabase.table('articles').select('*').ilike('title', f'%{q}%').execute()
+        search_query = data[1]
+
+        # Log the search query only if user_id is provided
+        if user_id:
+            await log_search_query(
+                query=q, 
+                user_id=user_id, 
+                results_count=len(search_query), 
+                search_type="title_search"
+            )
+
+        return {"results": search_query}
+    except Exception as e:
+        print(f"Search error: {str(e)}")
+        return {"error": str(e), "results": []}
 
 @app.get("/ai-search")
-def semantic_search_articles(q: str):
-    """Performs AI-powered semantic search using a local Sentence Transformer model."""
+async def semantic_search_articles(q: str, user_id: Optional[str] = None):
+    """
+    Performs AI-powered semantic search and optionally logs the query
+    """
     if not q:
         return {"results": []}
 
-    # 1. Create an embedding for the user's search query
-    query_embedding = model.encode(q).tolist()
-
-    # 2. Call the database function to find matches
     try:
+        # 1. Create an embedding for the user's search query
+        query_embedding = model.encode(q).tolist()
+
+        # 2. Call the database function to find matches
         data, count = supabase.rpc('match_articles', {
             'query_embedding': query_embedding,
             'match_threshold': 0.2,  # Lower threshold to catch more relevant results
             'match_count': 10       # Get more matches
         }).execute()
 
-        return {"results": data[1]}
+        search_results = data[1]
+
+        # Log the semantic search query only if user_id is provided
+        if user_id:
+            await log_search_query(
+                query=q, 
+                user_id=user_id, 
+                results_count=len(search_results), 
+                search_type="semantic_search"
+            )
+
+        return {"results": search_results}
     except Exception as e:
         print(f"Semantic search error: {str(e)}")
         return {"error": str(e), "results": []}
@@ -257,3 +331,38 @@ def test_znapai_connection():
             "error": str(e),
             "error_type": str(type(e))
         }
+
+@app.post("/articles")
+async def create_article(article: ArticleCreate):
+    """
+    Endpoint to insert a new article into the Supabase database
+    Optionally generates embedding if not provided
+    """
+    try:
+        # Generate embedding if not provided
+        if not article.embedding:
+            article_embedding = model.encode(article.title + " " + article.content[:1000]).tolist()
+        else:
+            article_embedding = article.embedding
+
+        # Prepare data for insertion
+        article_data = {
+            "title": article.title,
+            "content": article.content,
+            "url": article.url,
+            "company": article.company,
+            "embedding": article_embedding
+        }
+
+        # Insert article into Supabase
+        response = supabase.table('articles').insert(article_data).execute()
+        
+        # Check the response
+        if response and len(response) > 1 and response[1]:
+            return {"status": "success", "article": response[1][0]}
+        else:
+            raise HTTPException(status_code=500, detail="Failed to insert article")
+
+    except Exception as e:
+        print(f"Article insertion error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error inserting article: {str(e)}")

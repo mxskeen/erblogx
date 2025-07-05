@@ -19,7 +19,7 @@ function Provider({ children }) {
     try {
       // Check if user exists
       const { data: users, error } = await supabase
-        .from("users")
+        .from('users')
         .select("*")
         .eq("email", user?.primaryEmailAddress.emailAddress);
 
@@ -31,7 +31,7 @@ function Provider({ children }) {
       // If user doesn't exist, create a new one
       if (users.length === 0) {
         const { data, error: insertError } = await supabase
-          .from("users")
+          .from('users')
           .insert([
             {
               email: user?.primaryEmailAddress.emailAddress,
