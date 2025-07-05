@@ -1,9 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Remove standalone output for now
-  experimental: {
-    serverComponentsExternalPackages: ['@clerk/nextjs'],
-  },
+  serverExternalPackages: ['@clerk/nextjs'],
   images: {
     remotePatterns: [
       {
