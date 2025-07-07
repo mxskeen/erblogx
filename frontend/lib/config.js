@@ -2,7 +2,7 @@
 export const API_CONFIG = {
   // Use Hugging Face Spaces URL in production, localhost in development
   BASE_URL: process.env.NODE_ENV === 'production' 
-    ? 'https://api.example.com'  // Your Hugging Face Spaces URL
+    ? 'https://api.example.com'  // Hugging Face Spaces URL
     : 'http://localhost:8000',
   
   // Endpoints
