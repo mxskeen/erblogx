@@ -6,7 +6,7 @@ import { Terminal, TypingAnimation } from '../../components/ui/Terminal';
 // Lines to display in the startup terminal
 const STARTUP_LINES = [
   '✔ Preflight checks.',
-  '✔ Verifying framework. Found Next.js.',
+  '✔ Verifying framework. Found React.',
   '✔ Validating Tailwind CSS.',
   '✔ Validating import alias.',
   '✔ Writing components.json.',
@@ -14,7 +14,7 @@ const STARTUP_LINES = [
   '✔ Updating tailwind.config.ts',
   '✔ Updating app/globals.css',
   '✔ Installing dependencies.',
-  'created by maskeen',
+  'Welcome to ErBlogX - created by maskeen',
 ];
 
 export default function StartupTerminal({ timeout = 4000 }) {
