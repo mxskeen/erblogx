@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  serverExternalPackages: ['@clerk/nextjs'],
   images: {
     remotePatterns: [
       {
@@ -9,10 +8,6 @@ const nextConfig = {
       },
     ],
   },
-  // Custom build ID for consistent builds
-  generateBuildId: async () => {
-    return 'erblogx-build'
-  },
 };
 
-export default nextConfig;
+export default nextConfig; 
