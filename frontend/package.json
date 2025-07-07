@@ -1,6 +1,7 @@
 {
-  "name": "erblogx",
+  "name": "erblogx-frontend",
   "version": "0.1.0",
+  "description": "ErBlogX - AI-powered search over engineering blogs",
   "private": true,
   "scripts": {
     "dev": "next dev",
