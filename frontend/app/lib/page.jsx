@@ -8,6 +8,7 @@ import { BrainCircuit } from "lucide-react";
 import CardSpotlight from "../../components/ui/CardSpotlight";
 import ReactMarkdown from "react-markdown";
 import { MultiStepLoader } from "../../components/ui/MultiStepLoader";
+import { getApiUrl } from "../../lib/config";
 
 function stripHtml(html) {
   if (!html) return "";
@@ -57,7 +58,7 @@ export default function LibraryPage() {
       return;
     }
     setLoadingSummary(true);
-    const response = await fetch("http://localhost:8000/summarize-results", {
+    const response = await fetch(getApiUrl('/summarize-results'), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
