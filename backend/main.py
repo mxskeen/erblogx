@@ -41,12 +41,15 @@ app = FastAPI()
 
 origins = [
     "http://localhost:3000",
-    "http://127.0.0.1:3000"
+    "http://127.0.0.1:3000",
+    "https://erblogx.vercel.app",  # Add your Vercel deployment URL
+    "https://erblogx-frontend.vercel.app",  # Alternative URL pattern
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
+    allow_origin_regex="https://.*\.vercel\.app",  # Allow all Vercel subdomains
     allow_credentials=True,
     allow_methods=["*"], # Allows all methods
     allow_headers=["*"], # Allows all headers
@@ -122,7 +125,7 @@ async def search_query(q: str, user_id: Optional[str] = None):
     """
     try:
         data, count = supabase.table('articles').select('*').ilike('title', f'%{q}%').execute()
-    search_query = data[1]
+        search_query = data[1]
 
         # Log the search query only if user_id is provided
         if user_id:
@@ -147,10 +150,10 @@ async def semantic_search_articles(q: str, user_id: Optional[str] = None):
         return {"results": []}
 
     try:
-    # 1. Create an embedding for the user's search query
-    query_embedding = model.encode(q).tolist()
+        # 1. Create an embedding for the user's search query
+        query_embedding = model.encode(q).tolist()
 
-    # 2. Call the database function to find matches
+        # 2. Call the database function to find matches
         data, count = supabase.rpc('match_articles', {
             'query_embedding': query_embedding,
             'match_threshold': 0.2,  # Lower threshold to catch more relevant results

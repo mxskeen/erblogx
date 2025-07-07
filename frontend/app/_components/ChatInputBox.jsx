@@ -20,6 +20,7 @@ import { useSidebar } from '../../components/ui/sidebar';
 import ExpandableCardList from '../../components/ui/ExpandableCardList';
 import MovingBorderContainer from '../../components/ui/MovingBorderContainer';
 import { MultiStepLoader } from "../../components/ui/MultiStepLoader";
+import { getApiUrl } from "../../lib/config";
 
 // Helper function to strip HTML tags
 function stripHtml(html) {
@@ -93,7 +94,7 @@ function ChatInputBox() {
     setOpen(false);
     try {
       // Always use AI-powered semantic search
-      const apiUrl = `http://localhost:8000/ai-search?q=${encodeURIComponent(searchQuery)}`;
+      const apiUrl = `${getApiUrl('/ai-search')}?q=${encodeURIComponent(searchQuery)}`;
 
       const response = await fetch(apiUrl);
       const data = await response.json();
@@ -150,7 +151,7 @@ function ChatInputBox() {
     setShowSummary(true);
     
     try {
-      const response = await fetch(`http://localhost:8000/summarize-results`, {
+      const response = await fetch(getApiUrl('/summarize-results'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
