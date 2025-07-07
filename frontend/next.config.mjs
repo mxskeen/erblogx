@@ -9,10 +9,7 @@ const nextConfig = {
       },
     ],
   },
-  experimental: {
-    missingSuspenseWithCSRBailout: false,
-  },
-  // Skip problematic pages during static generation
+  // Custom build ID for consistent builds
   generateBuildId: async () => {
     return 'erblogx-build'
   },
