@@ -12,7 +12,7 @@ import {
     SidebarMenuItem,
   } from "../../components/ui/sidebar"
 import Image from 'next/image'
-import { Home, Compass, GalleryHorizontalEnd, LogIn } from 'lucide-react';
+import { Home, Compass, GalleryHorizontalEnd, LogIn, Linkedin, Github } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { Button } from '../../components/ui/button';
 import { SignInButton, SignOutButton, SignUpButton, UserButton, useUser } from '@clerk/nextjs';
@@ -106,7 +106,7 @@ function AppSidebar () {
 
       <SidebarFooter className="bg-purple-50" >
         <div className="w-full flex flex-col items-center mb-2">
-          <span className="text-xs text-gray-500 text-center">ErBlogX : the index for everythiing engineering</span>
+          <span className="text-xs text-gray-500 text-center">ErBlogX : the index for everything engineering</span>
         </div>
         <div className="p-3 flex gap-4 justify-center">
           <a href="https://www.linkedin.com/in/mxskeen/" target="_blank" rel="noopener noreferrer">
