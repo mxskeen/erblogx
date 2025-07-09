@@ -1,15 +1,15 @@
 "use client";
-
-import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
+import { useEffect, useState } from "react";
 import { supabase } from "../../services/supabase";
+import CardSpotlight from "../../components/ui/CardSpotlight";
 import ExpandableCardList from "../../components/ui/ExpandableCardList";
 import { BrainCircuit } from "lucide-react";
-import CardSpotlight from "../../components/ui/CardSpotlight";
 import ReactMarkdown from "react-markdown";
 import { MultiStepLoader } from "../../components/ui/MultiStepLoader";
 import { getApiUrl } from "../../lib/config";
 
+// Helper function to strip HTML tags
 function stripHtml(html) {
   if (!html) return "";
   return html.replace(/<[^>]*>/g, "");
@@ -17,8 +17,8 @@ function stripHtml(html) {
 
 export default function LibraryPage() {
   const { user } = useUser();
-  const userEmail = user?.primaryEmailAddress?.emailAddress;
   const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [summary, setSummary] = useState(null);
   const [loadingSummary, setLoadingSummary] = useState(false);
 
@@ -28,28 +28,38 @@ export default function LibraryPage() {
     { text: "Generating summary" },
   ];
 
-  // Fetch saved articles
   useEffect(() => {
-    if (!userEmail) return;
+    if (!user?.primaryEmailAddress?.emailAddress) return;
+
     const fetchSavedArticles = async () => {
-      const { data: saved, error } = await supabase
-        .from("saved_articles")
-        .select("article_id")
-        .eq("user_email", userEmail);
-      if (error) return;
-      const ids = saved.map((s) => s.article_id);
-      if (ids.length === 0) {
-        setArticles([]);
-        return;
+      try {
+        const { data, error } = await supabase
+          .from("saved_articles")
+          .select(`
+            article_id,
+            Articles (
+              id,
+              title,
+              company,
+              published_date,
+              content,
+              url,
+              image_url
+            )
+          `)
+          .eq("user_email", user.primaryEmailAddress.emailAddress);
+
+        if (error) throw error;
+        setArticles(data?.map((item) => item.Articles).filter(Boolean) || []);
+      } catch (error) {
+        console.error("Error fetching saved articles:", error);
+      } finally {
+        setLoading(false);
       }
-      const { data: articlesData } = await supabase
-        .from("articles")
-        .select("*")
-        .in("id", ids);
-      setArticles(articlesData || []);
     };
+
     fetchSavedArticles();
-  }, [userEmail]);
+  }, [user]);
 
   const summarizeLibrary = async () => {
     if (articles.length === 0) return;
@@ -77,30 +87,60 @@ export default function LibraryPage() {
         loadingStates={loadingStatesSummary}
         loading={loadingSummary}
       />
-      <div className="flex flex-col w-full p-4 items-center">
-        <div className="flex items-center gap-2 mb-4">
-          <h2 className="text-2xl font-bold">Library</h2>
+      <div className="flex flex-col w-full px-4 py-6 items-center min-h-screen">
+        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 mb-6">
+          <h2 className="text-xl sm:text-2xl font-bold">My Library</h2>
           {articles.length > 0 && (
             <button
               onClick={summarizeLibrary}
-              className="p-2 rounded-full hover:bg-purple-100"
+              className="p-2 rounded-full hover:bg-purple-100 transition-colors"
               title="Summarize saved articles"
             >
-              <BrainCircuit className="h-6 w-6" />
+              <BrainCircuit className="h-5 w-5 sm:h-6 sm:w-6" />
             </button>
           )}
         </div>
 
+        {/* Article count */}
+        {!loading && (
+          <p className="text-sm sm:text-base text-gray-600 mb-4 text-center">
+            {articles.length === 0 
+              ? "No saved articles yet. Start searching and save articles to build your library!" 
+              : `${articles.length} saved article${articles.length > 1 ? 's' : ''}`
+            }
+          </p>
+        )}
+
+        {/* Loading state */}
+        {loading && (
+          <div className="w-full max-w-2xl">
+            <div className="space-y-3">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="h-24 bg-gray-200 rounded-lg"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* AI Summary */}
         {summary && (
-          <CardSpotlight className="w-full max-w-2xl mb-4 p-4">
+          <CardSpotlight className="w-full max-w-2xl mb-6 p-3 sm:p-4">
             {loadingSummary ? (
-              <p>Generating summary...</p>
+              <p className="text-sm sm:text-base">Generating summary...</p>
             ) : (
-              <ReactMarkdown>{summary.summary}</ReactMarkdown>
+              <div>
+                <h4 className="font-medium text-sm sm:text-base mb-2 text-gray-800">🤖 Library Summary</h4>
+                <div className="prose prose-sm max-w-none text-sm sm:text-base">
+                  <ReactMarkdown>{summary.summary}</ReactMarkdown>
+                </div>
+              </div>
             )}
           </CardSpotlight>
         )}
 
+        {/* Desktop view */}
         <div className="hidden md:block w-full px-4">
           <ExpandableCardList
             items={articles.map((a) => ({
@@ -115,21 +155,24 @@ export default function LibraryPage() {
           />
         </div>
 
-        {/* Mobile */}
-        <div className="md:hidden w-full max-w-2xl space-y-4">
+        {/* Mobile view - improved */}
+        <div className="md:hidden w-full max-w-2xl space-y-3">
           {articles.map((a) => (
-            <CardSpotlight key={a.id} className="p-4">
-              <h4 className="font-bold">{a.title}</h4>
-              <p className="text-sm text-gray-600">
+            <CardSpotlight key={a.id} className="p-3 sm:p-4">
+              <h4 className="font-bold text-sm sm:text-base leading-tight mb-2">{a.title}</h4>
+              <p className="text-xs sm:text-sm text-gray-600 mb-2">
                 {a.company} - {new Date(a.published_date).toLocaleDateString()}
               </p>
-              <p className="text-sm mt-1 line-clamp-2">{stripHtml(a.content)}</p>
+              <p className="text-xs sm:text-sm mt-1 line-clamp-2 text-gray-700 mb-2">
+                {stripHtml(a.content)}
+              </p>
               <a
                 href={a.url}
                 target="_blank"
-                className="text-blue-600 hover:underline text-sm mt-1 inline-block"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline text-xs sm:text-sm inline-block"
               >
-                Read more
+                Read more →
               </a>
             </CardSpotlight>
           ))}
