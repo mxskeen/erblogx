@@ -215,59 +215,74 @@ function ChatInputBox() {
         loadingStates={loading ? loadingStatesSearch : loadingStatesSummary}
         loading={loading || loadingSummary}
       />
-      <div className={`flex flex-col w-full p-4 items-center ${hasResultsOrSummary ? 'pt-6' : 'h-screen justify-center'}`}>
+      <div className={`flex flex-col w-full px-4 py-6 items-center ${hasResultsOrSummary ? 'pt-6' : 'min-h-screen justify-center'}`}>
         <a href="/">
-          <Image src="/logo.png" alt="logo" width={300} height={250} />
+          <Image 
+            src="/logo.png" 
+            alt="logo" 
+            width={300} 
+            height={250} 
+            className="w-64 h-auto sm:w-72 md:w-80 lg:w-96"
+          />
         </a>
-        <MovingBorderContainer className={`transition-all duration-300 ${expanded ? 'w-[40rem]' : 'w-[32rem]' }`}>
+        
+        {/* Mobile-optimized search container */}
+        <MovingBorderContainer className={`transition-all duration-300 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl ${expanded ? 'md:max-w-3xl' : ''}`}>
           <div className="p-2 w-full rounded-2xl -mt-2 bg-white relative">
-            <div className="flex justify-between items-end">
+            <div className="flex justify-between items-center gap-2">
               <div className="w-full relative flex items-center">
-                <Search className="absolute left-4 text-gray-500" />
+                <Search className="absolute left-3 text-gray-500 h-4 w-4 sm:h-5 sm:w-5" />
                 <input
                   type="text"
-                  placeholder={user ? "Search Over Engineering Blogs" : "Sign in to search engineering blogs"}
+                  placeholder={user ? "Search Engineering Blogs" : "Sign in to search"}
                   onChange={(e) => setUserSearchInput(e.target.value)}
-                  className="w-full p-4 pl-12 outline-none"
+                  className="w-full p-3 pl-10 sm:p-4 sm:pl-12 outline-none text-sm sm:text-base"
                   onKeyDown={handleKeyDown}
                 />
               </div>
-              <div className="flex gap-2.5 items-center rounded-full color-primary">
+              <div className="flex gap-1 sm:gap-2 items-center">
                 {searchResults.length > 0 && user && (
                   <Button 
                     variant="ghost"
+                    size="icon"
                     onClick={handleSummarizeAllResults}
                     title="Summarize all search results"
+                    className="h-8 w-8 sm:h-9 sm:w-9"
                   >
-                    {showSummary ? <X size={18} /> : <BrainCircuit size={18} />}
+                    {showSummary ? <X size={16} className="sm:h-5 sm:w-5" /> : <BrainCircuit size={16} className="sm:h-5 sm:w-5" />}
                   </Button>
                 )}
-                <Button onClick={onSearchQuery} disabled={loading || !userSearchInput}>
-                  {!user ? <Lock className='text-white' size={18} /> : <ArrowRight className='text-white'/>}
+                <Button 
+                  onClick={onSearchQuery} 
+                  disabled={loading || !userSearchInput}
+                  size="icon"
+                  className="h-8 w-8 sm:h-9 sm:w-9"
+                >
+                  {!user ? <Lock className='text-white' size={16} /> : <ArrowRight className='text-white' size={16} />}
                 </Button>
               </div>
             </div>
           </div>
         </MovingBorderContainer>
 
-        {/* Authentication Prompt */}
+        {/* Authentication Prompt - Mobile optimized */}
         {showAuthPrompt && (
-          <CardSpotlight className="w-full max-w-lg mt-4 p-6 text-center">
-            <div className="flex items-center justify-center mb-4">
-              <Lock className="h-12 w-12 text-purple-500" />
+          <CardSpotlight className="w-full max-w-sm sm:max-w-md mt-4 p-4 sm:p-6 text-center mx-4">
+            <div className="flex items-center justify-center mb-3 sm:mb-4">
+              <Lock className="h-8 w-8 sm:h-12 sm:w-12 text-purple-500" />
             </div>
-            <h3 className="text-xl font-bold mb-3">Sign in to search</h3>
-            <p className="text-gray-600 mb-6">
+            <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3">Sign in to search</h3>
+            <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">
               Join ErBlogX to search through 16,000+ engineering articles, save your favorites, and get AI-powered summaries.
             </p>
-            <div className="flex gap-3 justify-center">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center">
               <SignInButton mode="modal">
-                <Button className="px-6">Sign In</Button>
+                <Button className="w-full sm:w-auto px-6">Sign In</Button>
               </SignInButton>
               <Button 
                 variant="outline" 
                 onClick={() => setShowAuthPrompt(false)}
-                className="px-6"
+                className="w-full sm:w-auto px-6"
               >
                 Cancel
               </Button>
@@ -275,26 +290,27 @@ function ChatInputBox() {
           </CardSpotlight>
         )}
         
+        {/* AI Summary - Mobile optimized */}
         {showSummary && user && (
-          <CardSpotlight className="w-full max-w-2xl mt-4 p-4 overflow-y-auto max-h-[60vh]">
+          <CardSpotlight className="w-full max-w-2xl mt-4 p-3 sm:p-4 overflow-y-auto max-h-[70vh] mx-4">
             {loadingSummary ? (
-              <p>Loading AI summary of articles...</p>
+              <p className="text-sm sm:text-base">Loading AI summary of articles...</p>
             ) : resultsSummary ? (
               <>
-                <div className="text-sm text-gray-500 mb-3">
+                <div className="text-xs sm:text-sm text-gray-500 mb-3">
                   Query: <span className="font-medium">"{resultsSummary.query}"</span> • 
                   Articles analyzed: <span className="font-medium">{resultsSummary.article_count}</span>
                 </div>
-                <div className="flex items-center gap-2 mb-4">
+                <div className="flex items-center gap-2 mb-4 flex-wrap">
                   {resultsSummary.themes.map((theme, index) => (
-                    <span key={index} className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                    <span key={index} className="bg-purple-100 text-purple-800 text-xs font-medium px-2 py-1 rounded-full">
                       {theme}
                     </span>
                   ))}
                 </div>
                 <div className="border-t border-gray-200 pt-3">
-                  <h4 className="font-medium text-base mb-2 text-gray-800">🤖 AI-Generated Summary</h4>
-                  <div className="prose prose-sm max-w-none">
+                  <h4 className="font-medium text-sm sm:text-base mb-2 text-gray-800">🤖 AI-Generated Summary</h4>
+                  <div className="prose prose-sm max-w-none text-sm sm:text-base">
                     <ReactMarkdown>{resultsSummary.summary}</ReactMarkdown>
                   </div>
                 </div>
@@ -303,34 +319,48 @@ function ChatInputBox() {
           </CardSpotlight>
         )}
         
+        {/* Search Results - Mobile optimized */}
         {showResults && !showSummary && user && (
           <>
-            {/* Mobile list */}
-            <div className="w-full max-w-2xl mt-4 overflow-y-auto max-h-[60vh] md:hidden">
-              <h3 className="font-medium mb-2">{searchResults.length > 0 ? `Found ${searchResults.length} results` : 'No results found'}</h3>
+            {/* Mobile list - improved */}
+            <div className="w-full max-w-2xl mt-4 overflow-y-auto max-h-[70vh] md:hidden px-4">
+              <h3 className="font-medium mb-3 text-sm sm:text-base">
+                {searchResults.length > 0 ? `Found ${searchResults.length} results` : 'No results found'}
+              </h3>
               {searchResults.length > 0 ? (
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {searchResults.map((result) => (
-                    <CardSpotlight key={result.id} className="mb-2 relative">
-                      <h4 className="font-bold">{result.title}</h4>
-                      <p className="text-sm text-gray-600">{result.company} - {new Date(result.published_date).toLocaleDateString()}</p>
-                      <p className="text-sm mt-1 line-clamp-2">{stripHtml(result.content)}</p>
-                      <a href={result.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-sm mt-1 inline-block">Read more</a>
+                    <CardSpotlight key={result.id} className="p-3 sm:p-4 relative">
+                      <h4 className="font-bold text-sm sm:text-base leading-tight mb-2 pr-8">{result.title}</h4>
+                      <p className="text-xs sm:text-sm text-gray-600 mb-2">
+                        {result.company} - {new Date(result.published_date).toLocaleDateString()}
+                      </p>
+                      <p className="text-xs sm:text-sm mt-1 line-clamp-2 text-gray-700 mb-2">
+                        {stripHtml(result.content)}
+                      </p>
+                      <a 
+                        href={result.url} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="text-blue-600 hover:underline text-xs sm:text-sm inline-block"
+                      >
+                        Read more →
+                      </a>
                       <button
                         onClick={() => toggleSave(result.id)}
-                        className="absolute top-2 right-2 p-1 rounded-full hover:bg-purple-100"
+                        className="absolute top-2 right-2 p-1.5 rounded-full hover:bg-purple-100 transition-colors"
                       >
                         {savedIds.includes(result.id) ? (
-                          <BookmarkCheck className="h-5 w-5 text-purple-600" />
+                          <BookmarkCheck className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600" />
                         ) : (
-                          <BookmarkPlus className="h-5 w-5 text-gray-500" />
+                          <BookmarkPlus className="h-4 w-4 sm:h-5 sm:w-5 text-gray-500" />
                         )}
                       </button>
                     </CardSpotlight>
                   ))}
                 </div>
               ) : (
-                <p className="text-gray-500">Try another search query.</p>
+                <p className="text-gray-500 text-sm sm:text-base">Try another search query.</p>
               )}
             </div>
 

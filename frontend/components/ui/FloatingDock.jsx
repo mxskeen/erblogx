@@ -21,7 +21,7 @@ export default function FloatingDock({ items = [], className = "" }) {
       onMouseMove={(e) => mouseX.set(e.pageX)}
       onMouseLeave={() => mouseX.set(Infinity)}
       className={cn(
-        "flex fixed bottom-6 left-1/2 h-16 w-fit items-end gap-4 rounded-2xl bg-gray-50/70 backdrop-blur-lg px-4 pb-3 shadow-lg dark:bg-neutral-900/80 z-30 transform-gpu",
+        "flex fixed bottom-4 sm:bottom-6 left-1/2 h-12 sm:h-14 md:h-16 w-fit items-end gap-2 sm:gap-3 md:gap-4 rounded-xl sm:rounded-2xl bg-gray-50/70 backdrop-blur-lg px-2 sm:px-3 md:px-4 pb-2 sm:pb-3 shadow-lg dark:bg-neutral-900/80 z-30 transform-gpu",
         className
       )}
       style={{ transform: `translateX(${translate})` }}
@@ -35,49 +35,34 @@ export default function FloatingDock({ items = [], className = "" }) {
 
 function IconContainer({ mouseX, title, icon, href }) {
   const ref = useRef(null);
+
   const distance = useTransform(mouseX, (val) => {
     const bounds = ref.current?.getBoundingClientRect() ?? { x: 0, width: 0 };
     return val - bounds.x - bounds.width / 2;
   });
 
-  const widthTransform = useTransform(distance, [-150, 0, 150], [40, 80, 40]);
-  const heightTransform = useTransform(distance, [-150, 0, 150], [40, 80, 40]);
+  const widthSync = useTransform(distance, [-150, 0, 150], [40, 60, 40]);
+  const width = useSpring(widthSync, { mass: 0.1, stiffness: 150, damping: 12 });
 
-  const widthTransformIcon = useTransform(distance, [-150, 0, 150], [20, 40, 20]);
-  const heightTransformIcon = useTransform(distance, [-150, 0, 150], [20, 40, 20]);
-
-  const width = useSpring(widthTransform, { mass: 0.1, stiffness: 150, damping: 12 });
-  const height = useSpring(heightTransform, { mass: 0.1, stiffness: 150, damping: 12 });
-  const widthIcon = useSpring(widthTransformIcon, { mass: 0.1, stiffness: 150, damping: 12 });
-  const heightIcon = useSpring(heightTransformIcon, { mass: 0.1, stiffness: 150, damping: 12 });
-
-  const [hovered, setHovered] = useState(false);
+  // Mobile responsive sizing
+  const mobileWidth = useTransform(distance, [-150, 0, 150], [32, 40, 32]);
+  const responsiveWidth = typeof window !== "undefined" && window.innerWidth < 640 ? mobileWidth : width;
 
   return (
-    <a href={href} className="relative">
-      <motion.div
-        ref={ref}
-        style={{ width, height }}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        className="flex aspect-square items-center justify-center rounded-full bg-gray-200 dark:bg-neutral-800"
+    <motion.div
+      ref={ref}
+      style={{ width: responsiveWidth }}
+      className="aspect-square rounded-lg bg-gray-200 dark:bg-neutral-800 flex items-center justify-center relative"
+    >
+      <a
+        href={href}
+        className="w-full h-full flex items-center justify-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+        title={title}
       >
-        <AnimatePresence>
-          {hovered && (
-            <motion.div
-              initial={{ opacity: 0, y: 10, x: "-50%" }}
-              animate={{ opacity: 1, y: 0, x: "-50%" }}
-              exit={{ opacity: 0, y: 2, x: "-50%" }}
-              className="absolute -top-8 left-1/2 w-fit rounded-md border border-gray-200 bg-gray-100 px-2 py-0.5 text-xs whitespace-pre text-neutral-700 dark:border-neutral-900 dark:bg-neutral-800 dark:text-white"
-            >
-              {title}
-            </motion.div>
-          )}
-        </AnimatePresence>
-        <motion.div style={{ width: widthIcon, height: heightIcon }} className="flex items-center justify-center">
+        <div className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6">
           {icon}
-        </motion.div>
-      </motion.div>
-    </a>
+        </div>
+      </a>
+    </motion.div>
   );
 } 

@@ -12,46 +12,45 @@ import {
     SidebarMenuItem,
   } from "../../components/ui/sidebar"
 import Image from 'next/image'
-import { Github, Linkedin, LogIn, Home, Info } from 'lucide-react';
+import { Home, Compass, GalleryHorizontalEnd, LogIn } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { Button } from '../../components/ui/button';
 import { SignInButton, SignOutButton, SignUpButton, UserButton, useUser } from '@clerk/nextjs';
+import ConfirmSignOutButton from "./ConfirmSignOutButton";
 
 const MenuOptions = [
   {
-    label:"Home",
-    icon:Home,
-    path:"/"
+    label: "Home",
+    icon: Home,
+    path: "/",
   },
   {
-    label:"About",
-    icon:Info,
-    path:"/about"
-  }
-]
-
-function ConfirmSignOutButton() {
-  return (
-    <SignOutButton
-      onClick={e => {
-        if (!window.confirm("Are you sure you want to log out?")) {
-          e.preventDefault();
-        }
-      }}
-    >
-      <Button className="rounded-full">Log Out</Button>
-    </SignOutButton>
-  );
-}
+    label: "Discovery",
+    icon: Compass,
+    path: "/discover",
+  },
+  {
+    label: "Library",
+    icon: GalleryHorizontalEnd,
+    path: "/lib",
+  },
+];
 
 function AppSidebar () {
-  const path=usePathname();
-  const { user } =useUser();
+  const path = usePathname();
+  const { user } = useUser();
+  
   return (
     <Sidebar>
-      <SidebarHeader className="bg-purple-50 flex items-center py-5">
+      <SidebarHeader className="bg-purple-50 flex items-center py-3 sm:py-5">
         <a href="/">
-        <Image src="/logo.png" alt="logo" width={180} height={140} />
+          <Image 
+            src="/logo.png" 
+            alt="logo" 
+            width={180} 
+            height={140} 
+            className="w-36 h-auto sm:w-44 md:w-48"
+          />
         </a>
       </SidebarHeader>
 
@@ -61,37 +60,48 @@ function AppSidebar () {
             <SidebarMenu>
               {MenuOptions.map((menu, index) => (
                 <SidebarMenuItem key={index}>
-                  <SidebarMenuButton asChild 
-                  className={`p-5 py-6 hover:font-bold hover:bg-transparent
-                  ${(menu.path === '/' ? path === '/' : path?.startsWith(menu.path)) && 'font-bold'}`}>
+                  <SidebarMenuButton 
+                    asChild 
+                    className={`p-3 py-4 sm:p-5 sm:py-6 hover:font-bold hover:bg-transparent text-sm sm:text-base md:text-lg
+                    ${(menu.path === '/' ? path === '/' : path?.startsWith(menu.path)) && 'font-bold'}`}
+                  >
                     <a href={menu.path}>
-                      <menu.icon className='h-8 w-8'/>
-                      <span className='text-lg'> {menu.label}</span>
+                      <menu.icon className='h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8'/>
+                      <span className='ml-2 sm:ml-3'> {menu.label}</span>
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
               {!user && (
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild className="p-5 py-6 hover:font-bold hover:bg-transparent">
-                  <SignInButton mode="modal">
-                    <div className="flex items-center">
-                      <LogIn className="h-8 w-8"/>
-                      <span className="text-lg ml-2">SignIn</span>
-                    </div>
-                  </SignInButton>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton 
+                    asChild 
+                    className="p-3 py-4 sm:p-5 sm:py-6 hover:font-bold hover:bg-transparent text-sm sm:text-base md:text-lg"
+                  >
+                    <SignInButton mode="modal">
+                      <div className="flex items-center">
+                        <LogIn className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8"/>
+                        <span className="ml-2 sm:ml-3">Sign In</span>
+                      </div>
+                    </SignInButton>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
               )}
             </SidebarMenu>
-          {!user ?  <SignUpButton mode='modal'>
-              <Button className='rounded-full'>Sign Up</Button>
-            </SignUpButton>:
-            <ConfirmSignOutButton />}
+            
+            <div className="mt-4 px-3 sm:px-5">
+              {!user ? (
+                <SignUpButton mode='modal'>
+                  <Button className='rounded-full w-full text-sm sm:text-base py-2 sm:py-3'>
+                    Sign Up
+                  </Button>
+                </SignUpButton>
+              ) : (
+                <ConfirmSignOutButton />
+              )}
+            </div>
           </SidebarContent>
         </SidebarGroup>
-
-        <SidebarGroup />
       </SidebarContent>
 
       <SidebarFooter className="bg-purple-50" >
