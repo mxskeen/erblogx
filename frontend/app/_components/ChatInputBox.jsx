@@ -9,10 +9,11 @@ import {
   X,
   BookmarkPlus,
   BookmarkCheck,
+  Lock,
 } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { supabase } from "../../services/supabase";
-import { useUser } from "@clerk/nextjs";
+import { useUser, SignInButton } from "@clerk/nextjs";
 import { v4 as uuid } from "uuid";
 import CardSpotlight from '../../components/ui/CardSpotlight';
 import ExpandableCard from '../../components/ui/ExpandableCard';
@@ -30,7 +31,7 @@ function stripHtml(html) {
 
 function ChatInputBox() {
   const [userSearchInput, setUserSearchInput] = useState();
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
   const { setOpen } = useSidebar();
   const [loading, setLoading] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
@@ -38,6 +39,7 @@ function ChatInputBox() {
   const [showSummary, setShowSummary] = useState(false);
   const [resultsSummary, setResultsSummary] = useState(null);
   const [loadingSummary, setLoadingSummary] = useState(false);
+  const [showAuthPrompt, setShowAuthPrompt] = useState(false);
   const expanded = !!userSearchInput;
   const hasResultsOrSummary = showResults || showSummary;
   const [savedIds, setSavedIds] = useState([]);
@@ -117,6 +119,15 @@ function ChatInputBox() {
   const onSearchQuery = async () => {
     if (!userSearchInput) return;
     
+    // Check if user is authenticated
+    if (!isLoaded) return; // Wait for auth to load
+    
+    if (!user) {
+      // Show authentication prompt
+      setShowAuthPrompt(true);
+      return;
+    }
+    
     setLoading(true);
     
     try {
@@ -140,6 +151,12 @@ function ChatInputBox() {
 
   const handleSummarizeAllResults = async () => {
     if (!searchResults || searchResults.length === 0) return;
+
+    // Check authentication for summarization too
+    if (!user) {
+      setShowAuthPrompt(true);
+      return;
+    }
 
     if (showSummary) {
       setShowSummary(false);
@@ -209,14 +226,14 @@ function ChatInputBox() {
                 <Search className="absolute left-4 text-gray-500" />
                 <input
                   type="text"
-                  placeholder="Search Over Engineering Blogs"
+                  placeholder={user ? "Search Over Engineering Blogs" : "Sign in to search engineering blogs"}
                   onChange={(e) => setUserSearchInput(e.target.value)}
                   className="w-full p-4 pl-12 outline-none"
                   onKeyDown={handleKeyDown}
                 />
               </div>
               <div className="flex gap-2.5 items-center rounded-full color-primary">
-                {searchResults.length > 0 && (
+                {searchResults.length > 0 && user && (
                   <Button 
                     variant="ghost"
                     onClick={handleSummarizeAllResults}
@@ -226,14 +243,39 @@ function ChatInputBox() {
                   </Button>
                 )}
                 <Button onClick={onSearchQuery} disabled={loading || !userSearchInput}>
-                  <ArrowRight className='text-white'/>
+                  {!user ? <Lock className='text-white' size={18} /> : <ArrowRight className='text-white'/>}
                 </Button>
               </div>
             </div>
           </div>
         </MovingBorderContainer>
+
+        {/* Authentication Prompt */}
+        {showAuthPrompt && (
+          <CardSpotlight className="w-full max-w-lg mt-4 p-6 text-center">
+            <div className="flex items-center justify-center mb-4">
+              <Lock className="h-12 w-12 text-purple-500" />
+            </div>
+            <h3 className="text-xl font-bold mb-3">Sign in to search</h3>
+            <p className="text-gray-600 mb-6">
+              Join ErBlogX to search through 16,000+ engineering articles, save your favorites, and get AI-powered summaries.
+            </p>
+            <div className="flex gap-3 justify-center">
+              <SignInButton mode="modal">
+                <Button className="px-6">Sign In</Button>
+              </SignInButton>
+              <Button 
+                variant="outline" 
+                onClick={() => setShowAuthPrompt(false)}
+                className="px-6"
+              >
+                Cancel
+              </Button>
+            </div>
+          </CardSpotlight>
+        )}
         
-        {showSummary && (
+        {showSummary && user && (
           <CardSpotlight className="w-full max-w-2xl mt-4 p-4 overflow-y-auto max-h-[60vh]">
             {loadingSummary ? (
               <p>Loading AI summary of articles...</p>
@@ -261,7 +303,7 @@ function ChatInputBox() {
           </CardSpotlight>
         )}
         
-        {showResults && !showSummary && (
+        {showResults && !showSummary && user && (
           <>
             {/* Mobile list */}
             <div className="w-full max-w-2xl mt-4 overflow-y-auto max-h-[60vh] md:hidden">
