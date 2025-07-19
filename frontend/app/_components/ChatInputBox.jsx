@@ -91,20 +91,42 @@ function ChatInputBox() {
       setShowAuthPrompt(true);
       return;
     }
-    if (savedIds.includes(articleId)) {
-      // unsave
-      await supabase
-        .from("saved_articles")
-        .delete()
-        .eq("user_email", userEmail)
-        .eq("article_id", articleId);
-      setSavedIds((prev) => prev.filter((id) => id !== articleId));
-    } else {
-      await supabase.from("saved_articles").insert({
-        user_email: userEmail,
-        article_id: articleId,
-      });
-      setSavedIds((prev) => [...prev, articleId]);
+    
+    try {
+      if (savedIds.includes(articleId)) {
+        // unsave
+        console.log("Unsaving article:", articleId, "for user:", userEmail);
+        const { data, error } = await supabase
+          .from("saved_articles")
+          .delete()
+          .eq("user_email", userEmail)
+          .eq("article_id", articleId);
+        
+        if (error) {
+          console.error("Error unsaving article:", error);
+          return;
+        }
+        
+        console.log("Successfully unsaved article");
+        setSavedIds((prev) => prev.filter((id) => id !== articleId));
+      } else {
+        // save
+        console.log("Saving article:", articleId, "for user:", userEmail);
+        const { data, error } = await supabase.from("saved_articles").insert({
+          user_email: userEmail,
+          article_id: parseInt(articleId), // Ensure it's an integer
+        });
+        
+        if (error) {
+          console.error("Error saving article:", error);
+          return;
+        }
+        
+        console.log("Successfully saved article:", data);
+        setSavedIds((prev) => [...prev, articleId]);
+      }
+    } catch (error) {
+      console.error("Unexpected error in toggleSave:", error);
     }
   };
 
