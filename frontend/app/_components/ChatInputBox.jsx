@@ -50,10 +50,6 @@ function ChatInputBox() {
   const searchSuggestions = [
     "how Netflix scales video streaming",
     "microservices at Google",
-    "Uber's system architecture", 
-    "machine learning at Meta",
-    "Airbnb's data infrastructure",
-    "Spotify's recommendation engine",
     "AWS best practices",
     "React performance at Facebook",
     "Kubernetes at scale",
