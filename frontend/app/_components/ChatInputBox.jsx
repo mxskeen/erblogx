@@ -73,7 +73,11 @@ function ChatInputBox() {
   }, [userEmail]);
 
   const toggleSave = async (articleId) => {
-    if (!userEmail) return;
+    if (!userEmail) {
+      // Show auth prompt if user tries to save without being logged in
+      setShowAuthPrompt(true);
+      return;
+    }
     if (savedIds.includes(articleId)) {
       // unsave
       await supabase
@@ -119,29 +123,23 @@ function ChatInputBox() {
   const onSearchQuery = async () => {
     if (!userSearchInput) return;
     
-    // Check if user is authenticated
-    if (!isLoaded) return; // Wait for auth to load
-    
-    if (!user) {
-      // Show authentication prompt
-      setShowAuthPrompt(true);
-      return;
-    }
-    
     setLoading(true);
     
     try {
       await handleSearch(userSearchInput);
       
-      const libId = uuid();
-      const { data, error } = await supabase.from("Library").insert([
-        {
-          searchInput: userSearchInput,
-          userEmail: user?.primaryEmailAddress?.emailAddress,
-          type: "semantic",
-          libId: libId,
-        },
-      ]);
+      // Only log to library if user is authenticated
+      if (user) {
+        const libId = uuid();
+        const { data, error } = await supabase.from("Library").insert([
+          {
+            searchInput: userSearchInput,
+            userEmail: user?.primaryEmailAddress?.emailAddress,
+            type: "semantic",
+            libId: libId,
+          },
+        ]);
+      }
     } catch (error) {
       console.error("Error in search:", error);
     } finally {
@@ -152,7 +150,7 @@ function ChatInputBox() {
   const handleSummarizeAllResults = async () => {
     if (!searchResults || searchResults.length === 0) return;
 
-    // Check authentication for summarization too
+    // Check authentication for summarization
     if (!user) {
       setShowAuthPrompt(true);
       return;
@@ -234,19 +232,19 @@ function ChatInputBox() {
                 <Search className="absolute left-3 text-gray-500 h-4 w-4 sm:h-5 sm:w-5" />
                 <input
                   type="text"
-                  placeholder={user ? "Search Engineering Blogs" : "Sign in to search"}
+                  placeholder="Search Engineering Blogs"
                   onChange={(e) => setUserSearchInput(e.target.value)}
                   className="w-full p-3 pl-10 sm:p-4 sm:pl-12 outline-none text-sm sm:text-base"
                   onKeyDown={handleKeyDown}
                 />
               </div>
               <div className="flex gap-1 sm:gap-2 items-center">
-                {searchResults.length > 0 && user && (
+                {searchResults.length > 0 && (
                   <Button 
                     variant="ghost"
                     size="icon"
                     onClick={handleSummarizeAllResults}
-                    title="Summarize all search results"
+                    title={user ? "Summarize all search results" : "Sign in to get AI summaries"}
                     className="h-8 w-8 sm:h-9 sm:w-9"
                   >
                     {showSummary ? <X size={16} className="sm:h-5 sm:w-5" /> : <BrainCircuit size={16} className="sm:h-5 sm:w-5" />}
@@ -258,7 +256,7 @@ function ChatInputBox() {
                   size="icon"
                   className="h-8 w-8 sm:h-9 sm:w-9"
                 >
-                  {!user ? <Lock className='text-white' size={16} /> : <ArrowRight className='text-white' size={16} />}
+                  <ArrowRight className='text-white' size={16} />
                 </Button>
               </div>
             </div>
@@ -271,9 +269,9 @@ function ChatInputBox() {
             <div className="flex items-center justify-center mb-3 sm:mb-4">
               <Lock className="h-8 w-8 sm:h-12 sm:w-12 text-purple-500" />
             </div>
-            <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3">Sign in to search</h3>
+            <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3">Sign in to save articles</h3>
             <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">
-              Join ErBlogX to search through 16,000+ engineering articles, save your favorites, and get AI-powered summaries.
+              Sign in to save articles to your library and get AI-powered summaries of your search results.
             </p>
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center">
               <SignInButton mode="modal">
