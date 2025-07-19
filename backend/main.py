@@ -89,6 +89,15 @@ class SearchRequest(BaseModel):
 def read_root():
     return "erblogx api :)"
 
+@app.get("/health")
+def health_check():
+    return {
+        "status": "healthy",
+        "model_loaded": model is not None,
+        "device": device,
+        "timestamp": datetime.utcnow().isoformat()
+    }
+
 @app.get("/test")
 def test_function():
     return "this is test function"

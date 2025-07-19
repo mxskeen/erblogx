@@ -21,7 +21,7 @@ import { useSidebar } from '../../components/ui/sidebar';
 import ExpandableCardList from '../../components/ui/ExpandableCardList';
 import MovingBorderContainer from '../../components/ui/MovingBorderContainer';
 import { MultiStepLoader } from "../../components/ui/MultiStepLoader";
-import { getApiUrl } from "../../lib/config";
+import { getApiUrl, fetchWithRetry } from "../../lib/config";
 
 // Helper function to strip HTML tags
 function stripHtml(html) {
@@ -99,10 +99,10 @@ function ChatInputBox() {
     // close sidebar if open on mobile
     setOpen(false);
     try {
-      // Always use AI-powered semantic search
+      // Always use AI-powered semantic search with retry logic
       const apiUrl = `${getApiUrl('/ai-search')}?q=${encodeURIComponent(searchQuery)}`;
 
-      const response = await fetch(apiUrl);
+      const response = await fetchWithRetry(apiUrl);
       const data = await response.json();
 
       console.log("Search results:", data.results);
@@ -116,6 +116,12 @@ function ChatInputBox() {
     } catch (error) {
       console.error("Search error:", error);
       setSearchResults([]);
+      
+      // Show user-friendly error message
+      if (error.name === 'AbortError' || error.message.includes('timeout')) {
+        console.error("Backend is starting up, please try again in a moment...");
+      }
+      
       return [];
     }
   };
@@ -166,7 +172,7 @@ function ChatInputBox() {
     setShowSummary(true);
     
     try {
-      const response = await fetch(getApiUrl('/summarize-results'), {
+      const response = await fetchWithRetry(getApiUrl('/summarize-results'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -177,10 +183,6 @@ function ChatInputBox() {
         }),
       });
       
-      if (!response.ok) {
-        throw new Error(`API Error: ${response.status} ${response.statusText}`);
-      }
-      
       const data = await response.json();
       setResultsSummary(data);
       setLoadingSummary(false);
@@ -189,9 +191,14 @@ function ChatInputBox() {
       console.error("Error getting results summary:", error);
       setLoadingSummary(false);
       
+      let errorMessage = `API Error: ${error.message}`;
+      if (error.name === 'AbortError' || error.message.includes('timeout')) {
+        errorMessage = "Backend is starting up, please try again in a moment...";
+      }
+      
       setTimeout(() => {
         setResultsSummary({
-          summary: `API Error: ${error.message}. Showing fallback summary...`,
+          summary: errorMessage,
           query: userSearchInput,
           article_count: searchResults.length,
           themes: ["Engineering", "Technology"]
