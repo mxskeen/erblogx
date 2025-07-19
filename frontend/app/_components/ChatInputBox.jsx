@@ -48,15 +48,22 @@ function ChatInputBox() {
 
   // Search suggestions
   const searchSuggestions = [
-    "microservices architecture",
-    "how netflix handles it's video streaming?",
-    "kubernetes deployment",
-    "machine learning in production",
-    "system design patterns",
-    "API design best practices",
-    "database optimization",
-    "React performance tips",
-    "cloud infrastructure",
+    "how Netflix scales video streaming",
+    "microservices at Google",
+    "Uber's system architecture", 
+    "machine learning at Meta",
+    "Airbnb's data infrastructure",
+    "Spotify's recommendation engine",
+    "AWS best practices",
+    "React performance at Facebook",
+    "Kubernetes at scale",
+    "API design patterns",
+    "database optimization techniques",
+    "DevOps at startups",
+    "AI engineering practices",
+    "distributed systems design",
+    "frontend architecture patterns",
+    "monitoring and observability"
   ];
 
   // Loader states
@@ -291,6 +298,25 @@ function ChatInputBox() {
           />
         </a>
         
+        {/* Value Proposition - Only show when no results */}
+        {!hasResultsOrSummary && (
+          <div className="text-center mt-4 mb-8 max-w-2xl">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-3">
+              The AI-Powered Search Engine for Engineering Content
+            </h1>
+            <p className="text-sm sm:text-base md:text-lg text-gray-600 mb-4">
+              Search through <span className="font-semibold text-purple-600">16,000+ engineering articles</span> from 
+              <span className="font-semibold text-purple-600"> 600+ top tech companies</span> like Google, Netflix, Airbnb, and more.
+            </p>
+            <div className="flex flex-wrap justify-center gap-2 text-xs sm:text-sm text-gray-500">
+              <span className="bg-gray-100 px-3 py-1 rounded-full">✨ AI-Powered Search</span>
+              <span className="bg-gray-100 px-3 py-1 rounded-full">📚 Personal Library</span>
+              <span className="bg-gray-100 px-3 py-1 rounded-full">🤖 Smart Summaries</span>
+              <span className="bg-gray-100 px-3 py-1 rounded-full">🆓 Free to Search</span>
+            </div>
+          </div>
+        )}
+        
         {/* Mobile-optimized search container */}
         <MovingBorderContainer className={`transition-all duration-300 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl ${expanded ? 'md:max-w-3xl' : ''}`}>
           <div className="p-2 w-full rounded-2xl -mt-2 bg-white relative">
@@ -457,7 +483,9 @@ function ChatInputBox() {
         {/* Search Suggestions - Mobile optimized */}
         {showSuggestions && !userSearchInput && (
           <div className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl mt-4 p-3 sm:p-4 bg-white rounded-2xl shadow-lg mx-4 z-10 border border-gray-200">
-            <h4 className="font-medium text-sm sm:text-base mb-3 text-gray-800">💡 Try searching for:</h4>
+            <h4 className="font-medium text-sm sm:text-base mb-3 text-gray-800">
+              💡 Explore engineering insights from top companies:
+            </h4>
             <div className="flex flex-wrap gap-2">
               {searchSuggestions.slice(0, 8).map((suggestion, index) => (
                 <Button
@@ -471,7 +499,7 @@ function ChatInputBox() {
                 </Button>
               ))}
             </div>
-            <p className="text-xs text-gray-500 mt-2">Click any suggestion to search instantly</p>
+            <p className="text-xs text-gray-500 mt-2">Click any topic to discover relevant articles instantly</p>
           </div>
         )}
       </div>
