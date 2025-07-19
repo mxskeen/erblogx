@@ -40,10 +40,24 @@ function ChatInputBox() {
   const [resultsSummary, setResultsSummary] = useState(null);
   const [loadingSummary, setLoadingSummary] = useState(false);
   const [showAuthPrompt, setShowAuthPrompt] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const expanded = !!userSearchInput;
   const hasResultsOrSummary = showResults || showSummary;
   const [savedIds, setSavedIds] = useState([]);
   const userEmail = user?.primaryEmailAddress?.emailAddress;
+
+  // Search suggestions
+  const searchSuggestions = [
+    "microservices architecture",
+    "how netflix handles it's video streaming?",
+    "kubernetes deployment",
+    "machine learning in production",
+    "system design patterns",
+    "API design best practices",
+    "database optimization",
+    "React performance tips",
+    "cloud infrastructure",
+  ];
 
   // Loader states
   const loadingStatesSearch = [
@@ -214,6 +228,52 @@ function ChatInputBox() {
     }
   };
 
+  const handleInputFocus = () => {
+    if (!userSearchInput) {
+      setShowSuggestions(true);
+    }
+  };
+
+  const handleInputBlur = () => {
+    // Delay hiding suggestions to allow clicking on them
+    setTimeout(() => setShowSuggestions(false), 200);
+  };
+
+  const handleSuggestionClick = async (suggestion) => {
+    setUserSearchInput(suggestion);
+    setShowSuggestions(false);
+    
+    // Set loading and trigger search
+    setLoading(true);
+    try {
+      await handleSearch(suggestion);
+      
+      // Only log to library if user is authenticated
+      if (user) {
+        const libId = uuid();
+        const { data, error } = await supabase.from("Library").insert([
+          {
+            searchInput: suggestion,
+            userEmail: user?.primaryEmailAddress?.emailAddress,
+            type: "semantic",
+            libId: libId,
+          },
+        ]);
+      }
+    } catch (error) {
+      console.error("Error in suggestion search:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    setUserSearchInput(e.target.value);
+    if (e.target.value) {
+      setShowSuggestions(false);
+    }
+  };
+
   return (
     <>
       <MultiStepLoader
@@ -240,7 +300,10 @@ function ChatInputBox() {
                 <input
                   type="text"
                   placeholder="Search Engineering Blogs"
-                  onChange={(e) => setUserSearchInput(e.target.value)}
+                  value={userSearchInput || ""}
+                  onChange={handleInputChange}
+                  onFocus={handleInputFocus}
+                  onBlur={handleInputBlur}
                   className="w-full p-3 pl-10 sm:p-4 sm:pl-12 outline-none text-sm sm:text-base"
                   onKeyDown={handleKeyDown}
                 />
@@ -325,7 +388,7 @@ function ChatInputBox() {
         )}
         
         {/* Search Results - Mobile optimized */}
-        {showResults && !showSummary && user && (
+        {showResults && !showSummary && (
           <>
             {/* Mobile list - improved */}
             <div className="w-full max-w-2xl mt-4 overflow-y-auto max-h-[70vh] md:hidden px-4">
@@ -351,16 +414,18 @@ function ChatInputBox() {
                       >
                         Read more →
                       </a>
-                      <button
-                        onClick={() => toggleSave(result.id)}
-                        className="absolute top-2 right-2 p-1.5 rounded-full hover:bg-purple-100 transition-colors"
-                      >
-                        {savedIds.includes(result.id) ? (
-                          <BookmarkCheck className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600" />
-                        ) : (
-                          <BookmarkPlus className="h-4 w-4 sm:h-5 sm:w-5 text-gray-500" />
-                        )}
-                      </button>
+                      {user && (
+                        <button
+                          onClick={() => toggleSave(result.id)}
+                          className="absolute top-2 right-2 p-1.5 rounded-full hover:bg-purple-100 transition-colors"
+                        >
+                          {savedIds.includes(result.id) ? (
+                            <BookmarkCheck className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600" />
+                          ) : (
+                            <BookmarkPlus className="h-4 w-4 sm:h-5 sm:w-5 text-gray-500" />
+                          )}
+                        </button>
+                      )}
                     </CardSpotlight>
                   ))}
                 </div>
@@ -382,11 +447,32 @@ function ChatInputBox() {
                     url:r.url
                   })
                 ))}
-                savedIds={savedIds}
-                onToggleSave={toggleSave}
+                savedIds={user ? savedIds : []}
+                onToggleSave={user ? toggleSave : () => setShowAuthPrompt(true)}
               />
             </div>
           </>
+        )}
+
+        {/* Search Suggestions - Mobile optimized */}
+        {showSuggestions && !userSearchInput && (
+          <div className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl mt-4 p-3 sm:p-4 bg-white rounded-2xl shadow-lg mx-4 z-10 border border-gray-200">
+            <h4 className="font-medium text-sm sm:text-base mb-3 text-gray-800">💡 Try searching for:</h4>
+            <div className="flex flex-wrap gap-2">
+              {searchSuggestions.slice(0, 8).map((suggestion, index) => (
+                <Button
+                  key={index}
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleSuggestionClick(suggestion)}
+                  className="text-xs sm:text-sm text-gray-700 hover:bg-purple-100 hover:text-purple-700 rounded-full px-3 py-1 border border-gray-200 transition-colors"
+                >
+                  {suggestion}
+                </Button>
+              ))}
+            </div>
+            <p className="text-xs text-gray-500 mt-2">Click any suggestion to search instantly</p>
+          </div>
         )}
       </div>
     </>
