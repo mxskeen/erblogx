@@ -49,10 +49,9 @@ function ChatInputBox() {
   // Search suggestions
   const searchSuggestions = [
     "how Netflix scales video streaming",
-    "microservices at Google",
+    "microservices",
     "AWS best practices",
-    "React performance at Facebook",
-    "Kubernetes at scale",
+    "React performance",
     "API design patterns",
     "database optimization techniques",
     "DevOps at startups",
