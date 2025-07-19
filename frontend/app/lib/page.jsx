@@ -37,7 +37,7 @@ export default function LibraryPage() {
           .from("saved_articles")
           .select(`
             article_id,
-            Articles (
+            articles (
               id,
               title,
               company,
@@ -50,7 +50,7 @@ export default function LibraryPage() {
           .eq("user_email", user.primaryEmailAddress.emailAddress);
 
         if (error) throw error;
-        setArticles(data?.map((item) => item.Articles).filter(Boolean) || []);
+        setArticles(data?.map((item) => item.articles).filter(Boolean) || []);
       } catch (error) {
         console.error("Error fetching saved articles:", error);
       } finally {
