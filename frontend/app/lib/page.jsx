@@ -46,8 +46,7 @@ export default function LibraryPage() {
               company,
               published_date,
               content,
-              url,
-              image_url
+              url
             )
           `)
           .eq("user_email", user.primaryEmailAddress.emailAddress);
@@ -77,7 +76,7 @@ export default function LibraryPage() {
             
             const { data: articlesData, error: articlesError } = await supabase
               .from("articles")
-              .select("id, title, company, published_date, content, url, image_url")
+              .select("id, title, company, published_date, content, url")
               .in("id", articleIds);
             
             if (articlesError) {
@@ -197,7 +196,7 @@ export default function LibraryPage() {
               id: a.id,
               title: a.title,
               subtitle: a.company,
-              image: a.image_url || "/logo.png",
+              image: "/logo.png", // Use default logo since image_url doesn't exist
               content: stripHtml(a.content).slice(0, 400) + "...",
               url: a.url,
             }))}
