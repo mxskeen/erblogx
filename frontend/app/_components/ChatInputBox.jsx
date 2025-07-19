@@ -300,20 +300,13 @@ function ChatInputBox() {
         
         {/* Value Proposition - Only show when no results */}
         {!hasResultsOrSummary && (
-          <div className="text-center mt-4 mb-8 max-w-2xl">
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-3">
-              The AI-Powered Search Engine for Engineering Content
-            </h1>
-            <p className="text-sm sm:text-base md:text-lg text-gray-600 mb-4">
-              Search through <span className="font-semibold text-purple-600">16,000+ engineering articles</span> from 
-              <span className="font-semibold text-purple-600"> 600+ top tech companies</span> like Google, Netflix, Airbnb, and more.
+          <div className="text-center mt-6 mb-8 max-w-xl">
+            <p className="text-base sm:text-lg text-gray-600 mb-2">
+              Search <span className="font-semibold text-gray-900">16,000+ engineering articles</span> from top tech companies
             </p>
-            <div className="flex flex-wrap justify-center gap-2 text-xs sm:text-sm text-gray-500">
-              <span className="bg-gray-100 px-3 py-1 rounded-full">✨ AI-Powered Search</span>
-              <span className="bg-gray-100 px-3 py-1 rounded-full">📚 Personal Library</span>
-              <span className="bg-gray-100 px-3 py-1 rounded-full">🤖 Smart Summaries</span>
-              <span className="bg-gray-100 px-3 py-1 rounded-full">🆓 Free to Search</span>
-            </div>
+            <p className="text-sm text-gray-500">
+              Google • Netflix • Airbnb • Uber • Spotify • and 600+ more
+            </p>
           </div>
         )}
         
