@@ -49,15 +49,12 @@ function ChatInputBox() {
   // Search suggestions
   const searchSuggestions = [
     "how Netflix scales video streaming",
+    "how to be a better engineer",
     "microservices",
     "AWS best practices",
     "React performance",
     "API design patterns",
-    "database optimization techniques",
     "DevOps at startups",
-    "AI engineering practices",
-    "distributed systems design",
-    "frontend architecture patterns",
     "monitoring and observability"
   ];
 
