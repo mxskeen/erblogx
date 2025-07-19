@@ -477,7 +477,7 @@ function ChatInputBox() {
         {showSuggestions && !userSearchInput && (
           <div className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl mt-4 p-3 sm:p-4 bg-white rounded-2xl shadow-lg mx-4 z-10 border border-gray-200">
             <h4 className="font-medium text-sm sm:text-base mb-3 text-gray-800">
-              💡 Explore engineering insights from top companies:
+               Explore engineering insights from top companies:
             </h4>
             <div className="flex flex-wrap gap-2">
               {searchSuggestions.slice(0, 8).map((suggestion, index) => (
@@ -492,7 +492,6 @@ function ChatInputBox() {
                 </Button>
               ))}
             </div>
-            <p className="text-xs text-gray-500 mt-2">Click any topic to discover relevant articles instantly</p>
           </div>
         )}
       </div>
