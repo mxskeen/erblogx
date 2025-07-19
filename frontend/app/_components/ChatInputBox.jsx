@@ -473,7 +473,7 @@ function ChatInputBox() {
         {showSuggestions && !userSearchInput && (
           <div className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl mt-4 p-3 sm:p-4 bg-white rounded-2xl shadow-lg mx-4 z-10 border border-gray-200">
             <h4 className="font-medium text-sm sm:text-base mb-3 text-gray-800">
-               Try Searching For:
+            💡 Try Searching For:
             </h4>
             <div className="flex flex-wrap gap-2">
               {searchSuggestions.slice(0, 8).map((suggestion, index) => (
