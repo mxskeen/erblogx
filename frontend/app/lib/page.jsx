@@ -33,6 +33,9 @@ export default function LibraryPage() {
 
     const fetchSavedArticles = async () => {
       try {
+        console.log("Fetching saved articles for user:", user.primaryEmailAddress.emailAddress);
+        
+        // First try with foreign key relationship
         const { data, error } = await supabase
           .from("saved_articles")
           .select(`
@@ -49,10 +52,57 @@ export default function LibraryPage() {
           `)
           .eq("user_email", user.primaryEmailAddress.emailAddress);
 
-        if (error) throw error;
-        setArticles(data?.map((item) => item.articles).filter(Boolean) || []);
+        console.log("Raw query result:", { data, error });
+
+        if (error) {
+          console.error("Supabase error with foreign key:", error);
+          
+          // Fallback: fetch article IDs first, then fetch articles separately
+          console.log("Trying fallback method...");
+          const { data: savedData, error: savedError } = await supabase
+            .from("saved_articles")
+            .select("article_id")
+            .eq("user_email", user.primaryEmailAddress.emailAddress);
+          
+          if (savedError) {
+            console.error("Error fetching saved article IDs:", savedError);
+            throw savedError;
+          }
+          
+          console.log("Saved article IDs:", savedData);
+          
+          if (savedData && savedData.length > 0) {
+            const articleIds = savedData.map(item => item.article_id);
+            console.log("Fetching articles for IDs:", articleIds);
+            
+            const { data: articlesData, error: articlesError } = await supabase
+              .from("articles")
+              .select("id, title, company, published_date, content, url, image_url")
+              .in("id", articleIds);
+            
+            if (articlesError) {
+              console.error("Error fetching articles:", articlesError);
+              throw articlesError;
+            }
+            
+            console.log("Fetched articles:", articlesData);
+            setArticles(articlesData || []);
+          } else {
+            setArticles([]);
+          }
+          return;
+        }
+
+        const processedArticles = data?.map((item) => {
+          console.log("Processing item:", item);
+          return item.articles;
+        }).filter(Boolean) || [];
+        
+        console.log("Processed articles:", processedArticles);
+        setArticles(processedArticles);
       } catch (error) {
         console.error("Error fetching saved articles:", error);
+        setArticles([]);
       } finally {
         setLoading(false);
       }
