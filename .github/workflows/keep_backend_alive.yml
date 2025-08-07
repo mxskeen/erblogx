@@ -19,25 +19,29 @@ jobs:
           echo " Pinging ErBlogX backend to keep it alive..."
           
           echo " Testing AI search endpoint (1/4)..."
-          curl -f -s -w "Status: %{http_code}, Time: %{time_total}s\n" \
-            "https://maskeen-erblogx.hf.space/ai-search?q=how%20to%20use%20ai%20apps" > /dev/null && echo "✅ AI search 1 successful" || echo "❌ AI search 1 failed"
+          echo "Query: how to use ai apps"
+          curl -f -s "https://maskeen-erblogx.hf.space/ai-search?q=how%20to%20use%20ai%20apps" && echo "✅ AI search 1 successful" || echo "❌ AI search 1 failed"
+          echo ""
           
-          echo "🔍 Testing AI search endpoint (2/4)..."
-          curl -f -s -w "Status: %{http_code}, Time: %{time_total}s\n" \
-            "https://maskeen-erblogx.hf.space/ai-search?q=programming%20tutorials" > /dev/null && echo "✅ AI search 2 successful" || echo "❌ AI search 2 failed"
+          echo " Testing AI search endpoint (2/4)..."
+          echo "Query: programming tutorials"
+          curl -f -s "https://maskeen-erblogx.hf.space/ai-search?q=programming%20tutorials" && echo "✅ AI search 2 successful" || echo "❌ AI search 2 failed"
+          echo ""
           
-          echo "🔍 Testing AI search endpoint (3/4)..."
-          curl -f -s -w "Status: %{http_code}, Time: %{time_total}s\n" \
-            "https://maskeen-erblogx.hf.space/ai-search?q=web%20development" > /dev/null && echo "✅ AI search 3 successful" || echo "❌ AI search 3 failed"
+          echo " Testing AI search endpoint (3/4)..."
+          echo "Query: web development"
+          curl -f -s "https://maskeen-erblogx.hf.space/ai-search?q=web%20development" && echo "✅ AI search 3 successful" || echo "❌ AI search 3 failed"
+          echo ""
           
-          echo "🔍 Testing AI search endpoint (4/4)..."
-          curl -f -s -w "Status: %{http_code}, Time: %{time_total}s\n" \
-            "https://maskeen-erblogx.hf.space/ai-search?q=machine%20learning" > /dev/null && echo "✅ AI search 4 successful" || echo "❌ AI search 4 failed"
+          echo " Testing AI search endpoint (4/4)..."
+          echo "Query: machine learning"
+          curl -f -s "https://maskeen-erblogx.hf.space/ai-search?q=machine%20learning" && echo "✅ AI search 4 successful" || echo "❌ AI search 4 failed"
+          echo ""
           
           # Ping the root endpoint
-          echo "🏠 Testing root endpoint..."
-          curl -f -s -w "Status: %{http_code}, Time: %{time_total}s\n" \
-            "https://maskeen-erblogx.hf.space/" > /dev/null && echo "✅ Root endpoint successful" || echo "❌ Root endpoint failed"
+          echo " Testing root endpoint..."
+          curl -f -s "https://maskeen-erblogx.hf.space/" && echo "✅ Root endpoint successful" || echo "❌ Root endpoint failed"
+          echo ""
           
           echo "✅ Backend ping completed at $(date)"
       
