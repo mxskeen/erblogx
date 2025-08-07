@@ -1,6 +1,6 @@
 name: Keep Backend Alive
 
-# Run every 3 hours to prevent Hugging Face Space from sleeping
+
 on:
   schedule:
     # Runs every 3 hours (at minute 0 of hours 0, 3, 6, 9, 12, 15, 18, 21)
@@ -16,27 +16,31 @@ jobs:
     steps:
       - name: Ping Hugging Face Space Backend
         run: |
-          echo "🚀 Pinging ErBlogX backend to keep it alive..."
+          echo " Pinging ErBlogX backend to keep it alive..."
           
-          # Ping the health endpoint first
-          echo "📡 Checking health endpoint..."
+          echo " Testing AI search endpoint (1/4)..."
           curl -f -s -w "Status: %{http_code}, Time: %{time_total}s\n" \
-            "https://maskeen-erblogx.hf.space/health" || echo "❌ Health check failed"
+            "https://maskeen-erblogx.hf.space/ai-search?q=how%20to%20use%20ai%20apps" > /dev/null && echo "✅ AI search 1 successful" || echo "❌ AI search 1 failed"
           
-          # Ping the AI search endpoint with a simple query
-          echo "🔍 Testing AI search endpoint..."
+          echo "🔍 Testing AI search endpoint (2/4)..."
           curl -f -s -w "Status: %{http_code}, Time: %{time_total}s\n" \
-            "https://maskeen-erblogx.hf.space/ai-search?q=how%20to%20use%20ai%20apps" || echo "❌ AI search failed"
+            "https://maskeen-erblogx.hf.space/ai-search?q=programming%20tutorials" > /dev/null && echo "✅ AI search 2 successful" || echo "❌ AI search 2 failed"
+          
+          echo "🔍 Testing AI search endpoint (3/4)..."
+          curl -f -s -w "Status: %{http_code}, Time: %{time_total}s\n" \
+            "https://maskeen-erblogx.hf.space/ai-search?q=web%20development" > /dev/null && echo "✅ AI search 3 successful" || echo "❌ AI search 3 failed"
+          
+          echo "🔍 Testing AI search endpoint (4/4)..."
+          curl -f -s -w "Status: %{http_code}, Time: %{time_total}s\n" \
+            "https://maskeen-erblogx.hf.space/ai-search?q=machine%20learning" > /dev/null && echo "✅ AI search 4 successful" || echo "❌ AI search 4 failed"
           
           # Ping the root endpoint
           echo "🏠 Testing root endpoint..."
           curl -f -s -w "Status: %{http_code}, Time: %{time_total}s\n" \
-            "https://maskeen-erblogx.hf.space/" || echo "❌ Root endpoint failed"
+            "https://maskeen-erblogx.hf.space/" > /dev/null && echo "✅ Root endpoint successful" || echo "❌ Root endpoint failed"
           
           echo "✅ Backend ping completed at $(date)"
       
       - name: Log Status
         run: |
           echo "🎯 Keep-alive job completed successfully"
-          echo "⏰ Next run in 3 hours"
-          echo "🔄 Backend should remain active for ErBlogX users"
