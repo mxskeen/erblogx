@@ -1,6 +1,6 @@
 # 🚀 ErBlogX - The AI-Powered Engineering Blog Search Engine
 
-> *"The index for everything engineering"* - Your gateway to 16,000+ engineering articles from 600+ top-tier tech companies and thought leaders.
+> *"The index for everything engineering"* - Your gateway to 18,000+ engineering articles from 600+ top-tier tech companies and thought leaders.
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Vercel-blue)](https://erblogx.vercel.app) [![Backend API](https://img.shields.io/badge/Backend-Hugging%20Face%20Spaces-orange)](https://maskeen-erblogx.hf.space) [![License](https://img.shields.io/badge/License-MIT-green)](#) [![Built with Next.js](https://img.shields.io/badge/Built%20with-Next.js-black)](https://nextjs.org)
 
