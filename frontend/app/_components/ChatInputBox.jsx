@@ -316,7 +316,7 @@ function ChatInputBox() {
         {!hasResultsOrSummary && (
           <div className="text-center mt-6 mb-8 max-w-xl">
             <p className="text-base sm:text-lg text-gray-600 mb-2">
-              Search <span className="font-semibold text-gray-900">16,000+ engineering articles</span> from top tech companies
+              Search <span className="font-semibold text-gray-900">18,000+ engineering articles</span> from top tech companies
             </p>
             <p className="text-sm text-gray-500">
               Google • Netflix • Airbnb • Uber • Spotify • and 600+ more
