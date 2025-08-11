@@ -1,6 +1,6 @@
 # ErBlogX
 
-AI-powered search for engineering blogs — “The index for everything engineering.”
+AI-powered search for engineering blogs :- “The index for everything engineering.”
 
 - Next.js 15 + React 18 + TypeScript
 - FastAPI (Python 3.12)
@@ -116,10 +116,10 @@ erblogx/
   - Open a Pull Request with details
 
 ## License
-MIT — see LICENSE.
+MIT
 
 ## Acknowledgments
 Blog authors, the open source community, Hugging Face, Supabase, and Vercel.
 
 ## About
-Built with ❤️ by [maskeen](https://github.com/mxskeen) — “I built ErBlogX to make the best engineering insights easy to find and easier to learn.”
+Built with ❤️ by [maskeen](https://github.com/mxskeen) :— “I built ErBlogX to make the best engineering insights easy to find and easier to learn.”
