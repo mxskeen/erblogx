@@ -140,26 +140,54 @@ function ChatInputBox() {
       const response = await fetchWithRetry(apiUrl);
       const data = await response.json();
 
-      console.log("Search results:", data.results);
+      let results = data.results || [];
 
-      setSearchResults(data.results || []);
+      // If semantic search returned empty or error, try fast keyword search fallback
+      if (results.length === 0) {
+        try {
+          const fallbackUrl = `${getApiUrl('/search')}?q=${encodeURIComponent(searchQuery)}`;
+          const fbResponse = await fetch(fallbackUrl);
+          const fbData = await fbResponse.json();
+          if (fbData.results && fbData.results.length > 0) {
+            results = fbData.results;
+          }
+        } catch (fbErr) {
+          console.warn("Frontend fallback search failed:", fbErr);
+        }
+      }
+
+      console.log("Search results:", results);
+
+      setSearchResults(results);
       setShowResults(true);
       // Reset summary when new search is performed
       setShowSummary(false);
       setResultsSummary(null);
-      return data.results;
+      return results;
     } catch (error) {
       console.error("Search error:", error);
-      setSearchResults([]);
       
-      // Show user-friendly error message
-      if (error.name === 'AbortError' || error.message.includes('timeout')) {
-        console.error("Backend is starting up, please try again in a moment...");
+      // Fallback to keyword search on network/fetch error
+      try {
+        const fallbackUrl = `${getApiUrl('/search')}?q=${encodeURIComponent(searchQuery)}`;
+        const fbResponse = await fetch(fallbackUrl);
+        const fbData = await fbResponse.json();
+        if (fbData.results && fbData.results.length > 0) {
+          setSearchResults(fbData.results);
+          setShowResults(true);
+          setShowSummary(false);
+          setResultsSummary(null);
+          return fbData.results;
+        }
+      } catch (fbErr) {
+        console.warn("Fallback search failed:", fbErr);
       }
-      
+
+      setSearchResults([]);
       return [];
     }
   };
+
 
   const onSearchQuery = async () => {
     if (!userSearchInput) return;
@@ -316,12 +344,13 @@ function ChatInputBox() {
         {!hasResultsOrSummary && (
           <div className="text-center mt-6 mb-8 max-w-xl">
             <p className="text-base sm:text-lg text-gray-600 mb-2">
-              Search <span className="font-semibold text-gray-900">18,000+ engineering articles</span> from top tech companies
+              Search <span className="font-semibold text-gray-900">25,000+ engineering articles</span> from top tech companies
             </p>
             <p className="text-sm text-gray-500">
               Google • Netflix • Airbnb • Uber • Spotify • and 600+ more
             </p>
           </div>
+
         )}
         
         {/* Mobile-optimized search container */}
