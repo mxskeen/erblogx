@@ -10,6 +10,8 @@ from typing import List, Union, Optional
 import openai
 import torch
 from datetime import datetime
+import time
+
 
 load_dotenv()
 
@@ -49,8 +51,9 @@ origins = [
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_origin_regex="https://.*\.vercel\.app",  # Allow all Vercel subdomains
+    allow_origin_regex=r"https://.*\.vercel\.app",  # Allow all Vercel subdomains
     allow_credentials=True,
+
     allow_methods=["*"], # Allows all methods
     allow_headers=["*"], # Allows all headers
 )
@@ -127,25 +130,59 @@ async def log_search_query(query: str, user_id: str, results_count: int, search_
         print(f"Error logging search query: {str(e)}")
         return False
 
+def extract_response_data(response):
+    """Safely extracts list of records from Supabase response object or tuple"""
+    if hasattr(response, 'data') and response.data is not None:
+        return response.data
+    if isinstance(response, (list, tuple)) and len(response) > 1 and isinstance(response[1], list):
+        return response[1]
+    if isinstance(response, list):
+        return response
+    return []
+
+# In-memory query cache to serve repeated queries instantly (<1ms)
+QUERY_CACHE = {}
+CACHE_TTL_SECONDS = 600  # 10 minutes
+
+def get_cached_results(query: str):
+    q_clean = query.strip().lower()
+    if q_clean in QUERY_CACHE:
+        timestamp, results = QUERY_CACHE[q_clean]
+        if time.time() - timestamp < CACHE_TTL_SECONDS:
+            return results
+        else:
+            del QUERY_CACHE[q_clean]
+    return None
+
+def set_cached_results(query: str, results: list):
+    q_clean = query.strip().lower()
+    if len(QUERY_CACHE) > 500:
+        QUERY_CACHE.clear()
+    QUERY_CACHE[q_clean] = (time.time(), results)
+
 @app.get("/search")
 async def search_query(q: str, user_id: Optional[str] = None):
     """
-    Search articles and optionally log the query
+    Search articles by title and optionally log the query
     """
     try:
-        data, count = supabase.table('articles').select('*').ilike('title', f'%{q}%').execute()
-        search_query = data[1]
+        response = supabase.table('articles')\
+            .select('id, title, content, url, company, published_date')\
+            .ilike('title', f'%{q}%')\
+            .limit(10)\
+            .execute()
+        search_results = extract_response_data(response)
 
         # Log the search query only if user_id is provided
         if user_id:
             await log_search_query(
                 query=q, 
                 user_id=user_id, 
-                results_count=len(search_query), 
+                results_count=len(search_results), 
                 search_type="title_search"
             )
 
-        return {"results": search_query}
+        return {"results": search_results}
     except Exception as e:
         print(f"Search error: {str(e)}")
         return {"error": str(e), "results": []}
@@ -153,37 +190,102 @@ async def search_query(q: str, user_id: Optional[str] = None):
 @app.get("/ai-search")
 async def semantic_search_articles(q: str, user_id: Optional[str] = None):
     """
-    Performs AI-powered semantic search and optionally logs the query
+    Performs AI-powered semantic search with automatic retry, caching, and keyword fallback
     """
-    if not q:
+    if not q or not q.strip():
         return {"results": []}
 
+    clean_q = q.strip()
+
+    # 1. Check in-memory cache first
+    cached = get_cached_results(clean_q)
+    if cached is not None:
+        return {"results": cached}
+
+    search_results = []
+    semantic_success = False
+
+    # 2. Create embedding for the user's search query
+    query_embedding = None
     try:
-        # 1. Create an embedding for the user's search query
-        query_embedding = model.encode(q).tolist()
-
-        # 2. Call the database function to find matches
-        data, count = supabase.rpc('match_articles', {
-            'query_embedding': query_embedding,
-            'match_threshold': 0.2,  # Lower threshold to catch more relevant results
-            'match_count': 10       # Get more matches
-        }).execute()
-
-        search_results = data[1]
-
-        # Log the semantic search query only if user_id is provided
-        if user_id:
-            await log_search_query(
-                query=q, 
-                user_id=user_id, 
-                results_count=len(search_results), 
-                search_type="semantic_search"
-            )
-
-        return {"results": search_results}
+        query_embedding = model.encode(clean_q).tolist()
     except Exception as e:
-        print(f"Semantic search error: {str(e)}")
-        return {"error": str(e), "results": []}
+        print(f"Query embedding generation error: {str(e)}")
+
+    # 3. Call the database function with automatic retry on statement timeout
+    if query_embedding:
+        max_retries = 2
+        for attempt in range(max_retries + 1):
+            try:
+                rpc_response = supabase.rpc('match_articles', {
+                    'query_embedding': query_embedding,
+                    'match_threshold': 0.2,  # Match threshold
+                    'match_count': 10       # Top 10 matches
+                }).execute()
+
+                data = extract_response_data(rpc_response)
+                if data:
+                    search_results = data
+                    semantic_success = True
+                    break
+                elif isinstance(data, list):
+                    search_results = data
+                    semantic_success = True
+                    break
+            except Exception as e:
+                err_msg = str(e)
+                print(f"Semantic search attempt {attempt + 1} failed: {err_msg}")
+                # Statement timeout (Postgres code 57014) or transient network issue
+                if attempt < max_retries and ("57014" in err_msg or "timeout" in err_msg.lower()):
+                    time.sleep(0.3)
+                    continue
+                break
+
+    # 4. Seamless Fallback: if semantic search failed or timed out, fall back to keyword search
+    if not search_results:
+        print(f"Semantic search returned 0 results or timed out. Falling back to keyword search for: '{clean_q}'")
+        try:
+            fb_response = supabase.table('articles')\
+                .select('id, title, content, url, company, published_date')\
+                .ilike('title', f'%{clean_q}%')\
+                .limit(10)\
+                .execute()
+            fb_data = extract_response_data(fb_response)
+            if fb_data:
+                search_results = fb_data
+            else:
+                # If no direct phrase match, try significant individual words
+                stop_words = {"what", "when", "where", "which", "with", "from", "that", "this", "have", "been", "scales", "video"}
+                words = [w for w in clean_q.split() if len(w) > 3 and w.lower() not in stop_words]
+                for word in words:
+                    fb_word_resp = supabase.table('articles')\
+                        .select('id, title, content, url, company, published_date')\
+                        .ilike('title', f'%{word}%')\
+                        .limit(10)\
+                        .execute()
+                    w_data = extract_response_data(fb_word_resp)
+                    if w_data:
+                        search_results = w_data
+                        break
+        except Exception as fb_e:
+            print(f"Fallback search error: {str(fb_e)}")
+
+    # Log search query if user_id is provided
+    if user_id and search_results:
+        search_type = "semantic_search" if semantic_success else "keyword_fallback"
+        await log_search_query(
+            query=clean_q, 
+            user_id=user_id, 
+            results_count=len(search_results), 
+            search_type=search_type
+        )
+
+    # Cache results for instant subsequent queries
+    if search_results:
+        set_cached_results(clean_q, search_results)
+
+    return {"results": search_results}
+
 
 @app.post("/summarize-results")
 def summarize_search_results(request: SummarizeRequest):

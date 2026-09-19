@@ -20,13 +20,14 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "ErBlogX - AI-Powered Engineering Blog Search",
-  description: "Search over 16,000+ engineering blogs and articles from 600+ sources with AI-powered semantic search. Get instant summaries and discover the best technical content.",
+  description: "Search over 25,000+ engineering blogs and articles from 600+ sources with AI-powered semantic search. Get instant summaries and discover the best technical content.",
   keywords: "engineering blogs, technical articles, AI search, software engineering, programming, technology",
   authors: [{ name: "maskeen" }],
   creator: "maskeen",
   openGraph: {
     title: "ErBlogX - AI-Powered Engineering Blog Search",
-    description: "Search over 16,000+ engineering blogs with AI-powered semantic search",
+    description: "Search over 25,000+ engineering blogs with AI-powered semantic search",
+
     type: "website",
     locale: "en_US",
   },

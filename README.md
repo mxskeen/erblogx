@@ -100,8 +100,9 @@ erblogx/
 - Deployment: Docker + Vercel + Hugging Face Spaces
 
 ## Stats
-- 16,000+ engineering articles indexed
+- 25,000+ engineering articles indexed
 - 600+ sources monitored
+
 - Sub-second search response times
 - 99.9% uptime
 - Mobile-first design
