@@ -26,7 +26,7 @@ export default function MovingBorderContainer({ children, className, borderRadiu
       <svg className="absolute inset-0 h-full w-full" preserveAspectRatio="none">
         <rect ref={pathRef} fill="none" width="100%" height="100%" rx={borderRadius} ry={borderRadius} />
       </svg>
-      <motion.div style={{ transform }} className="pointer-events-none absolute top-0 left-0 h-20 w-20 bg-[radial-gradient(theme(colors.purple.500)_40%,transparent_60%)] opacity-75" />
+      <motion.div style={{ transform }} className="pointer-events-none absolute top-0 left-0 h-20 w-20 bg-[radial-gradient(#b45309_30%,transparent_70%)] opacity-50" />
 
       {/* content */}
       <div className="relative rounded-[inherit] bg-white">

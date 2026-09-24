@@ -9,8 +9,8 @@ export default function Header() {
         afterSignOutUrl="/"
         appearance={{
           elements: {
-            avatarBox: 'h-8 w-8 sm:h-12 sm:w-12 md:h-16 md:w-16',
-            userButtonTrigger: 'h-8 w-8 sm:h-12 sm:w-12 md:h-16 md:w-16'
+            avatarBox: 'h-8 w-8 sm:h-9 sm:w-9 border border-stone-200/80 shadow-sm',
+            userButtonTrigger: 'h-8 w-8 sm:h-9 sm:w-9'
           }
         }}
       />

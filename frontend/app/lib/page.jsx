@@ -136,26 +136,27 @@ export default function LibraryPage() {
         loadingStates={loadingStatesSummary}
         loading={loadingSummary}
       />
-      <div className="flex flex-col w-full px-4 py-6 items-center min-h-screen">
-        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 mb-6">
-          <h2 className="text-xl sm:text-2xl font-bold">My Library</h2>
+      <div className="flex flex-col w-full px-4 py-8 items-center min-h-screen drafting-canvas">
+        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 mb-3">
+          <h1 className="font-serif text-2xl sm:text-3xl font-normal text-stone-900 tracking-tight">Archival Library</h1>
           {articles.length > 0 && (
             <button
               onClick={summarizeLibrary}
-              className="p-2 rounded-full hover:bg-purple-100 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-stone-200/80 bg-white/90 hover:bg-stone-100 text-stone-700 text-xs font-mono transition-colors shadow-xs cursor-pointer"
               title="Summarize saved articles"
             >
-              <BrainCircuit className="h-5 w-5 sm:h-6 sm:w-6" />
+              <BrainCircuit className="h-4 w-4 text-amber-700" />
+              <span>Summarize Archive</span>
             </button>
           )}
         </div>
 
         {/* Article count */}
         {!loading && (
-          <p className="text-sm sm:text-base text-gray-600 mb-4 text-center">
+          <p className="font-mono text-xs uppercase tracking-wider text-stone-500 mb-6 text-center">
             {articles.length === 0 
-              ? "No saved articles yet. Start searching and save articles to build your library!" 
-              : `${articles.length} saved article${articles.length > 1 ? 's' : ''}`
+              ? "Zero saved dispatches yet. Search and save dispatches to curate your library." 
+              : `${articles.length} Saved Dispatch${articles.length > 1 ? 'es' : ''}`
             }
           </p>
         )}
@@ -180,7 +181,7 @@ export default function LibraryPage() {
               <p className="text-sm sm:text-base">Generating summary...</p>
             ) : (
               <div>
-                <h4 className="font-medium text-sm sm:text-base mb-2 text-gray-800">🤖 Library Summary</h4>
+                <h4 className="font-mono text-xs uppercase tracking-wider text-stone-500 font-semibold mb-2">Architectural Library Summary</h4>
                 <div className="prose prose-sm max-w-none text-sm sm:text-base">
                   <ReactMarkdown>{summary.summary}</ReactMarkdown>
                 </div>

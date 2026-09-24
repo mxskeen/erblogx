@@ -42,7 +42,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#FAF8F5] text-stone-900 selection:bg-amber-100 selection:text-amber-900 min-h-screen`}
       >
         <ClerkProvider
           publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
@@ -52,7 +52,7 @@ export default function RootLayout({ children }) {
         >
           <SidebarProvider>
             <AppSidebar />
-            <SidebarTrigger />
+            <SidebarTrigger className="fixed top-3.5 left-3.5 z-40 h-8 w-8 rounded-lg bg-white/85 hover:bg-stone-100 border border-stone-200/80 text-stone-700 shadow-sm backdrop-blur-md transition-colors" />
             <Provider>
               {children}
               <Header />

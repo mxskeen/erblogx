@@ -1,35 +1,66 @@
+import React from "react";
+
 export default function AboutPage() {
   return (
-    <div className="max-w-2xl mx-auto py-12 px-4">
-      <h1 className="text-3xl font-bold mb-4">About ErBlogX</h1>
-      <section className="mb-8">
-        <p className="text-gray-600 mb-4">
-          ErBlogX is an AI-powered search engine for engineering content. Search through 25,000+ articles from 600+ sources instantly - no sign-up required. Sign in to save articles and get AI-powered summaries.
-        </p>
-      </section>
-      <section className="mb-8">
-        <h2 className="text-xl font-semibold mb-1">Current Features</h2>
-        <ul className="list-disc ml-6 text-gray-700 space-y-1">
-          <li><strong>Open Search:</strong> Semantic search over 25,000+ engineering blogs/articles from 600+ sources - no authentication required</li>
+    <div className="min-h-screen drafting-canvas py-12 px-4 flex justify-center">
+      <div className="max-w-2xl w-full bg-white/95 border border-stone-200/90 rounded-2xl p-6 sm:p-8 shadow-sm text-stone-900 space-y-6">
+        <div>
+          <span className="font-mono text-xs uppercase tracking-wider text-amber-800 font-semibold block mb-1">
+            Archival Engineering Index
+          </span>
+          <h1 className="font-serif text-3xl font-normal tracking-tight text-stone-900">
+            About ErBlogX
+          </h1>
+        </div>
 
-          <li><strong>AI-Powered Summaries:</strong> Get intelligent summaries of search results (requires sign-in)</li>
-          <li><strong>Personal Library:</strong> Save/bookmark articles for later reading (requires sign-in)</li>
-          <li><strong>Library Management:</strong> Organize and summarize your saved articles collection</li>
-          <li><strong>Responsive Design:</strong> Clean, mobile-first UI with dark/light mode support</li>
-          <li><strong>Always Fresh:</strong> Automated bi-weekly content updates via GitHub Actions</li>
-        </ul>
-      </section>
-      <section>
-        <h2 className="text-xl font-semibold mb-1">Future Vision</h2>
-        <ul className="list-disc ml-6 text-gray-700 space-y-1">
-          <li>Chat with individual blogs/articles</li>
-          <li>More discovery tools and content sources inc. podcast transcripts, research stuff</li>
-          <li>User profiles and customization</li>
-          <li>AI recommendations</li>
-          <li>Community features and sharing</li>
-          <li>Blogs and articles clusters</li>
-        </ul>
-      </section>
+        <p className="text-stone-600 text-sm sm:text-base leading-relaxed font-sans">
+          ErBlogX is an architectural intelligence engine indexing 25,000+ technical dispatches from foundational software engineering organizations including Netflix, Stripe, Google, Cloudflare, Figma, and Uber.
+        </p>
+
+        <div className="border-t border-stone-100 pt-4 space-y-3">
+          <h2 className="font-mono text-xs uppercase tracking-wider text-stone-400 font-semibold">
+            Architectural Capabilities
+          </h2>
+          <ul className="space-y-2 text-xs sm:text-sm text-stone-700 font-sans">
+            <li className="flex items-start gap-2">
+              <span className="text-amber-700 font-mono select-none">—</span>
+              <span><strong>Semantic Discovery:</strong> Query distributed system patterns, kernel optimizations, and failure postmortems without sign-up.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-amber-700 font-mono select-none">—</span>
+              <span><strong>AI Synthesis:</strong> Generate executive consensus briefings and trade-off summaries from retrieved dispatches.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-amber-700 font-mono select-none">—</span>
+              <span><strong>Personal Library:</strong> Curate, annotate, and archive production benchmarks in a personal vault.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-amber-700 font-mono select-none">—</span>
+              <span><strong>Live Pipeline:</strong> Bi-weekly ingestion of leading engineering dispatches across 600+ vetted sources.</span>
+            </li>
+          </ul>
+        </div>
+
+        <div className="border-t border-stone-100 pt-4 space-y-3">
+          <h2 className="font-mono text-xs uppercase tracking-wider text-stone-400 font-semibold">
+            Archival Trajectory
+          </h2>
+          <ul className="space-y-2 text-xs sm:text-sm text-stone-700 font-sans">
+            <li className="flex items-start gap-2">
+              <span className="text-stone-400 font-mono select-none">&bull;</span>
+              <span>Interactive dialogue with individual engineering whitepapers</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-stone-400 font-mono select-none">&bull;</span>
+              <span>Synthesized audio briefings and distributed system telemetry graphs</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-stone-400 font-mono select-none">&bull;</span>
+              <span>Automated cross-company consensus cluster mapping</span>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   );
-} 
+}

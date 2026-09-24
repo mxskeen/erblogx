@@ -1,111 +1,101 @@
 "use client";
-import { useState, useRef, useId, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useOutsideClick } from "../../hooks/useOutsideClick";
+import React, { useState } from "react";
+import { motion } from "framer-motion";
 import { BookmarkPlus, BookmarkCheck } from "lucide-react";
+import InspectionSheetModal from "./InspectionSheetModal";
 
 export default function ExpandableCardList({ items = [], savedIds = [], onToggleSave }) {
   const [active, setActive] = useState(null);
-  const ref = useRef(null);
-  const id = useId();
 
-  // escape to close & body scroll
-  useEffect(() => {
-    function onKeyDown(e) {
-      if (e.key === "Escape") setActive(null);
-    }
-    if (active) document.body.style.overflow = "hidden"; else document.body.style.overflow = "auto";
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [active]);
+  const getCompanyInitial = (subtitle = "") => {
+    const clean = subtitle.replace(/^(by|from)\s+/i, "").trim();
+    return clean ? clean.charAt(0).toUpperCase() : "E";
+  };
 
-  useOutsideClick(ref, () => setActive(null));
+  const getCompanyClean = (subtitle = "") => {
+    return subtitle ? subtitle.split(/[-·|]/)[0].trim() : "Engineering Dispatch";
+  };
 
   return (
     <>
-      <AnimatePresence>
-        {active && (
-          <motion.div
-            className="fixed inset-0 bg-black/20 z-10"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          />
-        )}
-      </AnimatePresence>
-      <AnimatePresence>
-        {active && (
-          <div className="fixed inset-0 grid place-items-center z-20 p-4">
-            <motion.div
-              layoutId={`card-${active.id}-${id}`}
-              ref={ref}
-              className="w-full max-w-lg bg-white dark:bg-neutral-900 rounded-3xl overflow-hidden flex flex-col max-h-[90vh]"
-            >
-              <motion.img
-                layoutId={`image-${active.id}-${id}`}
-                src={active.image}
-                alt={active.title}
-                className="w-full h-60 object-cover"
-              />
-              <div className="p-4 space-y-3 overflow-auto">
-                <motion.h3 layoutId={`title-${active.id}-${id}`} className="font-bold text-neutral-800 dark:text-neutral-100">
-                  {active.title}
-                </motion.h3>
-                <motion.p layoutId={`description-${active.id}-${id}`} className="text-neutral-600 dark:text-neutral-400 text-sm">
-                  {active.subtitle}
-                </motion.p>
-                <p className="text-neutral-700 dark:text-neutral-300 text-sm whitespace-pre-wrap">
-                  {active.content}
-                </p>
-                <a href={active.url} target="_blank" className="inline-block px-4 py-2 bg-purple-600 text-white rounded-full text-sm">Read full</a>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+      {/* Detail Inspection Modal */}
+      <InspectionSheetModal
+        article={active}
+        isOpen={!!active}
+        onClose={() => setActive(null)}
+        isSaved={active ? savedIds.includes(active.id) : false}
+        onToggleSave={onToggleSave}
+      />
 
-      <ul className="max-w-2xl mx-auto w-full divide-y divide-neutral-200 dark:divide-neutral-700">
-        {items.map((item) => (
-          <motion.li
-            key={item.id}
-            layoutId={`card-${item.id}-${id}`}
-            onClick={() => setActive(item)}
-            className="p-4 flex justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800 cursor-pointer"
-          >
-            <div className="flex gap-4 items-center">
-              <motion.img
-                layoutId={`image-${item.id}-${id}`}
-                src={item.image}
-                alt={item.title}
-                className="h-14 w-14 rounded-lg object-cover"
-              />
-              <div>
-                <motion.h3 layoutId={`title-${item.id}-${id}`} className="font-medium text-neutral-800 dark:text-neutral-200">
-                  {item.title}
-                </motion.h3>
-                <motion.p layoutId={`description-${item.id}-${id}`} className="text-neutral-600 dark:text-neutral-400 text-sm">
-                  {item.subtitle}
-                </motion.p>
+      {/* Search Results List Stack (Apple Table View) */}
+      <div className="max-w-2xl mx-auto w-full">
+        <div className="flex items-center justify-between px-2 mb-2">
+          <span className="font-mono text-[10.5px] uppercase tracking-wider text-stone-500">
+            {items.length} Dispatches Located
+          </span>
+          <span className="font-mono text-[10px] text-stone-400">
+            Semantic Index
+          </span>
+        </div>
+
+        <ul className="bg-white/95 backdrop-blur-md border border-stone-200/80 rounded-2xl shadow-sm divide-y divide-stone-100 overflow-hidden">
+          {items.map((item) => (
+            <li
+              key={item.id}
+              onClick={() => setActive(item)}
+              className="p-4 sm:p-4.5 flex justify-between items-center gap-4 hover:bg-stone-50/80 transition-colors cursor-pointer group"
+            >
+              <div className="flex gap-3.5 items-center min-w-0">
+                {/* Architectural Monogram Stamp */}
+                <div className="w-10 h-10 rounded-xl bg-stone-900 text-stone-100 flex items-center justify-center font-mono font-bold text-xs border border-stone-800 shadow-sm shrink-0 group-hover:bg-amber-900 group-hover:border-amber-800 transition-colors">
+                  {getCompanyInitial(item.subtitle)}
+                </div>
+
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-[10px] uppercase tracking-wider text-amber-700 font-medium truncate block">
+                      {getCompanyClean(item.subtitle)}
+                    </span>
+                  </div>
+
+                  <h3 className="font-serif text-[15px] sm:text-base font-normal text-stone-900 leading-snug group-hover:text-amber-900 transition-colors line-clamp-1">
+                    {item.title}
+                  </h3>
+
+                  <p className="text-stone-500 text-xs line-clamp-1 font-sans mt-0.5">
+                    {item.content}
+                  </p>
+                </div>
               </div>
-            </div>
-            <div className="flex gap-2 items-center">
-              <button
-                onClick={(e)=>{e.stopPropagation(); onToggleSave?.(item.id)}}
-                className="p-2 rounded-full hover:bg-purple-100"
-              >
-                {savedIds.includes(item.id) ? (
-                  <BookmarkCheck className="h-5 w-5 text-purple-600" />
-                ) : (
-                  <BookmarkPlus className="h-5 w-5 text-gray-500" />
-                )}
-              </button>
-              <motion.button layoutId={`button-${item.id}-${id}`} className="px-4 py-2 bg-gray-100 text-black rounded-full text-sm hover:bg-purple-600 hover:text-white">
-                Read
-              </motion.button>
-            </div>
-          </motion.li>
-        ))}
-      </ul>
+
+              {/* Action Buttons */}
+              <div className="flex items-center gap-1.5 shrink-0">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onToggleSave?.(item.id);
+                  }}
+                  className="p-2 rounded-full text-stone-400 hover:text-stone-900 hover:bg-stone-200/60 transition-colors cursor-pointer"
+                  title={savedIds.includes(item.id) ? "Saved in library" : "Save dispatch"}
+                >
+                  {savedIds.includes(item.id) ? (
+                    <BookmarkCheck className="h-4 w-4 text-amber-700" />
+                  ) : (
+                    <BookmarkPlus className="h-4 w-4 text-stone-400" />
+                  )}
+                </button>
+
+                <button 
+                  className="px-3.5 py-1.5 bg-stone-100 text-stone-800 group-hover:bg-stone-900 group-hover:text-stone-50 rounded-full text-xs font-medium border border-stone-200/80 transition-all flex items-center gap-1 cursor-pointer"
+                >
+                  <span>Read</span>
+                  <span className="text-[10px] opacity-70">&rarr;</span>
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
     </>
   );
-} 
+}

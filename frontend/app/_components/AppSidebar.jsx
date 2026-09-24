@@ -42,7 +42,7 @@ function AppSidebar () {
   
   return (
     <Sidebar>
-      <SidebarHeader className="bg-purple-50 flex items-center py-3 sm:py-5">
+      <SidebarHeader className="bg-[#FAF8F5] border-b border-stone-200/70 flex items-center py-3 sm:py-5">
         <a href="/">
           <Image 
             src="/logo.png" 
@@ -54,7 +54,7 @@ function AppSidebar () {
         </a>
       </SidebarHeader>
 
-      <SidebarContent className="bg-purple-50">
+      <SidebarContent className="bg-[#FAF8F5]">
         <SidebarGroup>
           <SidebarContent>
             <SidebarMenu>
@@ -104,18 +104,18 @@ function AppSidebar () {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="bg-purple-50" >
+      <SidebarFooter className="bg-[#FAF8F5] border-t border-stone-200/70" >
         <div className="w-full flex flex-col items-center mb-2">
-          <span className="text-xs text-gray-500 text-center">ErBlogX : the index for everything engineering</span>
+          <span className="text-xs text-stone-500 font-mono text-center">ErBlogX : the index for everything engineering</span>
         </div>
         <div className="p-3 flex gap-4 justify-center">
           <a href="https://www.linkedin.com/in/mxskeen/" target="_blank" rel="noopener noreferrer">
-            <Button variant="ghost" size="icon" className="rounded-full hover:bg-purple-200">
+            <Button variant="ghost" size="icon" className="rounded-full hover:bg-stone-200/70 text-stone-700">
               <Linkedin className="h-6 w-6" />
             </Button>
           </a>
           <a href="https://github.com/mxskeen/erblogx" target="_blank" rel="noopener noreferrer">
-            <Button variant="ghost" size="icon" className="rounded-full hover:bg-purple-200">
+            <Button variant="ghost" size="icon" className="rounded-full hover:bg-stone-200/70 text-stone-700">
               <Github className="h-6 w-6" />
             </Button>
           </a>
