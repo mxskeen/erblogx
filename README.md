@@ -12,7 +12,6 @@ AI-powered search for engineering blogs :- “The index for everything engineeri
 - Deployed: Vercel (frontend) + Hugging Face Spaces (backend)
 
 Live demo: https://erblogx.vercel.app  
-Backend API: https://api.example.com
 
 ## What it does
 - Semantic search for 600+ engineering blog sources
@@ -25,6 +24,7 @@ Backend API: https://api.example.com
 
 Frontend (.env.local):
 ```
+NEXT_PUBLIC_API_URL=https://your-backend-api-url
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=...
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON=...

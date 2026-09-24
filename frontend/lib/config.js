@@ -1,7 +1,6 @@
 // API Configuration
 export const API_CONFIG = {
-  // Use Hugging Face Spaces URL in production, localhost in development
-  BASE_URL: process.env.NEXT_PUBLIC_API_URL || 'https://api.example.com',
+  BASE_URL: process.env.NEXT_PUBLIC_API_URL || '',
   
   // Endpoints
   ENDPOINTS: {
