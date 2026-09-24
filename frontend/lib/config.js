@@ -9,8 +9,8 @@ export const API_CONFIG = {
     TEST: '/test'
   },
   
-  // Timeout settings for HF Spaces
-  TIMEOUT: 60000, // 60 seconds for cold starts
+  // Timeout settings
+  TIMEOUT: 60000,
   RETRY_ATTEMPTS: 2
 };
 
@@ -19,7 +19,7 @@ export const getApiUrl = (endpoint) => {
   return `${API_CONFIG.BASE_URL}${endpoint}`;
 };
 
-// Enhanced fetch with retry logic for HF Spaces
+// Enhanced fetch with retry logic
 export const fetchWithRetry = async (url, options = {}, retries = API_CONFIG.RETRY_ATTEMPTS) => {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), API_CONFIG.TIMEOUT);
