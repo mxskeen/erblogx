@@ -64,3 +64,10 @@ node_modules/
 __pycache__/
 *.pyc
 .venv/
+
+# Local design mockups and scratchpads (never commit to git or push to remote)
+redesign.html
+index.html
+jev_vs_llm_deck.html
+ai_agent_prompt_erblogx_minimalist_scrapbook.md
+*.bak
