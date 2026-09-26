@@ -1,0 +1,2345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ErBlogX — The Index for Everything Engineering</title>
+  <meta name="description" content="An architectural index of 25,000+ engineering dispatches from the world's most demanding engineering organizations." />
+
+  <!-- Typography: Apple SF system fallbacks with editorial serif and monospace -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600&family=Inter:wght@300;400;450;500;600&family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── Apple Design Tokens & Mechanical Palette ─────────────── */
+    :root {
+      --canvas: #FBF9F5;
+      --canvas-subtle: #F4EFE6;
+      --ink-primary: #1C1917;
+      --ink-secondary: #57534E;
+      --ink-tertiary: #8C857B;
+      --ink-quaternary: #BFB8AD;
+      --border-fine: rgba(28, 25, 23, 0.08);
+      --border-medium: rgba(28, 25, 23, 0.14);
+      --paper: #FFFFFF;
+      --terracotta: #B45309;
+      --terracotta-soft: rgba(180, 83, 9, 0.08);
+      --terracotta-border: rgba(180, 83, 9, 0.24);
+      --washi-amber: #FEF3C7;
+      --washi-ink: #92400E;
+      --slate-ink: #1E293B;
+      --slate-blueprint: #0F172A;
+      --system-green: #15803D;
+
+      /* Multi-layer optical shadows inspired by tactile paper stock */
+      --shadow-ambient: 0 1px 2px rgba(28, 25, 23, 0.04),
+                        0 4px 12px -2px rgba(28, 25, 23, 0.06),
+                        0 16px 32px -6px rgba(28, 25, 23, 0.08);
+
+      --shadow-lifted:  0 2px 4px rgba(28, 25, 23, 0.06),
+                        0 12px 24px -4px rgba(28, 25, 23, 0.10),
+                        0 28px 48px -8px rgba(28, 25, 23, 0.14);
+
+      --shadow-omnibar: 0 0 0 1px rgba(28, 25, 23, 0.06),
+                        0 4px 16px -2px rgba(28, 25, 23, 0.08),
+                        0 16px 36px -4px rgba(28, 25, 23, 0.08);
+
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --radius-full: 9999px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background-color: var(--canvas);
+      color: var(--ink-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif;
+      overflow-x: hidden;
+      user-select: none;
+    }
+
+    /* ─── Architectural Drafting Grid Background ──────────────── */
+    .drafting-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background-image:
+        radial-gradient(rgba(28, 25, 23, 0.04) 1px, transparent 1px),
+        linear-gradient(rgba(28, 25, 23, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(28, 25, 23, 0.02) 1px, transparent 1px);
+      background-size: 32px 32px, 32px 32px, 32px 32px;
+      background-position: -1px -1px;
+    }
+
+    /* Calibrated subtle paper grain */
+    .paper-grain {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    /* ─── Navigation Header ───────────────────────────────────── */
+    header.apple-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 52px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 50;
+      background: rgba(251, 249, 245, 0.82);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid var(--border-fine);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--ink-primary);
+    }
+
+    .brand-mark {
+      width: 22px;
+      height: 22px;
+      border: 1.5px solid var(--ink-primary);
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-title {
+      font-family: "Newsreader", Georgia, serif;
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-title em {
+      font-style: italic;
+      color: var(--terracotta);
+    }
+
+    .nav-stats {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      color: var(--ink-tertiary);
+      letter-spacing: 0.2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--system-green);
+      border-radius: var(--radius-full);
+      box-shadow: 0 0 0 2px rgba(21, 128, 61, 0.2);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-action {
+      background: transparent;
+      border: 1px solid var(--border-medium);
+      color: var(--ink-secondary);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+      font-size: 12px;
+      font-weight: 450;
+      padding: 6px 13px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.16s ease;
+      user-select: none;
+    }
+
+    .btn-action:hover {
+      background: rgba(28, 25, 23, 0.04);
+      color: var(--ink-primary);
+      border-color: rgba(28, 25, 23, 0.24);
+    }
+
+    .btn-action.primary {
+      background: var(--ink-primary);
+      color: var(--canvas);
+      border-color: var(--ink-primary);
+    }
+
+    .btn-action.primary:hover {
+      background: #383431;
+    }
+
+    /* ─── Hero Core & Omnibar ─────────────────────────────────── */
+    .hero-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: min(640px, 90vw);
+      z-index: 35;
+      pointer-events: none;
+      transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                  top 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .hero-container.elevated {
+      top: 18%;
+      transform: translate(-50%, 0);
+    }
+
+    .hero-interactive {
+      width: 100%;
+      pointer-events: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .hero-identity {
+      text-align: center;
+      margin-bottom: 24px;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .hero-container.elevated .hero-identity {
+      opacity: 0;
+      transform: translateY(-8px);
+      pointer-events: none;
+      height: 0;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    .edition-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      background: var(--washi-amber);
+      color: var(--washi-ink);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      font-weight: 500;
+      border: 1px solid rgba(217, 119, 6, 0.25);
+      margin-bottom: 14px;
+    }
+
+    .hero-title {
+      font-family: "Newsreader", Georgia, serif;
+      font-size: clamp(38px, 6vw, 62px);
+      font-weight: 400;
+      line-height: 1.05;
+      letter-spacing: -1.2px;
+      color: var(--ink-primary);
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--terracotta);
+      font-weight: 300;
+    }
+
+    .hero-subtitle {
+      font-size: 13.5px;
+      font-weight: 400;
+      color: var(--ink-secondary);
+      margin-top: 8px;
+      letter-spacing: -0.1px;
+    }
+
+    /* ─── Omnibar ─────────────────────────────────────────────── */
+    .omnibar-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .omnibar {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+      height: 52px;
+      padding: 0 16px;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-omnibar);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .omnibar:focus-within {
+      border-color: var(--ink-primary);
+      box-shadow: 0 0 0 1px var(--ink-primary),
+                  0 8px 24px -4px rgba(28, 25, 23, 0.12);
+      background: #FFFFFF;
+    }
+
+    .omnibar-icon {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      color: var(--ink-tertiary);
+    }
+
+    .omnibar-input {
+      flex: 1;
+      height: 100%;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--ink-primary);
+      letter-spacing: -0.2px;
+      user-select: text;
+    }
+
+    .omnibar-input::placeholder {
+      color: var(--ink-tertiary);
+    }
+
+    .kbd-shortcut {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10px;
+      color: var(--ink-tertiary);
+      background: var(--canvas-subtle);
+      border: 1px solid var(--border-medium);
+      padding: 3px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.4px;
+      pointer-events: none;
+    }
+
+    .omnibar-clear {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: var(--ink-tertiary);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      border-radius: var(--radius-full);
+      transition: color 0.15s ease;
+    }
+
+    .omnibar-clear:hover {
+      color: var(--ink-primary);
+    }
+
+    .omnibar-clear.visible {
+      display: flex;
+    }
+
+    /* ─── Search Suggestions Dropdown ─────────────────────────── */
+    .suggestions-tray {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lifted);
+      padding: 8px;
+      display: none;
+      flex-direction: column;
+      z-index: 60;
+    }
+
+    .suggestions-tray.open {
+      display: flex;
+    }
+
+    .suggestion-header {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: var(--ink-tertiary);
+      padding: 6px 10px;
+    }
+
+    .suggestion-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      color: var(--ink-secondary);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+
+    .suggestion-row:hover {
+      background: rgba(28, 25, 23, 0.04);
+      color: var(--ink-primary);
+    }
+
+    .suggestion-tag {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10px;
+      color: var(--ink-tertiary);
+    }
+
+    /* ─── Washi Filter Chips ──────────────────────────────────── */
+    .filter-deck {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 16px;
+      max-width: 580px;
+    }
+
+    .washi-chip {
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--border-medium);
+      color: var(--ink-secondary);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      font-weight: 450;
+      padding: 4px 11px;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+      letter-spacing: -0.2px;
+    }
+
+    .washi-chip:hover {
+      border-color: var(--ink-primary);
+      color: var(--ink-primary);
+      transform: translateY(-1px);
+    }
+
+    .washi-chip.active {
+      background: var(--ink-primary);
+      border-color: var(--ink-primary);
+      color: var(--canvas);
+      box-shadow: 0 2px 6px rgba(28, 25, 23, 0.15);
+    }
+
+    /* ─── Polaroid Desk Artifacts ─────────────────────────────── */
+    .desk-surface {
+      position: absolute;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      z-index: 10;
+    }
+
+    .polaroid {
+      position: absolute;
+      width: 254px;
+      background: var(--paper);
+      padding: 10px 10px 14px 10px;
+      border-radius: 4px;
+      box-shadow: var(--shadow-ambient);
+      border: 1px solid rgba(28, 25, 23, 0.07);
+      cursor: grab;
+      user-select: none;
+      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                  box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                  opacity 0.25s ease;
+      touch-action: none;
+    }
+
+    .polaroid:active {
+      cursor: grabbing;
+    }
+
+    .polaroid:hover {
+      box-shadow: var(--shadow-lifted);
+      transform: translateY(-3px) scale(1.025) !important;
+      z-index: 30 !important;
+    }
+
+    .polaroid.dragging {
+      box-shadow: 0 24px 48px -12px rgba(28, 25, 23, 0.22);
+      transform: scale(1.04) !important;
+      transition: none !important;
+      z-index: 45 !important;
+    }
+
+    .polaroid.highlighted {
+      box-shadow: 0 0 0 2px var(--terracotta), var(--shadow-lifted);
+      z-index: 32 !important;
+    }
+
+    .polaroid.dimmed {
+      opacity: 0.32;
+    }
+
+    /* Tape accents */
+    .tape-strip {
+      position: absolute;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .tape-scotch-center {
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%) rotate(-1deg);
+      width: 62px;
+      height: 20px;
+      background: rgba(255, 255, 255, 0.72);
+      border-left: 1px dashed rgba(28, 25, 23, 0.12);
+      border-right: 1px dashed rgba(28, 25, 23, 0.12);
+      backdrop-filter: blur(2px);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .tape-scotch-corner {
+      top: -8px;
+      left: -8px;
+      width: 48px;
+      height: 18px;
+      background: rgba(255, 255, 255, 0.74);
+      transform: rotate(-42deg);
+      backdrop-filter: blur(2px);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .tape-washi-top {
+      top: -9px;
+      left: 20px;
+      right: 20px;
+      height: 18px;
+      background: repeating-linear-gradient(
+        -45deg,
+        rgba(254, 243, 199, 0.75) 0,
+        rgba(254, 243, 199, 0.75) 5px,
+        rgba(253, 230, 138, 0.65) 5px,
+        rgba(253, 230, 138, 0.65) 10px
+      );
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+
+    .push-pin {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 16px;
+      height: 16px;
+      background: radial-gradient(circle at 38% 38%, #DC2626, #991B1B 60%, #450A0A);
+      border-radius: var(--radius-full);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+      z-index: 6;
+      pointer-events: none;
+    }
+
+    .push-pin::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 4px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: var(--radius-full);
+    }
+
+    /* Polaroid visual aperture */
+    .polaroid-frame {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      background: var(--slate-blueprint);
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .polaroid-frame svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .company-pill {
+      position: absolute;
+      bottom: 7px;
+      left: 7px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 9.5px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.9);
+      background: rgba(15, 23, 42, 0.72);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      padding: 2px 6px;
+      border-radius: 3px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      letter-spacing: 0.2px;
+    }
+
+    .polaroid-caption {
+      padding: 10px 4px 2px 4px;
+    }
+
+    .polaroid-heading {
+      font-family: "Newsreader", Georgia, serif;
+      font-size: 13.5px;
+      line-height: 1.32;
+      font-weight: 450;
+      color: var(--ink-primary);
+      letter-spacing: -0.15px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .polaroid-annotation {
+      display: block;
+      font-family: "Caveat", cursive;
+      font-size: 15px;
+      color: var(--terracotta);
+      line-height: 1.1;
+      margin-top: 5px;
+      transform: rotate(-1.5deg);
+    }
+
+    .polaroid-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+      padding-top: 6px;
+      border-top: 1px solid rgba(28, 25, 23, 0.06);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 9.5px;
+      color: var(--ink-tertiary);
+    }
+
+    .polaroid-meta .tag {
+      color: var(--ink-secondary);
+      font-weight: 500;
+    }
+
+    /* ─── Results Drawer (Apple Table View) ───────────────────── */
+    .results-drawer {
+      position: fixed;
+      top: 140px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(680px, 92vw);
+      max-height: calc(100vh - 180px);
+      overflow-y: auto;
+      z-index: 38;
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      padding-bottom: 60px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border-medium) transparent;
+    }
+
+    .results-drawer.active {
+      display: flex;
+    }
+
+    .results-summary-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 12px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      color: var(--ink-tertiary);
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .result-card {
+      display: flex;
+      gap: 16px;
+      padding: 14px 18px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid var(--border-fine);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-ambient);
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+      transition: all 0.16s ease;
+    }
+
+    .result-card:hover {
+      background: #FFFFFF;
+      border-color: var(--border-medium);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-lifted);
+    }
+
+    .result-monogram {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--ink-primary);
+      color: #FBBF24;
+      border: 1px solid var(--border-medium);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 700;
+      font-size: 13px;
+      flex-shrink: 0;
+      box-shadow: 0 1px 3px rgba(28, 25, 23, 0.08);
+      transition: all 0.18s ease;
+    }
+
+    .result-card:hover .result-monogram {
+      background: #78350F;
+      color: #FEF3C7;
+      border-color: #92400E;
+    }
+
+    .result-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .result-company-badge {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--terracotta);
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+
+    .result-title {
+      font-family: "Newsreader", Georgia, serif;
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 1.35;
+      color: var(--ink-primary);
+      letter-spacing: -0.2px;
+      margin-bottom: 5px;
+      transition: color 0.15s ease;
+    }
+
+    .result-card:hover .result-title {
+      color: var(--terracotta);
+    }
+
+    .result-snippet {
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: var(--ink-secondary);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .result-foot {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 8px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10px;
+      color: var(--ink-tertiary);
+    }
+
+    .result-foot-tag {
+      background: var(--canvas-subtle);
+      border: 1px solid var(--border-fine);
+      padding: 1px 6px;
+      border-radius: 3px;
+      color: var(--ink-secondary);
+    }
+
+    .result-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      align-self: center;
+    }
+
+    .result-save-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-full);
+      background: transparent;
+      border: none;
+      color: var(--ink-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .result-save-btn:hover {
+      background: var(--canvas-subtle);
+      color: var(--ink-primary);
+    }
+
+    .result-save-btn.saved {
+      color: var(--terracotta);
+    }
+
+    .result-read-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      background: var(--canvas-subtle);
+      border: 1px solid var(--border-fine);
+      color: var(--ink-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: -0.1px;
+      transition: all 0.16s ease;
+      cursor: pointer;
+    }
+
+    .result-card:hover .result-read-btn {
+      background: var(--ink-primary);
+      color: #FAF8F5;
+      border-color: var(--ink-primary);
+      box-shadow: 0 2px 6px rgba(28, 25, 23, 0.12);
+    }
+
+    /* ─── Inspection Modal (Apple Detail Sheet) ───────────────── */
+    .sheet-scrim {
+      position: fixed;
+      inset: 0;
+      background: rgba(28, 25, 23, 0.4);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .sheet-scrim.open {
+      display: flex;
+      opacity: 1;
+    }
+
+    .sheet-modal {
+      width: min(620px, 94vw);
+      max-height: 88vh;
+      overflow-y: auto;
+      background: var(--paper);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-medium);
+      box-shadow: 0 24px 64px -12px rgba(28, 25, 23, 0.28);
+      position: relative;
+      transform: scale(0.96) translateY(8px);
+      transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .sheet-scrim.open .sheet-modal {
+      transform: scale(1) translateY(0);
+    }
+
+    .sheet-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-full);
+      background: rgba(28, 25, 23, 0.06);
+      border: none;
+      color: var(--ink-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      transition: all 0.15s ease;
+    }
+
+    .sheet-close:hover {
+      background: rgba(28, 25, 23, 0.12);
+      color: var(--ink-primary);
+    }
+
+    .sheet-blueprint {
+      width: 100%;
+      height: 210px;
+      background: var(--slate-blueprint);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sheet-content {
+      padding: 24px 28px 28px 28px;
+    }
+
+    .sheet-meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+    }
+
+    .sheet-company {
+      color: var(--terracotta);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .sheet-level {
+      color: var(--ink-tertiary);
+    }
+
+    .sheet-title {
+      font-family: "Newsreader", Georgia, serif;
+      font-size: 24px;
+      font-weight: 450;
+      line-height: 1.25;
+      letter-spacing: -0.4px;
+      color: var(--ink-primary);
+      margin-bottom: 14px;
+    }
+
+    .sheet-annotation-banner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      background: var(--canvas-subtle);
+      border-left: 3px solid var(--terracotta);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      margin-bottom: 20px;
+    }
+
+    .sheet-annotation-text {
+      font-family: "Caveat", cursive;
+      font-size: 18px;
+      color: var(--terracotta);
+    }
+
+    .sheet-section-title {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: var(--ink-tertiary);
+      margin-bottom: 8px;
+    }
+
+    .sheet-summary {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--ink-secondary);
+      margin-bottom: 20px;
+    }
+
+    .sheet-takeaways {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .sheet-takeaways li {
+      position: relative;
+      padding-left: 18px;
+      font-size: 13.5px;
+      line-height: 1.5;
+      color: var(--ink-secondary);
+    }
+
+    .sheet-takeaways li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--terracotta);
+      font-weight: 600;
+    }
+
+    .sheet-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 18px;
+      border-top: 1px solid var(--border-fine);
+    }
+
+    .sheet-stats {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      color: var(--ink-tertiary);
+    }
+
+    .sheet-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--ink-primary);
+      color: var(--canvas);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 9px 18px;
+      border-radius: var(--radius-sm);
+      transition: background 0.15s ease;
+    }
+
+    .sheet-cta:hover {
+      background: #383431;
+    }
+
+    /* ─── Desk Controls Dock ──────────────────────────────────── */
+    .desk-dock {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 6px 14px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-full);
+      box-shadow: var(--shadow-ambient);
+      z-index: 40;
+    }
+
+    .dock-indicator {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      color: var(--ink-tertiary);
+      letter-spacing: 0.2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dock-divider {
+      width: 1px;
+      height: 14px;
+      background: var(--border-medium);
+    }
+
+    .dock-btn {
+      background: transparent;
+      border: none;
+      color: var(--ink-secondary);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      transition: all 0.15s ease;
+    }
+
+    .dock-btn:hover {
+      background: rgba(28, 25, 23, 0.05);
+      color: var(--ink-primary);
+    }
+
+    /* ─── Mobile Fallbacks ────────────────────────────────────── */
+    @media (max-width: 840px) {
+      .polaroid {
+        display: none;
+      }
+
+      .hero-container {
+        position: relative;
+        top: 0 !important;
+        left: 0 !important;
+        transform: none !important;
+        margin: 80px auto 0 auto;
+        padding: 0 16px;
+        width: 100%;
+      }
+
+      .hero-identity {
+        margin-bottom: 20px;
+      }
+
+      .results-drawer {
+        position: relative;
+        top: 0;
+        left: 0;
+        transform: none;
+        width: 100%;
+        max-height: none;
+        padding: 20px 16px 100px 16px;
+      }
+
+      .desk-dock {
+        bottom: 12px;
+        width: calc(100% - 32px);
+        justify-content: space-between;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Architecture Layer -->
+  <div class="drafting-canvas"></div>
+  <div class="paper-grain"></div>
+
+  <!-- Navigation Header -->
+  <header class="apple-nav">
+    <a href="#" class="nav-brand" onclick="resetToCenter(); return false;">
+      <div class="brand-mark">E</div>
+      <div class="brand-title"><em>Er</em>BlogX</div>
+    </a>
+
+    <div class="nav-stats">
+      <span class="live-dot"></span>
+      <span>25,482 DISPATCHES INDEXED</span>
+    </div>
+
+    <div class="nav-actions">
+      <button class="btn-action" onclick="shuffleDesk()" title="Reorganize drafting table">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line>
+          <polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line>
+        </svg>
+        <span>Shuffle</span>
+      </button>
+      <button class="btn-action primary" onclick="focusSearch()">
+        <span>Search</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Interactive Drafting Desk Surface (Polaroid Cards) -->
+  <main class="desk-surface" id="deskSurface">
+    <!-- Populated by JavaScript with calibrated layout & SVGs -->
+  </main>
+
+  <!-- Hero Center & Omnibar Engine -->
+  <div class="hero-container" id="heroContainer">
+    <div class="hero-interactive">
+      <div class="hero-identity">
+        <div class="edition-tag">Volume IV &middot; Technical Archive</div>
+        <h1 class="hero-title">The Index for <em>Everything</em> Engineering.</h1>
+        <p class="hero-subtitle">High-signal engineering dispatches from Netflix, Stripe, Cloudflare, Figma, and 600+ teams.</p>
+      </div>
+
+      <div class="omnibar-wrapper">
+        <div class="omnibar" id="omnibar">
+          <svg class="omnibar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input
+            type="text"
+            id="searchInput"
+            class="omnibar-input"
+            placeholder="Search systems, protocols, postmortems, consensus..."
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button class="omnibar-clear" id="clearBtn" title="Clear query">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+          <span class="kbd-shortcut">&#8984;K</span>
+        </div>
+
+        <!-- Suggestions Drawer -->
+        <div class="suggestions-tray" id="suggestionsTray">
+          <div class="suggestion-header">Editorial Queries</div>
+          <!-- Filled dynamically -->
+        </div>
+      </div>
+
+      <!-- Washi Chips Filter Deck -->
+      <div class="filter-deck" id="filterDeck">
+        <button class="washi-chip" data-tag="all">All Disciplines</button>
+        <button class="washi-chip" data-tag="Distributed Systems">#DistributedSystems</button>
+        <button class="washi-chip" data-tag="API Design">#APIDesign</button>
+        <button class="washi-chip" data-tag="Kernel / eBPF">#Kernel/eBPF</button>
+        <button class="washi-chip" data-tag="Databases">#Databases</button>
+        <button class="washi-chip" data-tag="WebAssembly">#WebAssembly</button>
+        <button class="washi-chip" data-tag="Storage">#Storage</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Results Drawer -->
+  <div class="results-drawer" id="resultsDrawer" role="region" aria-live="polite">
+    <div class="results-summary-row">
+      <span id="resultsCount">0 Dispatches Located</span>
+      <span>Live Semantic Index</span>
+    </div>
+    <div id="resultsList" style="display:flex; flex-direction:column; gap:6px;"></div>
+  </div>
+
+  <!-- Detail Inspection Sheet (Modal) -->
+  <div class="sheet-scrim" id="sheetScrim" onclick="closeSheet(event)">
+    <div class="sheet-modal" id="sheetModal" onclick="event.stopPropagation()">
+      <button class="sheet-close" onclick="closeSheetDirect()" aria-label="Close sheet">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <div class="sheet-blueprint" id="sheetBlueprint">
+        <!-- Technical diagram SVG -->
+      </div>
+
+      <div class="sheet-content">
+        <div class="sheet-meta-row">
+          <span class="sheet-company" id="sheetCompany">Company</span>
+          <span class="sheet-level" id="sheetLevel">Staff / Infrastructure</span>
+        </div>
+
+        <h2 class="sheet-title" id="sheetTitle">Dispatch Title</h2>
+
+        <div class="sheet-annotation-banner">
+          <span class="sheet-annotation-text" id="sheetAnnotation">Annotation</span>
+        </div>
+
+        <div class="sheet-section-title">Architectural Overview</div>
+        <p class="sheet-summary" id="sheetSummary">Executive summary content.</p>
+
+        <div class="sheet-section-title">Key Architectural Decisions</div>
+        <ul class="sheet-takeaways" id="sheetTakeaways">
+          <!-- Takeaways -->
+        </ul>
+
+        <div class="sheet-footer">
+          <div class="sheet-stats" id="sheetStats">9 min read &middot; 2024 Archive</div>
+          <a href="#" target="_blank" rel="noopener noreferrer" class="sheet-cta" id="sheetCta">
+            <span>Read Original Dispatch</span>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Floating Desk Dock -->
+  <div class="desk-dock">
+    <div class="dock-indicator">
+      <span>Drafting Canvas</span>
+      <span style="opacity:0.35">&middot;</span>
+      <span>Click any polaroid to inspect</span>
+    </div>
+    <div class="dock-divider"></div>
+    <button class="dock-btn" onclick="shuffleDesk()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line>
+        <polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line>
+      </svg>
+      <span>Tidy Canvas</span>
+    </button>
+  </div>
+
+  <script>
+    /* ─── Curated Real-World Engineering Database ────────────── */
+    const DISPATCHES = [
+      {
+        id: "netflix-active-active",
+        company: "Netflix",
+        blog: "Netflix TechBlog",
+        title: "Multi-Region Active-Active at 100M Requests/Second",
+        summary: "Automated traffic evacuation and sub-second failovers across multi-region AWS cloud footprints during trans-continental transit outages, eliminating single points of failure in global streaming delivery.",
+        takeaways: [
+          "DNS evacuation via Zuul edge proxy routing with zero connection dropoff.",
+          "Asynchronous cross-region Cassandra replication with monotonic conflict resolution.",
+          "Chaos automation regularly inducing whole-region terminations to validate self-healing thresholds."
+        ],
+        tag: "Distributed Systems",
+        tape: "tape-scotch-corner",
+        coords: { top: "11%", left: "4%", rotate: -6 },
+        annotation: "Sub-second cross-region failover",
+        readingTime: "9 min",
+        level: "Staff / Infrastructure",
+        url: "https://netflixtechblog.com",
+        diagram: `
+          <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="net-glow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#E50914" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#E50914" stop-opacity="0"/>
+              </radialGradient>
+              <linearGradient id="net-arc-1" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#E50914"/>
+                <stop offset="50%" stop-color="#F59E0B"/>
+                <stop offset="100%" stop-color="#10B981"/>
+              </linearGradient>
+              <linearGradient id="net-arc-failover" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#EF4444"/>
+                <stop offset="100%" stop-color="#F59E0B"/>
+              </linearGradient>
+              <filter id="glow-net" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="3" result="blur"/>
+                <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+              </filter>
+            </defs>
+            <rect width="320" height="200" fill="#0A0E17"/>
+
+            <!-- Top Title Bar & Telemetry Wave -->
+            <path d="M 15 28 L 65 28 L 75 18 L 85 36 L 95 14 L 105 34 L 115 28 L 210 28 L 220 22 L 230 32 L 240 28 L 305 28" fill="none" stroke="rgba(229,9,20,0.6)" stroke-width="1.2"/>
+            <circle cx="95" cy="14" r="2.5" fill="#E50914" filter="url(#glow-net)"/>
+            <text x="15" y="18" fill="rgba(255,255,255,0.75)" font-family="monospace" font-size="6.5" font-weight="bold">ACTIVE-ACTIVE TRAFFIC MESH</text>
+            <text x="305" y="18" fill="#10B981" font-family="monospace" font-size="6.5" text-anchor="end">&bull; 100.4M RPS TOTAL</text>
+
+            <!-- Wireframe Globe -->
+            <circle cx="160" cy="116" r="72" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <ellipse cx="160" cy="116" rx="72" ry="28" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="0.8"/>
+            <ellipse cx="160" cy="116" rx="72" ry="54" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="0.8"/>
+            <ellipse cx="160" cy="116" rx="34" ry="72" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="0.8"/>
+            <circle cx="160" cy="116" r="72" fill="url(#net-glow)"/>
+
+            <!-- Continental Nodes -->
+            <!-- US-East (x: 95, y: 94) -->
+            <circle cx="95" cy="94" r="14" fill="rgba(229,9,20,0.15)"/>
+            <circle cx="95" cy="94" r="5" fill="#E50914" filter="url(#glow-net)"/>
+            <circle cx="95" cy="94" r="2" fill="#FFFFFF"/>
+            <text x="95" y="82" fill="#E50914" font-family="monospace" font-size="7" font-weight="bold" text-anchor="middle">US-EAST</text>
+            <text x="95" y="112" fill="rgba(255,255,255,0.5)" font-family="monospace" font-size="5.5" text-anchor="middle">52M rps</text>
+
+            <!-- EU-West (x: 180, y: 80) -->
+            <circle cx="180" cy="80" r="14" fill="rgba(16,185,129,0.15)"/>
+            <circle cx="180" cy="80" r="5" fill="#10B981" filter="url(#glow-net)"/>
+            <circle cx="180" cy="80" r="2" fill="#FFFFFF"/>
+            <text x="180" y="68" fill="#10B981" font-family="monospace" font-size="7" font-weight="bold" text-anchor="middle">EU-WEST</text>
+            <text x="180" y="98" fill="rgba(255,255,255,0.5)" font-family="monospace" font-size="5.5" text-anchor="middle">38M rps</text>
+
+            <!-- AP-South (x: 228, y: 120) -->
+            <circle cx="228" cy="120" r="12" fill="rgba(245,158,11,0.15)"/>
+            <circle cx="228" cy="120" r="4.5" fill="#F59E0B" filter="url(#glow-net)"/>
+            <circle cx="228" cy="120" r="1.8" fill="#FFFFFF"/>
+            <text x="228" y="110" fill="#F59E0B" font-family="monospace" font-size="6.5" font-weight="bold" text-anchor="middle">AP-SOUTH</text>
+
+            <!-- Arcing Routing Paths -->
+            <path d="M 95 94 Q 135 42 180 80" fill="none" stroke="url(#net-arc-1)" stroke-width="2" stroke-linecap="round"/>
+            <path d="M 180 80 Q 205 87 228 120" fill="none" stroke="url(#net-arc-1)" stroke-width="1.8" stroke-dasharray="3,2"/>
+            
+            <!-- Evacuation Re-route Arc -->
+            <path d="M 95 94 Q 150 162 228 120" fill="none" stroke="url(#net-arc-failover)" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <rect x="135" y="146" width="60" height="14" rx="3" fill="#0A0E17" stroke="rgba(239,68,68,0.5)" stroke-width="0.8"/>
+            <text x="165" y="156" fill="#EF4444" font-family="monospace" font-size="5.5" font-weight="bold" text-anchor="middle">FAILOVER &Delta; 180ms</text>
+          </svg>
+        `
+      },
+      {
+        id: "stripe-idempotency",
+        company: "Stripe",
+        blog: "Stripe Engineering",
+        title: "Designing Idempotent APIs: Exactly-Once Processing",
+        summary: "A deep architectural breakdown of Stripe's replay deduplication engine, atomic distributed locks in Redis, and guaranteeing mathematical financial consistency across concurrent retry bursts.",
+        takeaways: [
+          "Unique Idempotency-Key headers mapped into 24-hour transient state stores.",
+          "Atomic locks prevent parallel processing of the same authorization token.",
+          "Cached response replay with cryptographically signed payloads prevents replay tampering."
+        ],
+        tag: "API Design",
+        tape: "tape-scotch-center",
+        coords: { top: "9%", right: "4%", rotate: 5 },
+        annotation: "Classic system design benchmark",
+        readingTime: "12 min",
+        level: "Senior / Fintech",
+        url: "https://stripe.com/blog/engineering",
+        diagram: `
+          <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="str-cyan" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#0284C7"/>
+                <stop offset="100%" stop-color="#38BDF8"/>
+              </linearGradient>
+              <filter id="glow-str" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="2.5" result="blur"/>
+                <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+              </filter>
+            </defs>
+            <rect width="320" height="200" fill="#090E18"/>
+
+            <!-- Top Title Bar -->
+            <text x="18" y="24" fill="rgba(255,255,255,0.75)" font-family="monospace" font-size="6.5" font-weight="bold">IDEMPOTENCY DEDUPLICATION ENGINE</text>
+            <text x="302" y="24" fill="#F59E0B" font-family="monospace" font-size="6.5" text-anchor="end">EXACTLY-ONCE GUARANTEE</text>
+
+            <!-- Blueprint grid lines -->
+            <line x1="20" y1="44" x2="300" y2="44" stroke="rgba(2,132,199,0.12)" stroke-width="0.8"/>
+            <line x1="20" y1="102" x2="300" y2="102" stroke="rgba(2,132,199,0.12)" stroke-width="0.8"/>
+            <line x1="20" y1="162" x2="300" y2="162" stroke="rgba(2,132,199,0.12)" stroke-width="0.8"/>
+
+            <!-- Step 1: Incoming Capsule -->
+            <g transform="translate(18, 76)">
+              <rect width="70" height="48" rx="6" fill="rgba(2,132,199,0.12)" stroke="#0284C7" stroke-width="1.2"/>
+              <text x="35" y="16" fill="#38BDF8" font-family="monospace" font-size="6.5" font-weight="bold" text-anchor="middle">API REQUEST</text>
+              <rect x="6" y="22" width="58" height="18" rx="3" fill="#090E18" stroke="rgba(245,158,11,0.5)" stroke-width="0.8"/>
+              <text x="35" y="31" fill="#FBBF24" font-family="monospace" font-size="5" text-anchor="middle">Idempotency-Key</text>
+              <text x="35" y="37" fill="rgba(255,255,255,0.4)" font-family="monospace" font-size="4.5" text-anchor="middle">"req_9a4f2e..."</text>
+            </g>
+
+            <!-- Flow arrow to Lock Gate -->
+            <path d="M 88 100 L 115 100" stroke="url(#str-cyan)" stroke-width="2" stroke-linecap="round"/>
+            <polygon points="118,100 112,96 112,104" fill="#38BDF8"/>
+
+            <!-- Step 2: The Mechanical Lock Gate (Center Vault) -->
+            <g transform="translate(120, 52)">
+              <rect width="84" height="96" rx="8" fill="#0D1626" stroke="#F59E0B" stroke-width="1.4" filter="url(#glow-str)"/>
+              <circle cx="42" cy="30" r="16" fill="rgba(245,158,11,0.15)" stroke="#F59E0B" stroke-width="1.2"/>
+              <circle cx="42" cy="30" r="7" fill="none" stroke="#FBBF24" stroke-width="1.5"/>
+              <rect x="40" y="28" width="4" height="10" fill="#FBBF24"/>
+              
+              <text x="42" y="58" fill="#F59E0B" font-family="monospace" font-size="6.5" font-weight="bold" text-anchor="middle">ATOMIC LOCK</text>
+              <rect x="10" y="64" width="64" height="14" rx="3" fill="rgba(16,185,129,0.15)" stroke="#10B981" stroke-width="0.8"/>
+              <text x="42" y="74" fill="#34D399" font-family="monospace" font-size="5.5" font-weight="bold" text-anchor="middle">SETNX SUCCESS</text>
+              <text x="42" y="86" fill="rgba(255,255,255,0.4)" font-family="monospace" font-size="4.5" text-anchor="middle">TTL: 86,400s</text>
+            </g>
+
+            <!-- Split Branch: Path A (Execution) vs Path B (Replay) -->
+            <!-- Path A: New Execution (Top branch) -->
+            <path d="M 204 80 L 230 60 L 244 60" stroke="#10B981" stroke-width="1.5" stroke-linecap="round"/>
+            <polygon points="247,60 241,57 241,63" fill="#10B981"/>
+            <g transform="translate(248, 42)">
+              <rect width="60" height="36" rx="5" fill="rgba(16,185,129,0.1)" stroke="#10B981" stroke-width="1"/>
+              <text x="30" y="15" fill="#34D399" font-family="monospace" font-size="5.5" font-weight="bold" text-anchor="middle">LEDGER COMMIT</text>
+              <text x="30" y="26" fill="rgba(255,255,255,0.6)" font-family="monospace" font-size="5" text-anchor="middle">$420.00 CHARGED</text>
+            </g>
+
+            <!-- Path B: Duplicate Cached Replay (Bottom branch) -->
+            <path d="M 204 120 L 230 140 L 244 140" stroke="#38BDF8" stroke-width="1.5" stroke-dasharray="3,2" stroke-linecap="round"/>
+            <polygon points="247,140 241,137 241,143" fill="#38BDF8"/>
+            <g transform="translate(248, 122)">
+              <rect width="60" height="36" rx="5" fill="rgba(2,132,199,0.1)" stroke="#38BDF8" stroke-width="1"/>
+              <text x="30" y="15" fill="#38BDF8" font-family="monospace" font-size="5.5" font-weight="bold" text-anchor="middle">CACHED REPLAY</text>
+              <text x="30" y="26" fill="#FBBF24" font-family="monospace" font-size="4.8" text-anchor="middle">0 NEW CHARGES</text>
+            </g>
+          </svg>
+        `
+      },
+      {
+        id: "cloudflare-ebpf-ddos",
+        company: "Cloudflare",
+        blog: "Cloudflare Blog",
+        title: "Mitigating 3.8 Tbps DDoS Attacks in Kernel Space",
+        summary: "Execution of wire-speed eBPF packet filters at the physical NIC driver layer (XDP), dropping malicious packets before memory allocation occurs inside the operating system network stack.",
+        takeaways: [
+          "XDP_DROP executed directly inside device driver rings before sk_buff allocation.",
+          "Kernel maps synchronized with globally distributed heuristic detection engines in real time.",
+          "Zero CPU interrupt overload during multi-terabit volumetric UDP amplification floods."
+        ],
+        tag: "Kernel / eBPF",
+        tape: "tape-washi-top",
+        coords: { bottom: "11%", right: "6%", rotate: 7 },
+        annotation: "Dropped at wire speed in NIC",
+        readingTime: "7 min",
+        level: "Principal / Networking",
+        url: "https://blog.cloudflare.com",
+        diagram: `
+          <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="cf-fire" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#DC2626"/>
+                <stop offset="60%" stop-color="#EA580C"/>
+                <stop offset="100%" stop-color="#F59E0B"/>
+              </linearGradient>
+              <linearGradient id="cf-shield-glow" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#06B6D4"/>
+                <stop offset="50%" stop-color="#3B82F6"/>
+                <stop offset="100%" stop-color="#10B981"/>
+              </linearGradient>
+              <filter id="glow-cf" x="-30%" y="-30%" width="160%" height="160%">
+                <feGaussianBlur stdDeviation="3.5" result="blur"/>
+                <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+              </filter>
+            </defs>
+            <rect width="320" height="200" fill="#080B13"/>
+
+            <!-- Top Title -->
+            <text x="18" y="22" fill="rgba(255,255,255,0.8)" font-family="monospace" font-size="6.5" font-weight="bold">eBPF HARDWARE-LEVEL PACKET FILTER</text>
+            <text x="302" y="22" fill="#06B6D4" font-family="monospace" font-size="6.5" text-anchor="end">KERNEL WIRE SPEED</text>
+
+            <!-- Background bus lanes -->
+            <line x1="10" y1="65" x2="310" y2="65" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+            <line x1="10" y1="105" x2="310" y2="105" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+            <line x1="10" y1="145" x2="310" y2="145" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+
+            <!-- Inbound DDoS Packet Storm (Left) -->
+            <path d="M 10 55 L 140 85" stroke="url(#cf-fire)" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M 25 72 L 142 92" stroke="url(#cf-fire)" stroke-width="3.5" stroke-linecap="round"/>
+            <path d="M 10 90 L 144 98" stroke="url(#cf-fire)" stroke-width="4" stroke-linecap="round"/>
+            <path d="M 15 110 L 142 108" stroke="url(#cf-fire)" stroke-width="3" stroke-linecap="round"/>
+            <path d="M 30 130 L 140 118" stroke="url(#cf-fire)" stroke-width="2" stroke-linecap="round"/>
+            
+            <circle cx="60" cy="78" r="3" fill="#EF4444"/>
+            <circle cx="100" cy="94" r="4" fill="#F97316"/>
+            <circle cx="80" cy="115" r="3.5" fill="#EF4444"/>
+
+            <rect x="18" y="160" width="105" height="22" rx="4" fill="rgba(220,38,38,0.15)" stroke="#DC2626" stroke-width="0.8"/>
+            <text x="70" y="172" fill="#F87171" font-family="monospace" font-size="6" font-weight="bold" text-anchor="middle">3.8 Tbps ATTACK FLOOD</text>
+            <text x="70" y="179" fill="rgba(248,113,113,0.7)" font-family="monospace" font-size="4.8" text-anchor="middle">SYN/UDP Amplification</text>
+
+            <!-- The eBPF / XDP Forcefield Shield (Center) -->
+            <rect x="146" y="32" width="14" height="144" rx="7" fill="url(#cf-shield-glow)" filter="url(#glow-cf)"/>
+            <line x1="153" y1="36" x2="153" y2="172" stroke="#FFFFFF" stroke-width="1.8"/>
+
+            <!-- Shield sparks and deflection downward -->
+            <path d="M 148 90 Q 125 125 110 155" stroke="#F59E0B" stroke-width="2" stroke-dasharray="2,2"/>
+            <path d="M 148 105 Q 130 140 120 168" stroke="#EF4444" stroke-width="2" stroke-dasharray="2,2"/>
+            <circle cx="148" cy="98" r="5" fill="#F59E0B" filter="url(#glow-cf)"/>
+
+            <g transform="translate(168, 48)">
+              <!-- Legitimate Clean Packet Stream Passing Through (Right) -->
+              <path d="M 0 52 L 130 52" stroke="#10B981" stroke-width="3" stroke-linecap="round"/>
+              <polygon points="135,52 127,48 127,56" fill="#10B981"/>
+              
+              <circle cx="45" cy="52" r="3.5" fill="#34D399"/>
+              <circle cx="85" cy="52" r="3.5" fill="#34D399"/>
+
+              <rect x="18" y="70" width="112" height="34" rx="4" fill="rgba(16,185,129,0.12)" stroke="#10B981" stroke-width="1"/>
+              <text x="74" y="84" fill="#34D399" font-family="monospace" font-size="6.5" font-weight="bold" text-anchor="middle">XDP_DROP IN NIC DRIVER</text>
+              <text x="74" y="93" fill="rgba(255,255,255,0.7)" font-family="monospace" font-size="5" text-anchor="middle">Inspection: &lt; 14 Nanoseconds</text>
+              <text x="74" y="100" fill="#10B981" font-family="monospace" font-size="4.8" text-anchor="middle">Clean traffic &rarr; Linux kernel</text>
+            </g>
+          </svg>
+        `
+      },
+      {
+        id: "figma-wasm-crdt",
+        company: "Figma",
+        blog: "Figma Engineering",
+        title: "WebAssembly, CRDTs and Real-Time Multiplayer",
+        summary: "Achieving zero-latency collaborative canvas synchronization at 60 FPS in web browsers: compiling the core C++ rendering and layout engine to WebAssembly with conflict-free document replication.",
+        takeaways: [
+          "C++ vector layout system cross-compiled to WebAssembly for raw memory speed.",
+          "Property-level operational transformation tree resolved client-side without locking.",
+          "Custom WebGL pipeline directly referencing WASM linear memory with zero copy overhead."
+        ],
+        tag: "WebAssembly",
+        tape: "push-pin",
+        coords: { bottom: "10%", left: "5%", rotate: -8 },
+        annotation: "60 FPS collaborative canvas",
+        readingTime: "11 min",
+        level: "Graphics / Frontend",
+        url: "https://figma.com/blog",
+        diagram: `
+          <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="fig-dots" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
+                <circle cx="8" cy="8" r="0.8" fill="rgba(255,255,255,0.15)"/>
+              </pattern>
+              <filter id="glow-fig" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="2.5" result="blur"/>
+                <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+              </filter>
+            </defs>
+            <rect width="320" height="200" fill="#121826"/>
+            <rect width="320" height="200" fill="url(#fig-dots)"/>
+
+            <!-- Top Tool & Frame Rate Bar -->
+            <rect x="15" y="12" width="290" height="24" rx="4" fill="#1A2234" stroke="rgba(255,255,255,0.1)" stroke-width="0.8"/>
+            <text x="26" y="27" fill="#38BDF8" font-family="monospace" font-size="6.5" font-weight="bold">FIGMA VECTOR CANVAS</text>
+            
+            <rect x="215" y="16" width="82" height="16" rx="3" fill="rgba(16,185,129,0.15)" stroke="#10B981" stroke-width="0.8"/>
+            <circle cx="225" cy="24" r="2.5" fill="#10B981"/>
+            <text x="232" y="27" fill="#34D399" font-family="monospace" font-size="5.5" font-weight="bold">60.0 FPS &middot; 16.6ms</text>
+
+            <!-- The Vector Drawing: Smooth S-Curve with Bezier Tangents -->
+            <line x1="50" y1="120" x2="90" y2="55" stroke="rgba(56,189,248,0.5)" stroke-width="1.2" stroke-dasharray="2,2"/>
+            <line x1="260" y1="145" x2="200" y2="175" stroke="rgba(245,158,11,0.5)" stroke-width="1.2" stroke-dasharray="2,2"/>
+            <circle cx="90" cy="55" r="4" fill="#0284C7" stroke="#38BDF8" stroke-width="1.5"/>
+            <circle cx="200" cy="175" r="4" fill="#B45309" stroke="#F59E0B" stroke-width="1.5"/>
+
+            <!-- Main Bezier Spline -->
+            <path d="M 50 120 C 90 55, 170 50, 200 110 C 220 150, 240 160, 260 145" fill="none" stroke="#38BDF8" stroke-width="3" stroke-linecap="round" filter="url(#glow-fig)"/>
+
+            <!-- Anchor Points -->
+            <rect x="46" y="116" width="8" height="8" rx="1.5" fill="#FFFFFF" stroke="#0284C7" stroke-width="1.8"/>
+            <rect x="196" y="106" width="8" height="8" rx="1.5" fill="#FFFFFF" stroke="#0284C7" stroke-width="1.8"/>
+            <rect x="256" y="141" width="8" height="8" rx="1.5" fill="#FFFFFF" stroke="#0284C7" stroke-width="1.8"/>
+
+            <!-- Collaborative Multiplayer Cursors -->
+            <!-- Cursor 1: Sarah (Cyan) -->
+            <g transform="translate(196, 75)">
+              <polygon points="0,0 4,14 7,10 12,12 13,9 8,8 14,5" fill="#0284C7" stroke="#FFFFFF" stroke-width="0.8"/>
+              <rect x="12" y="10" width="54" height="14" rx="3" fill="#0284C7"/>
+              <text x="39" y="19" fill="#FFFFFF" font-family="sans-serif" font-size="5.5" font-weight="600" text-anchor="middle">sarah.c++</text>
+            </g>
+
+            <!-- Cursor 2: Dylan (Amber) -->
+            <g transform="translate(86, 42)">
+              <polygon points="0,0 4,14 7,10 12,12 13,9 8,8 14,5" fill="#D97706" stroke="#FFFFFF" stroke-width="0.8"/>
+              <rect x="12" y="8" width="50" height="14" rx="3" fill="#D97706"/>
+              <text x="37" y="17" fill="#FFFFFF" font-family="sans-serif" font-size="5.5" font-weight="600" text-anchor="middle">dylan_wasm</text>
+            </g>
+
+            <!-- Cursor 3: Koji (Emerald) -->
+            <g transform="translate(240, 125)">
+              <polygon points="0,0 4,14 7,10 12,12 13,9 8,8 14,5" fill="#059669" stroke="#FFFFFF" stroke-width="0.8"/>
+              <rect x="12" y="8" width="44" height="14" rx="3" fill="#059669"/>
+              <text x="34" y="17" fill="#FFFFFF" font-family="sans-serif" font-size="5.5" font-weight="600" text-anchor="middle">koji.crdt</text>
+            </g>
+
+            <!-- Bottom Spec Bar -->
+            <rect x="15" y="165" width="160" height="22" rx="4" fill="#1A2234" stroke="rgba(255,255,255,0.08)" stroke-width="0.8"/>
+            <text x="24" y="178" fill="rgba(255,255,255,0.7)" font-family="monospace" font-size="5.5">WASM C++ Layout &middot; Zero-Copy WebGL</text>
+          </svg>
+        `
+      },
+      {
+        id: "uber-schemaless-trip",
+        company: "Uber",
+        blog: "Uber Engineering",
+        title: "Schemaless: Uber's Trip Storage at Petabyte Scale",
+        summary: "How Uber abandoned MySQL single-instance sharding to build Schemaless on top of append-only Cassandra storage nodes, guaranteeing zero downtime during trip surge events.",
+        takeaways: [
+          "Append-only cell architecture ensures no in-place mutation locks.",
+          "Secondary index worker processes asynchronously parse mutation buffers.",
+          "Tiered storage transitions historical trip data to compressed columnar blocks."
+        ],
+        tag: "Databases",
+        tape: "tape-scotch-center",
+        coords: { top: "54%", left: "3%", rotate: 4 },
+        annotation: "How Uber abandoned MySQL",
+        readingTime: "10 min",
+        level: "Principal / Data Systems",
+        url: "https://eng.uber.com",
+        diagram: `
+          <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="glow-ub" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="2" result="blur"/>
+                <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+              </filter>
+            </defs>
+            <rect width="320" height="200" fill="#080C14"/>
+
+            <!-- Top Title -->
+            <text x="18" y="24" fill="rgba(255,255,255,0.75)" font-family="monospace" font-size="6.5" font-weight="bold">GEOSPATIAL H3 INDEX &middot; SCHEMALESS STORAGE</text>
+            <text x="302" y="24" fill="#00B8D9" font-family="monospace" font-size="6.5" text-anchor="end">15.8B TRIPS</text>
+
+            <!-- City street map grid lines in background -->
+            <path d="M 0 50 L 320 70 M 0 110 L 320 95 M 0 150 L 320 160" stroke="rgba(255,255,255,0.06)" stroke-width="1.2"/>
+            <path d="M 60 0 L 80 200 M 140 0 L 130 200 M 210 0 L 225 200 M 280 0 L 270 200" stroke="rgba(255,255,255,0.06)" stroke-width="1.2"/>
+
+            <!-- H3 Hexagons -->
+            <!-- Hex 1 (x: 120, y: 95) -->
+            <polygon points="120,75 140,86 140,108 120,119 100,108 100,86" fill="rgba(0,184,217,0.12)" stroke="#00B8D9" stroke-width="1.2"/>
+            <text x="120" y="99" fill="#00B8D9" font-family="monospace" font-size="5" text-anchor="middle">H3: 88283082</text>
+
+            <!-- Hex 2 (Surge Hex, x: 160, y: 72) -->
+            <polygon points="160,52 180,63 180,85 160,96 140,85 140,63" fill="rgba(245,158,11,0.18)" stroke="#F59E0B" stroke-width="1.4" filter="url(#glow-ub)"/>
+            <text x="160" y="76" fill="#FBBF24" font-family="monospace" font-size="5" font-weight="bold" text-anchor="middle">2.2x SURGE</text>
+
+            <!-- Hex 3 (x: 160, y: 118) -->
+            <polygon points="160,98 180,109 180,131 160,142 140,131 140,109" fill="rgba(0,184,217,0.08)" stroke="#00B8D9" stroke-width="1"/>
+
+            <!-- Hex 4 (x: 80, y: 72) -->
+            <polygon points="80,52 100,63 100,85 80,96 60,85 60,63" fill="rgba(0,184,217,0.08)" stroke="#00B8D9" stroke-width="1"/>
+
+            <!-- Glowing Neon GPS Trip Trajectory -->
+            <path d="M 35 150 Q 80 120 120 95 T 160 72 T 240 60 T 290 85" fill="none" stroke="#00B8D9" stroke-width="2.5" stroke-linecap="round" filter="url(#glow-ub)"/>
+            
+            <!-- Pickup Pin -->
+            <circle cx="35" cy="150" r="6" fill="#10B981" filter="url(#glow-ub)"/>
+            <circle cx="35" cy="150" r="2.5" fill="#FFFFFF"/>
+            <text x="35" y="165" fill="#34D399" font-family="monospace" font-size="5" text-anchor="middle">PICKUP</text>
+
+            <!-- Dropoff Pin -->
+            <circle cx="290" cy="85" r="6" fill="#F59E0B" filter="url(#glow-ub)"/>
+            <circle cx="290" cy="85" r="2.5" fill="#FFFFFF"/>
+            <text x="290" y="100" fill="#FBBF24" font-family="monospace" font-size="5" text-anchor="middle">DROPOFF</text>
+
+            <!-- Schemaless Append-Only Columnar Shard Stack -->
+            <g transform="translate(195, 128)">
+              <rect width="110" height="54" rx="4" fill="#0F1522" stroke="rgba(255,255,255,0.12)" stroke-width="0.8"/>
+              <text x="10" y="13" fill="#38BDF8" font-family="monospace" font-size="5.5" font-weight="bold">SCHEMALESS LOG</text>
+              <rect x="10" y="18" width="90" height="9" rx="2" fill="rgba(0,184,217,0.15)"/>
+              <text x="14" y="25" fill="#00B8D9" font-family="monospace" font-size="4.5">cell_001 &middot; ts:1711283000</text>
+              
+              <rect x="10" y="29" width="90" height="9" rx="2" fill="rgba(16,185,129,0.15)"/>
+              <text x="14" y="36" fill="#34D399" font-family="monospace" font-size="4.5">cell_002 &middot; ts:1711283001 [APPEND]</text>
+
+              <rect x="10" y="40" width="90" height="9" rx="2" fill="rgba(245,158,11,0.15)"/>
+              <text x="14" y="47" fill="#FBBF24" font-family="monospace" font-size="4.5">cell_003 &middot; ts:1711283002 [APPEND]</text>
+            </g>
+          </svg>
+        `
+      },
+      {
+        id: "google-spanner-truetime",
+        company: "Google",
+        blog: "Google Research",
+        title: "Spanner: Globally-Distributed Database with TrueTime",
+        summary: "Providing externally consistent distributed ACID transactions at worldwide scale through synchronized atomic clocks and GPS receivers with bounded timing uncertainty.",
+        takeaways: [
+          "TrueTime API exposes time intervals [earliest, latest] with guaranteed bounds.",
+          "Two-phase locking combined with Paxos group leaders enforces linearizable serializability.",
+          "Wait-out-the-uncertainty commit protocol ensures causal transaction order worldwide."
+        ],
+        tag: "Distributed Systems",
+        tape: "tape-washi-top",
+        coords: { top: "52%", right: "3%", rotate: -5 },
+        annotation: "External consistency via atomic clocks",
+        readingTime: "14 min",
+        level: "Principal / Database Architect",
+        url: "https://research.google",
+        diagram: `
+          <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="glow-sp" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="3" result="blur"/>
+                <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+              </filter>
+            </defs>
+            <rect width="320" height="200" fill="#060916"/>
+
+            <!-- Top Banner -->
+            <text x="18" y="22" fill="rgba(255,255,255,0.75)" font-family="monospace" font-size="6.5" font-weight="bold">GOOGLE SPANNER &middot; TRUETIME</text>
+            <text x="302" y="22" fill="#EAB308" font-family="monospace" font-size="6.5" text-anchor="end">EXTERNAL CONSISTENCY</text>
+
+            <!-- Cosmic coordinates -->
+            <circle cx="160" cy="100" r="90" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="0.8"/>
+            <circle cx="160" cy="100" r="60" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="0.8"/>
+
+            <!-- GPS Satellite Constellation (Orbit Left & Orbit Right) -->
+            <!-- Satellite 1 (Left) -->
+            <g transform="translate(45, 30)">
+              <rect x="-18" y="-4" width="12" height="8" rx="1" fill="#0284C7" stroke="#38BDF8" stroke-width="0.6"/>
+              <rect x="6" y="-4" width="12" height="8" rx="1" fill="#0284C7" stroke="#38BDF8" stroke-width="0.6"/>
+              <rect x="-6" y="-6" width="12" height="12" rx="2" fill="#E2E8F0" stroke="#94A3B8" stroke-width="0.8"/>
+              <circle cx="0" cy="0" r="2.5" fill="#EAB308"/>
+              <path d="M 0 6 L 115 70" stroke="rgba(234,179,8,0.3)" stroke-width="1.2" stroke-dasharray="3,2"/>
+            </g>
+
+            <!-- Satellite 2 (Right) -->
+            <g transform="translate(275, 30)">
+              <rect x="-18" y="-4" width="12" height="8" rx="1" fill="#0284C7" stroke="#38BDF8" stroke-width="0.6"/>
+              <rect x="6" y="-4" width="12" height="8" rx="1" fill="#0284C7" stroke="#38BDF8" stroke-width="0.6"/>
+              <rect x="-6" y="-6" width="12" height="12" rx="2" fill="#E2E8F0" stroke="#94A3B8" stroke-width="0.8"/>
+              <circle cx="0" cy="0" r="2.5" fill="#EAB308"/>
+              <path d="M 0 6 L -115 70" stroke="rgba(234,179,8,0.3)" stroke-width="1.2" stroke-dasharray="3,2"/>
+            </g>
+
+            <!-- Center Quantum TrueTime Band -->
+            <g transform="translate(80, 56)">
+              <rect width="160" height="42" rx="5" fill="#0D1424" stroke="rgba(234,179,8,0.4)" stroke-width="1"/>
+              <!-- Oscillator wave -->
+              <path d="M 8 21 Q 18 6, 28 21 T 48 21 T 68 21 T 88 21 T 108 21 T 128 21 T 148 21" fill="none" stroke="#EAB308" stroke-width="1.8" filter="url(#glow-sp)"/>
+              
+              <line x1="80" y1="4" x2="80" y2="38" stroke="#EF4444" stroke-width="1.5"/>
+              <text x="80" y="36" fill="#F87171" font-family="monospace" font-size="5" text-anchor="middle">TT.now()</text>
+
+              <line x1="55" y1="10" x2="55" y2="32" stroke="#EAB308" stroke-width="1" stroke-dasharray="2,1"/>
+              <line x1="105" y1="10" x2="105" y2="32" stroke="#EAB308" stroke-width="1" stroke-dasharray="2,1"/>
+              <text x="55" y="8" fill="#FDE047" font-family="monospace" font-size="4.5" text-anchor="middle">t.earliest</text>
+              <text x="105" y="8" fill="#FDE047" font-family="monospace" font-size="4.5" text-anchor="middle">t.latest</text>
+              <text x="80" y="47" fill="rgba(255,255,255,0.7)" font-family="monospace" font-size="5" text-anchor="middle">UNCERTAINTY &epsilon; &le; 7ms &middot; WAIT-OUT PROTOCOL</text>
+            </g>
+
+            <!-- Interlocking Paxos Consensus Rings Below -->
+            <g transform="translate(160, 150)">
+              <circle cx="-50" cy="0" r="22" fill="rgba(56,189,248,0.08)" stroke="#38BDF8" stroke-width="1.2"/>
+              <circle cx="-50" cy="0" r="4" fill="#38BDF8"/>
+              <text x="-50" y="14" fill="#38BDF8" font-family="monospace" font-size="4.5" text-anchor="middle">PAXOS A</text>
+
+              <!-- Ring 2 (Leader) -->
+              <circle cx="0" cy="0" r="24" fill="rgba(16,185,129,0.12)" stroke="#10B981" stroke-width="1.5" filter="url(#glow-sp)"/>
+              <circle cx="0" cy="0" r="5" fill="#10B981"/>
+              <text x="0" y="15" fill="#34D399" font-family="monospace" font-size="5" font-weight="bold" text-anchor="middle">LEADER</text>
+
+              <circle cx="50" cy="0" r="22" fill="rgba(56,189,248,0.08)" stroke="#38BDF8" stroke-width="1.2"/>
+              <circle cx="50" cy="0" r="4" fill="#38BDF8"/>
+              <text x="50" y="14" fill="#38BDF8" font-family="monospace" font-size="4.5" text-anchor="middle">PAXOS B</text>
+
+              <line x1="-28" y1="0" x2="-24" y2="0" stroke="#FFFFFF" stroke-width="1"/>
+              <line x1="24" y1="0" x2="28" y2="0" stroke="#FFFFFF" stroke-width="1"/>
+            </g>
+          </svg>
+        `
+      },
+      {
+        id: "github-git-storage",
+        company: "GitHub",
+        blog: "GitHub Engineering",
+        title: "How GitHub Stores Hundreds of Millions of Repositories",
+        summary: "The evolution of Spokes, Git packfiles, delta compression, and multi-datacenter quorum replication keeping 200M+ codebases durable with sub-millisecond clone starts.",
+        takeaways: [
+          "Spokes orchestrates 3-way read/write replication for every git push.",
+          "Bitmap packfile indices allow instant object negotiation without walking graphs.",
+          "Geometric repacking keeps repository size constant during high commit volumes."
+        ],
+        tag: "Storage",
+        readingTime: "9 min",
+        level: "Senior / Storage Infrastructure",
+        url: "https://github.blog"
+      },
+      {
+        id: "discord-scylladb-migration",
+        company: "Discord",
+        blog: "Discord Blog",
+        title: "How Discord Stores Trillions of Messages",
+        summary: "The multi-year architectural journey migrating from MongoDB to Apache Cassandra, and finally to ScyllaDB in C++ to tame garbage collection latency spikes.",
+        takeaways: [
+          "JVM GC pauses previously caused cascading p99 latency storms under message spikes.",
+          "ScyllaDB's thread-per-core asynchronous architecture delivers deterministic &lt;5ms p99s.",
+          "Custom Rust intermediate migration pipeline synced live writes without downtime."
+        ],
+        tag: "Databases",
+        readingTime: "8 min",
+        level: "Senior / Performance",
+        url: "https://discord.com/blog"
+      },
+      {
+        id: "shopify-flash-sales",
+        company: "Shopify",
+        blog: "Shopify Engineering",
+        title: "Surviving Black Friday: 10x Baseline Flash Spikes",
+        summary: "How Shopify provisions its global multi-tenant Rails monolith on Kubernetes, caching millions of inventory counts in memory to handle $9.3B in weekend sales.",
+        takeaways: [
+          "MySQL read replica load shedding automatically shifts traffic during heavy checkout surges.",
+          "Ephemeral cache warming prevents thundering herds on critical product pages.",
+          "Pod autoscaling based on ingress request rate rather than CPU utilization."
+        ],
+        tag: "Distributed Systems",
+        readingTime: "11 min",
+        level: "Staff / Production",
+        url: "https://shopify.engineering"
+      }
+    ];
+
+    const SUGGESTIONS = [
+      { text: "Netflix Active-Active failover", tag: "Distributed Systems" },
+      { text: "Stripe API Idempotency Keys", tag: "API Design" },
+      { text: "Cloudflare wire-speed eBPF", tag: "Kernel" },
+      { text: "Figma WebAssembly 60fps", tag: "Graphics" },
+      { text: "Google Spanner TrueTime clock", tag: "Consensus" },
+      { text: "Discord Cassandra to ScyllaDB", tag: "Databases" }
+    ];
+
+    /* ─── State Management ────────────────────────────────────── */
+    let currentFilter = "all";
+    let isElevated = false;
+    let highestZ = 30;
+
+    const deskSurface = document.getElementById("deskSurface");
+    const heroContainer = document.getElementById("heroContainer");
+    const searchInput = document.getElementById("searchInput");
+    const omnibar = document.getElementById("omnibar");
+    const clearBtn = document.getElementById("clearBtn");
+    const suggestionsTray = document.getElementById("suggestionsTray");
+    const resultsDrawer = document.getElementById("resultsDrawer");
+    const resultsList = document.getElementById("resultsList");
+    const resultsCount = document.getElementById("resultsCount");
+    const filterDeck = document.getElementById("filterDeck");
+    const savedDispatches = new Set();
+
+    /* ─── Render Polaroid Cards onto Desk ─────────────────────── */
+    function renderDesk() {
+      deskSurface.innerHTML = "";
+      // Only render articles with spatial coords
+      const visualArticles = DISPATCHES.filter(d => d.coords);
+
+      visualArticles.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "polaroid";
+        card.id = `card-${item.id}`;
+        card.dataset.id = item.id;
+        card.dataset.tag = item.tag;
+
+        // Positioning
+        Object.entries(item.coords).forEach(([prop, val]) => {
+          if (prop === "rotate") {
+            card.style.transform = `rotate(${val}deg)`;
+            card.dataset.originalRotate = val;
+          } else {
+            card.style[prop] = val;
+          }
+        });
+
+        // Fast tape accent
+        let tapeHtml = "";
+        if (item.tape === "tape-scotch-corner") {
+          tapeHtml = `<div class="tape-strip tape-scotch-corner"></div>`;
+        } else if (item.tape === "tape-scotch-center") {
+          tapeHtml = `<div class="tape-strip tape-scotch-center"></div>`;
+        } else if (item.tape === "tape-washi-top") {
+          tapeHtml = `<div class="tape-strip tape-washi-top"></div>`;
+        } else if (item.tape === "push-pin") {
+          tapeHtml = `<div class="push-pin"></div>`;
+        }
+
+        card.innerHTML = `
+          ${tapeHtml}
+          <div class="polaroid-frame">
+            ${item.diagram || ""}
+            <span class="company-pill">${item.company}</span>
+          </div>
+          <div class="polaroid-caption">
+            <h3 class="polaroid-heading">${item.title}</h3>
+            <span class="polaroid-annotation">${item.annotation}</span>
+            <div class="polaroid-meta">
+              <span class="tag">#${item.tag.replace(/\s+/g, '')}</span>
+              <span>${item.readingTime}</span>
+            </div>
+          </div>
+        `;
+
+        // Click to inspect vs drag detection
+        let startX = 0, startY = 0, hasMoved = false;
+
+        card.addEventListener("pointerdown", (e) => {
+          // Bring to front
+          highestZ++;
+          card.style.zIndex = highestZ;
+
+          startX = e.clientX;
+          startY = e.clientY;
+          hasMoved = false;
+
+          const rect = card.getBoundingClientRect();
+          const offsetX = e.clientX - rect.left;
+          const offsetY = e.clientY - rect.top;
+
+          card.classList.add("dragging");
+          card.setPointerCapture(e.pointerId);
+
+          const onPointerMove = (moveEvent) => {
+            const dx = Math.abs(moveEvent.clientX - startX);
+            const dy = Math.abs(moveEvent.clientY - startY);
+            if (dx > 4 || dy > 4) {
+              hasMoved = true;
+            }
+
+            const newX = moveEvent.clientX - offsetX;
+            const newY = moveEvent.clientY - offsetY;
+
+            card.style.left = `${newX}px`;
+            card.style.top = `${newY}px`;
+            card.style.right = "auto";
+            card.style.bottom = "auto";
+            card.style.transform = `rotate(0deg) scale(1.04)`;
+          };
+
+          const onPointerUp = (upEvent) => {
+            card.classList.remove("dragging");
+            card.releasePointerCapture(upEvent.pointerId);
+            card.removeEventListener("pointermove", onPointerMove);
+            card.removeEventListener("pointerup", onPointerUp);
+
+            if (!hasMoved) {
+              openSheet(item);
+            } else {
+              // Settle with slight organic tilt
+              const settleTilt = (Math.random() * 8 - 4).toFixed(1);
+              card.style.transform = `rotate(${settleTilt}deg)`;
+              card.dataset.originalRotate = settleTilt;
+            }
+          };
+
+          card.addEventListener("pointermove", onPointerMove);
+          card.addEventListener("pointerup", onPointerUp);
+        });
+
+        deskSurface.appendChild(card);
+      });
+    }
+
+    /* ─── Search & Live Filtering ─────────────────────────────── */
+    function filterArticles(query = "", tag = "all") {
+      const q = query.trim().toLowerCase();
+      const matching = DISPATCHES.filter(article => {
+        const matchesQuery = !q ||
+          article.title.toLowerCase().includes(q) ||
+          article.summary.toLowerCase().includes(q) ||
+          article.company.toLowerCase().includes(q) ||
+          article.tag.toLowerCase().includes(q);
+
+        const matchesTag = tag === "all" || article.tag.toLowerCase() === tag.toLowerCase();
+
+        return matchesQuery && matchesTag;
+      });
+
+      // Update Desk Polaroids highlight & dimming
+      const cards = document.querySelectorAll(".polaroid");
+      cards.forEach(card => {
+        const id = card.dataset.id;
+        const isMatch = matching.some(m => m.id === id);
+
+        if (q || tag !== "all") {
+          if (isMatch) {
+            card.classList.add("highlighted");
+            card.classList.remove("dimmed");
+            // Gentle wiggle animation
+            wiggleCard(card);
+          } else {
+            card.classList.remove("highlighted");
+            card.classList.add("dimmed");
+          }
+        } else {
+          card.classList.remove("highlighted");
+          card.classList.remove("dimmed");
+        }
+      });
+
+      // Update Search Results Drawer
+      if (q || tag !== "all") {
+        elevateHero(true);
+        renderResultsList(matching, q);
+      } else {
+        elevateHero(false);
+      }
+    }
+
+    function elevateHero(elevate) {
+      isElevated = elevate;
+      if (elevate) {
+        heroContainer.classList.add("elevated");
+        resultsDrawer.classList.add("active");
+      } else {
+        heroContainer.classList.remove("elevated");
+        resultsDrawer.classList.remove("active");
+      }
+    }
+
+    function renderResultsList(items, query) {
+      resultsCount.textContent = `${items.length} Dispatch${items.length === 1 ? '' : 'es'} Located`;
+      resultsList.innerHTML = "";
+
+      if (items.length === 0) {
+        resultsList.innerHTML = `
+          <div style="padding: 32px 16px; text-align: center; color: var(--ink-tertiary); font-family: 'Newsreader', serif; font-size: 16px; font-style: italic;">
+            No engineering dispatches match your query &mdash; try searching for consensus, eBPF, or databases.
+          </div>
+        `;
+        return;
+      }
+
+      items.forEach((item, index) => {
+        const card = document.createElement("div");
+        card.className = "result-card";
+
+        const titleHighlighted = highlightText(item.title, query);
+        const snippetHighlighted = highlightText(item.summary, query);
+        const initial = (item.company || "E").charAt(0).toUpperCase();
+        const isSaved = savedDispatches.has(item.id);
+
+        card.innerHTML = `
+          <div class="result-monogram">${initial}</div>
+          <div class="result-body">
+            <div class="result-company-badge">${item.company} &middot; ${item.tag}</div>
+            <h4 class="result-title">${titleHighlighted}</h4>
+            <p class="result-snippet">${snippetHighlighted}</p>
+            <div class="result-foot">
+              <span class="result-foot-tag">${item.level || 'Engineering Staff'}</span>
+              <span>${item.readingTime}</span>
+            </div>
+          </div>
+          <div class="result-actions">
+            <button class="result-save-btn ${isSaved ? 'saved' : ''}" title="${isSaved ? 'Saved in library' : 'Save dispatch'}" aria-label="Save dispatch">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="${isSaved ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
+                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+              </svg>
+            </button>
+            <button class="result-read-btn" aria-label="Read dispatch">
+              <span>Read</span>
+              <span style="font-size: 11px; opacity: 0.7;">&rarr;</span>
+            </button>
+          </div>
+        `;
+
+        card.onclick = (e) => {
+          const saveBtn = e.target.closest('.result-save-btn');
+          if (saveBtn) {
+            e.stopPropagation();
+            if (savedDispatches.has(item.id)) {
+              savedDispatches.delete(item.id);
+              saveBtn.classList.remove('saved');
+              saveBtn.title = 'Save dispatch';
+              saveBtn.querySelector('svg').setAttribute('fill', 'none');
+            } else {
+              savedDispatches.add(item.id);
+              saveBtn.classList.add('saved');
+              saveBtn.title = 'Saved in library';
+              saveBtn.querySelector('svg').setAttribute('fill', 'currentColor');
+            }
+            return;
+          }
+          openSheet(item);
+        };
+
+        resultsList.appendChild(card);
+      });
+    }
+
+    function highlightText(text, query) {
+      if (!query) return text;
+      const re = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+      return text.replace(re, `<mark style="background:rgba(180,83,9,0.12); color:#B45309; border-radius:2px; padding:0 2px;">$1</mark>`);
+    }
+
+    function wiggleCard(card) {
+      const orig = parseFloat(card.dataset.originalRotate) || 0;
+      card.style.transition = "transform 0.08s ease";
+      let count = 0;
+      const interval = setInterval(() => {
+        count++;
+        const delta = Math.sin(count * 2) * 3;
+        card.style.transform = `rotate(${orig + delta}deg)`;
+        if (count > 6) {
+          clearInterval(interval);
+          card.style.transition = "";
+          card.style.transform = `rotate(${orig}deg)`;
+        }
+      }, 35);
+    }
+
+    /* ─── Search Suggestions ──────────────────────────────────── */
+    function renderSuggestions() {
+      suggestionsTray.innerHTML = `<div class="suggestion-header">Editorial Queries</div>`;
+      SUGGESTIONS.forEach(s => {
+        const row = document.createElement("div");
+        row.className = "suggestion-row";
+        row.innerHTML = `
+          <span>${s.text}</span>
+          <span class="suggestion-tag">#${s.tag}</span>
+        `;
+        row.onmousedown = () => {
+          searchInput.value = s.text;
+          clearBtn.classList.add("visible");
+          suggestionsTray.classList.remove("open");
+          filterArticles(s.text, currentFilter);
+        };
+        suggestionsTray.appendChild(row);
+      });
+    }
+
+    /* ─── Inspection Modal (Detail Sheet) ─────────────────────── */
+    function openSheet(item) {
+      document.getElementById("sheetBlueprint").innerHTML = item.diagram || `
+        <svg viewBox="0 0 240 150" xmlns="http://www.w3.org/2000/svg">
+          <rect width="240" height="150" fill="#0F172A"/>
+          <text x="120" y="75" fill="rgba(148,163,184,0.4)" font-family="monospace" font-size="7" text-anchor="middle">ARCHITECTURAL SCHEMATIC &middot; ${item.company.toUpperCase()}</text>
+        </svg>
+      `;
+      document.getElementById("sheetCompany").textContent = `${item.company} · ${item.tag}`;
+      document.getElementById("sheetLevel").textContent = item.level || "Principal Infrastructure";
+      document.getElementById("sheetTitle").textContent = item.title;
+      document.getElementById("sheetAnnotation").textContent = item.annotation || "Critical Production Architecture";
+      document.getElementById("sheetSummary").textContent = item.summary;
+
+      const takeawaysEl = document.getElementById("sheetTakeaways");
+      takeawaysEl.innerHTML = "";
+      const bullets = item.takeaways || [
+        "Eliminated cascading failure propagation across distributed boundaries.",
+        "Deterministic latency profile maintained under 10x traffic multiplier.",
+        "Zero data-loss failover protocol verified in continuous fault-injection tests."
+      ];
+      bullets.forEach(b => {
+        const li = document.createElement("li");
+        li.textContent = b;
+        takeawaysEl.appendChild(li);
+      });
+
+      document.getElementById("sheetStats").textContent = `${item.readingTime} read · Published by ${item.company}`;
+      document.getElementById("sheetCta").href = item.url || "#";
+
+      const scrim = document.getElementById("sheetScrim");
+      scrim.classList.add("open");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeSheet(e) {
+      if (e.target.id === "sheetScrim") {
+        closeSheetDirect();
+      }
+    }
+
+    function closeSheetDirect() {
+      const scrim = document.getElementById("sheetScrim");
+      scrim.classList.remove("open");
+      document.body.style.overflow = "";
+    }
+
+    /* ─── Shuffle Desk ────────────────────────────────────────── */
+    function shuffleDesk() {
+      const cards = document.querySelectorAll(".polaroid");
+      const defaultPositions = [
+        { top: "11%", left: "4%", rotate: -6 },
+        { top: "9%", right: "4%", rotate: 5 },
+        { bottom: "11%", right: "6%", rotate: 7 },
+        { bottom: "10%", left: "5%", rotate: -8 },
+        { top: "54%", left: "3%", rotate: 4 },
+        { top: "52%", right: "3%", rotate: -5 }
+      ];
+
+      cards.forEach((card, i) => {
+        const base = defaultPositions[i % defaultPositions.length];
+        const randomTilt = (base.rotate + (Math.random() * 6 - 3)).toFixed(1);
+
+        card.style.transition = "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)";
+        card.style.top = base.top || "auto";
+        card.style.bottom = base.bottom || "auto";
+        card.style.left = base.left || "auto";
+        card.style.right = base.right || "auto";
+        card.style.transform = `rotate(${randomTilt}deg)`;
+        card.dataset.originalRotate = randomTilt;
+
+        setTimeout(() => {
+          card.style.transition = "";
+        }, 550);
+      });
+    }
+
+    function resetToCenter() {
+      searchInput.value = "";
+      clearBtn.classList.remove("visible");
+      currentFilter = "all";
+      document.querySelectorAll(".washi-chip").forEach(c => c.classList.remove("active"));
+      document.querySelector(`.washi-chip[data-tag="all"]`).classList.add("active");
+      filterArticles("", "all");
+    }
+
+    function focusSearch() {
+      searchInput.focus();
+      searchInput.select();
+    }
+
+    /* ─── Event Listeners ─────────────────────────────────────── */
+    searchInput.addEventListener("input", (e) => {
+      const val = e.target.value;
+      clearBtn.classList.toggle("visible", val.length > 0);
+      if (val.length === 0) {
+        suggestionsTray.classList.add("open");
+      } else {
+        suggestionsTray.classList.remove("open");
+      }
+      filterArticles(val, currentFilter);
+    });
+
+    searchInput.addEventListener("focus", () => {
+      if (!searchInput.value.trim()) {
+        renderSuggestions();
+        suggestionsTray.classList.add("open");
+      }
+    });
+
+    searchInput.addEventListener("blur", () => {
+      setTimeout(() => suggestionsTray.classList.remove("open"), 200);
+    });
+
+    clearBtn.addEventListener("click", () => {
+      searchInput.value = "";
+      clearBtn.classList.remove("visible");
+      filterArticles("", currentFilter);
+      searchInput.focus();
+    });
+
+    // Keyboard Shortcuts (Cmd+K / Ctrl+K, Escape)
+    window.addEventListener("keydown", (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        focusSearch();
+      }
+      if (e.key === "Escape") {
+        const scrim = document.getElementById("sheetScrim");
+        if (scrim.classList.contains("open")) {
+          closeSheetDirect();
+        } else if (isElevated) {
+          resetToCenter();
+        }
+      }
+    });
+
+    // Washi Tag Chips
+    filterDeck.addEventListener("click", (e) => {
+      const chip = e.target.closest(".washi-chip");
+      if (!chip) return;
+
+      document.querySelectorAll(".washi-chip").forEach(c => c.classList.remove("active"));
+      chip.classList.add("active");
+
+      currentFilter = chip.dataset.tag;
+      filterArticles(searchInput.value, currentFilter);
+    });
+
+    /* ─── Initialization ──────────────────────────────────────── */
+    window.addEventListener("DOMContentLoaded", () => {
+      renderDesk();
+      renderSuggestions();
+      document.querySelector(`.washi-chip[data-tag="all"]`).classList.add("active");
+    });
+  </script>
+</body>
+</html>

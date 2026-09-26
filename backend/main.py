@@ -19,25 +19,42 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_ANON = os.getenv("SUPABASE_ANON")
 ZNAPAI_API_KEY = os.getenv("ZNAPAI_API_KEY")
 
-if not ZNAPAI_API_KEY:
-    print("Warning: ZNAPAI_API_KEY not found in environment variables")
-
-supabase:Client=create_client(SUPABASE_URL,SUPABASE_ANON)
+supabase: Optional[Client] = None
+if SUPABASE_URL and SUPABASE_ANON:
+    try:
+        supabase = create_client(SUPABASE_URL, SUPABASE_ANON)
+        print("Supabase client initialized successfully.")
+    except Exception as e:
+        print(f"Warning: Failed to initialize Supabase client: {e}")
+else:
+    print("Warning: SUPABASE_URL or SUPABASE_ANON not set. Database queries will return empty results.")
 
 # Set device for PyTorch
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print(f"Using device: {device}")
 
 # Load the Sentence Transformer model
-print("Loading sentence-transformer model...")
-model = SentenceTransformer('all-mpnet-base-v2', device=device)
-print("Model loaded.")
+model = None
+try:
+    print("Loading sentence-transformer model...")
+    model = SentenceTransformer('all-mpnet-base-v2', device=device)
+    print("Model loaded.")
+except Exception as e:
+    print(f"Warning: Could not load sentence-transformer model: {e}")
 
 # Initialize OpenAI client for ZnapAI for summarization
-openai_client = openai.OpenAI(
-    api_key=ZNAPAI_API_KEY,
-    base_url="https://api.znapai.com/"
-)
+openai_client = None
+if ZNAPAI_API_KEY:
+    try:
+        openai_client = openai.OpenAI(
+            api_key=ZNAPAI_API_KEY,
+            base_url="https://api.znapai.com/"
+        )
+        print("ZnapAI client initialized.")
+    except Exception as e:
+        print(f"Warning: Could not initialize ZnapAI client: {e}")
+else:
+    print("Warning: ZNAPAI_API_KEY not found in environment variables")
 
 app = FastAPI()
 
@@ -193,6 +210,9 @@ async def semantic_search_articles(q: str, user_id: Optional[str] = None):
     Performs AI-powered semantic search with automatic retry, caching, and keyword fallback
     """
     if not q or not q.strip():
+        return {"results": []}
+
+    if not supabase:
         return {"results": []}
 
     clean_q = q.strip()

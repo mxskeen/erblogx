@@ -566,10 +566,12 @@ export const CURATED_DISPATCHES = [
     ];
 
 export const EDITORIAL_SUGGESTIONS = [
-      { text: "Netflix Active-Active failover", tag: "Distributed Systems" },
-      { text: "Stripe API Idempotency Keys", tag: "API Design" },
-      { text: "Cloudflare wire-speed eBPF", tag: "Kernel" },
-      { text: "Figma WebAssembly 60fps", tag: "Graphics" },
-      { text: "Google Spanner TrueTime clock", tag: "Consensus" },
-      { text: "Discord Cassandra to ScyllaDB", tag: "Databases" }
-    ];
+  { text: "How does Stripe prevent duplicate payments with idempotency keys?", tag: "Payments" },
+  { text: "Automated multi-region active-active database failover without data loss", tag: "High Availability" },
+  { text: "Dropping multi-terabit volumetric DDoS at wire speed with eBPF and XDP", tag: "Networking" },
+  { text: "How Google Spanner achieves external consistency with TrueTime atomic clocks", tag: "Consensus" },
+  { text: "Why did Uber abandon MySQL for Schemaless append-only storage?", tag: "Storage" },
+  { text: "Preventing split-brain leader elections and log divergence in Raft", tag: "Distributed Systems" },
+  { text: "Real-time 60 FPS collaborative canvas with WebAssembly and CRDTs", tag: "Performance" },
+  { text: "Migrating billions of chat messages from Cassandra to ScyllaDB", tag: "NoSQL Databases" }
+];
