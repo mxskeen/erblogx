@@ -834,7 +834,7 @@ export default function ArchitecturalDesk() {
               <>
                 <span className="search-indicator-dot" />
                 <span>
-                  Searching 25,000+ articles for &ldquo;{searchQuery}&rdquo;...
+                  Semantic Search over 25,000+ articles for &ldquo;{searchQuery}&rdquo;...
                 </span>
               </>
             ) : (
