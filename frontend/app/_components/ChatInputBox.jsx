@@ -595,7 +595,7 @@ export default function ArchitecturalDesk() {
 
           <SignedOut>
             <SignInButton mode="modal">
-              <button type="button" className="btn-action ml-1">
+              <button type="button" className="btn-action">
                 <span>Sign In</span>
               </button>
             </SignInButton>
@@ -772,6 +772,55 @@ export default function ArchitecturalDesk() {
                   </button>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* Curated Architecture Blueprints — Mobile Vertical Cards (1-2 only) */}
+          {!isElevated && (
+            <div className="mobile-cards-stack">
+              <div className="mobile-cards-label">
+                <span>Featured Architecture Blueprints</span>
+              </div>
+              {cardsState.slice(0, 2).map((card) => (
+                <div
+                  key={`mobile-${card.id}`}
+                  className="mobile-card"
+                  onClick={() => setActiveModalItem(card)}
+                >
+                  <div className="mobile-card-frame">
+                    {card.diagram ? (
+                      <div
+                        dangerouslySetInnerHTML={{ __html: card.diagram }}
+                        style={{ width: "100%", height: "100%" }}
+                      />
+                    ) : (
+                      <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="320" height="200" fill="#0A0E17" />
+                        <text
+                          x="160"
+                          y="100"
+                          fill="rgba(255,255,255,0.4)"
+                          fontFamily="monospace"
+                          fontSize="10"
+                          textAnchor="middle"
+                        >
+                          {card.company.toUpperCase()}
+                        </text>
+                      </svg>
+                    )}
+                    <span className="company-pill">{card.company}</span>
+                  </div>
+
+                  <div className="mobile-card-caption">
+                    <h3 className="mobile-card-title">{card.title}</h3>
+                    <span className="mobile-card-annotation">{card.annotation}</span>
+                    <div className="mobile-card-meta">
+                      <span className="tag">#{card.tag?.replace(/\s+/g, "")}</span>
+                      <span className="view-hint">Tap to inspect &rarr;</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
