@@ -219,6 +219,17 @@ header.apple-nav {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
+.btn-action.btn-linkedin {
+  text-decoration: none;
+  color: var(--ink-secondary);
+}
+
+.btn-action.btn-linkedin:hover {
+  color: #0A66C2;
+  border-color: #0A66C2;
+  background: #FFFFFF;
+}
+
 /* ─── Hero Core & Omnibar ─────────────────────────────────── */
 .hero-container {
   position: fixed;
