@@ -538,7 +538,13 @@ export default function ArchitecturalDesk() {
       {/* Top Apple Navigation Header */}
       <header className="apple-nav">
         <div className="nav-brand" onClick={resetToCenter} title="Reset drafting table">
-          <div className="brand-mark">E</div>
+          <img
+            src="/icon.png"
+            alt="ErBlogX Logo"
+            className="brand-logo"
+            width={24}
+            height={24}
+          />
           <div className="brand-title">
             <em>Er</em>BlogX
           </div>

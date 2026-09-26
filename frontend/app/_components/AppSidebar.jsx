@@ -43,14 +43,17 @@ function AppSidebar () {
   return (
     <Sidebar>
       <SidebarHeader className="bg-[#FAF8F5] border-b border-stone-200/70 flex items-center py-3 sm:py-5">
-        <a href="/">
+        <a href="/" className="flex items-center gap-2.5 px-3">
           <Image 
-            src="/logo.png" 
-            alt="logo" 
-            width={180} 
-            height={140} 
-            className="w-36 h-auto sm:w-44 md:w-48"
+            src="/icon.png" 
+            alt="ErBlogX Logo" 
+            width={36} 
+            height={36} 
+            className="w-9 h-9 rounded-lg border border-stone-200/80 shadow-xs"
           />
+          <span className="font-serif text-xl text-stone-900 font-normal tracking-tight">
+            <em className="italic text-stone-600">Er</em>BlogX
+          </span>
         </a>
       </SidebarHeader>
 

@@ -130,6 +130,16 @@ header.apple-nav {
   letter-spacing: -0.5px;
 }
 
+.brand-logo {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid var(--border-medium);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  flex-shrink: 0;
+}
+
 .brand-title {
   font-family: "Newsreader", Georgia, serif;
   font-size: 18px;
