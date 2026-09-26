@@ -49,7 +49,7 @@ function AppSidebar () {
             alt="ErBlogX Logo" 
             width={36} 
             height={36} 
-            className="w-9 h-9 rounded-lg border border-stone-200/80 shadow-xs"
+            className="w-7 h-7 object-contain"
           />
           <span className="font-serif text-xl text-stone-900 font-normal tracking-tight">
             <em className="italic text-stone-600">Er</em>BlogX

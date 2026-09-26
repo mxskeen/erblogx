@@ -386,7 +386,7 @@ export default function ArchitecturalDesk() {
       el.classList.remove("dragging");
       try {
         el.releasePointerCapture(upEvt.pointerId);
-      } catch {}
+      } catch { }
       el.removeEventListener("pointermove", onPointerMove);
       el.removeEventListener("pointerup", onPointerUp);
 
@@ -404,16 +404,16 @@ export default function ArchitecturalDesk() {
           prev.map((c) =>
             c.id === cardId
               ? {
-                  ...c,
-                  currentPos: {
-                    top: el.style.top,
-                    left: el.style.left,
-                    right: "auto",
-                    bottom: "auto",
-                  },
-                  rotate: settleTilt,
-                  zIndex: currentZ,
-                }
+                ...c,
+                currentPos: {
+                  top: el.style.top,
+                  left: el.style.left,
+                  right: "auto",
+                  bottom: "auto",
+                },
+                rotate: settleTilt,
+                zIndex: currentZ,
+              }
               : c
           )
         );
@@ -428,21 +428,21 @@ export default function ArchitecturalDesk() {
   const localMatching = !searchQuery.trim()
     ? []
     : CURATED_DISPATCHES.filter((item) => {
-        const q = searchQuery.trim().toLowerCase();
-        const words = q
-          .split(/[\s,?.!]+/)
-          .filter(
-            (w) =>
-              w.length > 2 &&
-              !["how", "does", "what", "with", "from", "the", "and", "why", "did", "for", "in", "into"].includes(w)
-          );
+      const q = searchQuery.trim().toLowerCase();
+      const words = q
+        .split(/[\s,?.!]+/)
+        .filter(
+          (w) =>
+            w.length > 2 &&
+            !["how", "does", "what", "with", "from", "the", "and", "why", "did", "for", "in", "into"].includes(w)
+        );
 
-        const itemContent = `${item.title} ${item.summary} ${item.company} ${item.tag} ${item.annotation || ""}`.toLowerCase();
+      const itemContent = `${item.title} ${item.summary} ${item.company} ${item.tag} ${item.annotation || ""}`.toLowerCase();
 
-        if (itemContent.includes(q)) return true;
-        const matchCount = words.filter((w) => itemContent.includes(w)).length;
-        return matchCount >= 1 && (words.length <= 2 || matchCount >= 2);
-      });
+      if (itemContent.includes(q)) return true;
+      const matchCount = words.filter((w) => itemContent.includes(w)).length;
+      return matchCount >= 1 && (words.length <= 2 || matchCount >= 2);
+    });
 
   // Map backend articles into consistent dispatch schema with clean text and intelligent takeaways
   const mappedBackend = backendResults
@@ -666,7 +666,6 @@ export default function ArchitecturalDesk() {
       <div className={`hero-container ${isElevated ? "elevated" : ""}`}>
         <div className="hero-interactive">
           <div className="hero-identity">
-            <div className="edition-tag">Volume IV &middot; Technical Archive</div>
             <h1 className="hero-title">
               The Index for <em>Everything</em> Engineering.
             </h1>
@@ -1042,9 +1041,8 @@ export default function ArchitecturalDesk() {
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    className={`btn-action ${
-                      savedIds.has(String(activeModalItem.id)) ? "primary" : ""
-                    }`}
+                    className={`btn-action ${savedIds.has(String(activeModalItem.id)) ? "primary" : ""
+                      }`}
                     onClick={(e) => toggleSave(activeModalItem, e)}
                   >
                     <svg
