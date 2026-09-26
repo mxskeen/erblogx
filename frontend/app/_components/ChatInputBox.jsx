@@ -553,30 +553,6 @@ export default function ArchitecturalDesk() {
         <div className="nav-actions">
           <button
             type="button"
-            className="btn-action"
-            onClick={shuffleDesk}
-            title="Reorganize drafting table"
-          >
-            <svg
-              width="13"
-              height="13"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <polyline points="16 3 21 3 21 8" />
-              <line x1="4" y1="20" x2="21" y2="3" />
-              <polyline points="21 16 21 21 16 21" />
-              <line x1="15" y1="15" x2="21" y2="21" />
-            </svg>
-            <span>Shuffle</span>
-          </button>
-
-          <button
-            type="button"
             className="btn-action primary"
             onClick={focusSearch}
             title="Focus omnibar (⌘K)"
@@ -1132,32 +1108,6 @@ export default function ArchitecturalDesk() {
             </div>
           </div>
         )}
-      </div>
-
-      {/* Bottom Floating Desk Dock */}
-      <div className={`desk-dock ${isElevated ? "search-active" : ""}`}>
-        <div className="dock-indicator">
-          <span>Drafting Canvas</span>
-          <span style={{ opacity: 0.35 }}>&middot;</span>
-          <span>Click any polaroid to inspect</span>
-        </div>
-        <div className="dock-divider" />
-        <button type="button" className="dock-btn" onClick={shuffleDesk}>
-          <svg
-            width="12"
-            height="12"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <polyline points="16 3 21 3 21 8" />
-            <line x1="4" y1="20" x2="21" y2="3" />
-            <polyline points="21 16 21 21 16 21" />
-            <line x1="15" y1="15" x2="21" y2="21" />
-          </svg>
-          <span>Tidy Canvas</span>
-        </button>
       </div>
     </>
   );
