@@ -1,83 +1,44 @@
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { SidebarProvider, SidebarTrigger } from '../components/ui/sidebar'
-import { AppSidebar } from "./_components/AppSidebar"
 import { ClerkProvider } from "@clerk/nextjs";
 import Provider from "./provider";
-import Header from "./_components/Header";
-import FloatingDock from "../components/ui/FloatingDock";
-import { Compass, GalleryHorizontalEnd, Home as HomeIcon } from "lucide-react";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata = {
-  title: "ErBlogX - AI-Powered Engineering Blog Search",
-  description: "Search over 25,000+ engineering blogs and articles from 600+ sources with AI-powered semantic search. Get instant summaries and discover the best technical content.",
-  keywords: "engineering blogs, technical articles, AI search, software engineering, programming, technology",
+  title: "ErBlogX — The Index for Everything Engineering",
+  description: "An architectural index of 25,000+ engineering dispatches from the world's most demanding engineering organizations.",
+  keywords: "engineering blogs, system design, distributed systems, architecture, postmortems, consensus, eBPF, databases",
   authors: [{ name: "maskeen" }],
   creator: "maskeen",
   openGraph: {
-    title: "ErBlogX - AI-Powered Engineering Blog Search",
-    description: "Search over 25,000+ engineering blogs with AI-powered semantic search",
-
+    title: "ErBlogX — The Index for Everything Engineering",
+    description: "High-signal engineering dispatches from Netflix, Stripe, Cloudflare, Figma, and 600+ teams.",
     type: "website",
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "ErBlogX - AI-Powered Engineering Blog Search",
-    description: "Search over 16,000+ engineering blogs with AI-powered semantic search",
+    title: "ErBlogX — The Index for Everything Engineering",
+    description: "High-signal engineering dispatches from Netflix, Stripe, Cloudflare, Figma, and 600+ teams.",
   },
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#FAF8F5] text-stone-900 selection:bg-amber-100 selection:text-amber-900 min-h-screen`}
-      >
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600&family=Inter:wght@300;400;450;500;600&family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="antialiased bg-[#FBFBF9] text-[#18181B] selection:bg-zinc-900 selection:text-white min-h-screen">
         <ClerkProvider
           publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
-          appearance={{
-            baseTheme: undefined,
-          }}
         >
-          <SidebarProvider>
-            <AppSidebar />
-            <SidebarTrigger className="fixed top-3.5 left-3.5 z-40 h-8 w-8 rounded-lg bg-white/85 hover:bg-stone-100 border border-stone-200/80 text-stone-700 shadow-sm backdrop-blur-md transition-colors" />
-            <Provider>
-              {children}
-              <Header />
-              {/* Floating Dock for Home, Discovery & Library */}
-              <FloatingDock
-                items={[
-                  {
-                    title: "Home",
-                    icon: <HomeIcon className="h-full w-full" />,
-                    href: "/",
-                  },
-                  {
-                    title: "Discovery",
-                    icon: <Compass className="h-full w-full" />,
-                    href: "/discover",
-                  },
-                  {
-                    title: "Library",
-                    icon: <GalleryHorizontalEnd className="h-full w-full" />,
-                    href: "/lib",
-                  },
-                ]}
-              />
-            </Provider>
-          </SidebarProvider>
+          <Provider>
+            {children}
+          </Provider>
         </ClerkProvider>
       </body>
     </html>
