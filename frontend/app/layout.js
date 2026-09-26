@@ -4,20 +4,20 @@ import Provider from "./provider";
 
 export const metadata = {
   title: "ErBlogX — The Index for Everything Engineering",
-  description: "An architectural index of 25,000+ engineering dispatches from the world's most demanding engineering organizations.",
+  description: "An architectural index of 25,000+ engineering articles from the world's most demanding engineering organizations.",
   keywords: "engineering blogs, system design, distributed systems, architecture, postmortems, consensus, eBPF, databases",
   authors: [{ name: "maskeen" }],
   creator: "maskeen",
   openGraph: {
     title: "ErBlogX — The Index for Everything Engineering",
-    description: "High-signal engineering dispatches from Netflix, Stripe, Cloudflare, Figma, and 600+ teams.",
+    description: "High-signal engineering articles from Netflix, Stripe, Cloudflare, Figma, and 600+ teams.",
     type: "website",
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
     title: "ErBlogX — The Index for Everything Engineering",
-    description: "High-signal engineering dispatches from Netflix, Stripe, Cloudflare, Figma, and 600+ teams.",
+    description: "High-signal engineering articles from Netflix, Stripe, Cloudflare, Figma, and 600+ teams.",
   },
 };
 

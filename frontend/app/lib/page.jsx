@@ -155,8 +155,8 @@ export default function LibraryPage() {
         {!loading && (
           <p className="font-mono text-xs uppercase tracking-wider text-stone-500 mb-6 text-center">
             {articles.length === 0 
-              ? "Zero saved dispatches yet. Search and save dispatches to curate your library." 
-              : `${articles.length} Saved Dispatch${articles.length > 1 ? 'es' : ''}`
+              ? "Zero saved articles yet. Search and save articles to curate your library." 
+              : `${articles.length} Saved Article${articles.length > 1 ? 's' : ''}`
             }
           </p>
         )}

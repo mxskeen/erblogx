@@ -13,7 +13,7 @@ export default function ExpandableCardList({ items = [], savedIds = [], onToggle
   };
 
   const getCompanyClean = (subtitle = "") => {
-    return subtitle ? subtitle.split(/[-·|]/)[0].trim() : "Engineering Dispatch";
+    return subtitle ? subtitle.split(/[-·|]/)[0].trim() : "Engineering Article";
   };
 
   return (
@@ -31,7 +31,7 @@ export default function ExpandableCardList({ items = [], savedIds = [], onToggle
       <div className="max-w-2xl mx-auto w-full">
         <div className="flex items-center justify-between px-2 mb-2">
           <span className="font-mono text-[10.5px] uppercase tracking-wider text-stone-500">
-            {items.length} Dispatches Located
+            {items.length} Articles Located
           </span>
           <span className="font-mono text-[10px] text-stone-400">
             Semantic Index
@@ -76,7 +76,7 @@ export default function ExpandableCardList({ items = [], savedIds = [], onToggle
                     onToggleSave?.(item.id);
                   }}
                   className="p-2 rounded-full text-stone-400 hover:text-stone-900 hover:bg-stone-200/60 transition-colors cursor-pointer"
-                  title={savedIds.includes(item.id) ? "Saved in library" : "Save dispatch"}
+                  title={savedIds.includes(item.id) ? "Saved in library" : "Save article"}
                 >
                   {savedIds.includes(item.id) ? (
                     <BookmarkCheck className="h-4 w-4 text-amber-700" />

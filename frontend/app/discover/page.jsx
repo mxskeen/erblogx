@@ -56,7 +56,7 @@ export default function DiscoveryPage() {
     { id: "Graphics", label: "#Realtime" },
   ];
 
-  const filteredDispatches = activeCategory === "all"
+  const filteredArticles = activeCategory === "all"
     ? CURATED_DISPATCHES
     : CURATED_DISPATCHES.filter((d) => d.tag.toLowerCase().includes(activeCategory.toLowerCase()));
 
@@ -64,7 +64,7 @@ export default function DiscoveryPage() {
     <div className="flex flex-col w-full px-4 py-8 items-center min-h-screen drafting-canvas">
       <div className="w-full max-w-2xl text-center mb-6">
         <h1 className="font-serif text-2xl sm:text-3xl font-normal text-stone-900 tracking-tight mb-2">
-          Curated Architectural Dispatches
+          Curated Engineering Articles
         </h1>
         <p className="font-mono text-xs uppercase tracking-wider text-stone-500 mb-5">
           Benchmark engineering decisions from foundational technology teams
@@ -86,7 +86,7 @@ export default function DiscoveryPage() {
 
       <div className="w-full max-w-2xl">
         <ExpandableCardList
-          items={filteredDispatches.map((d) => ({
+          items={filteredArticles.map((d) => ({
             id: d.id,
             title: d.title,
             subtitle: `${d.company} · ${d.tag}`,
@@ -95,7 +95,6 @@ export default function DiscoveryPage() {
             diagram: d.diagram,
             annotation: d.annotation,
             takeaways: d.takeaways,
-            readingTime: d.readingTime,
             level: d.level,
             company: d.company,
             tag: d.tag,

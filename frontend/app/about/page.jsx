@@ -14,7 +14,7 @@ export default function AboutPage() {
         </div>
 
         <p className="text-stone-600 text-sm sm:text-base leading-relaxed font-sans">
-          ErBlogX is an architectural intelligence engine indexing 25,000+ technical dispatches from foundational software engineering organizations including Netflix, Stripe, Google, Cloudflare, Figma, and Uber.
+          ErBlogX is an architectural intelligence engine indexing 25,000+ technical articles from foundational software engineering organizations including Netflix, Stripe, Google, Cloudflare, Figma, and Uber.
         </p>
 
         <div className="border-t border-stone-100 pt-4 space-y-3">
@@ -28,7 +28,7 @@ export default function AboutPage() {
             </li>
             <li className="flex items-start gap-2">
               <span className="text-amber-700 font-mono select-none">—</span>
-              <span><strong>AI Synthesis:</strong> Generate executive consensus briefings and trade-off summaries from retrieved dispatches.</span>
+              <span><strong>AI Synthesis:</strong> Generate executive consensus briefings and trade-off summaries from retrieved articles.</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-amber-700 font-mono select-none">—</span>
@@ -36,7 +36,7 @@ export default function AboutPage() {
             </li>
             <li className="flex items-start gap-2">
               <span className="text-amber-700 font-mono select-none">—</span>
-              <span><strong>Live Pipeline:</strong> Bi-weekly ingestion of leading engineering dispatches across 600+ vetted sources.</span>
+              <span><strong>Live Pipeline:</strong> Bi-weekly ingestion of leading engineering articles across 600+ vetted sources.</span>
             </li>
           </ul>
         </div>

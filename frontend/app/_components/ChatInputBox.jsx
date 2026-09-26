@@ -456,7 +456,7 @@ export default function ArchitecturalDesk() {
       const cleaned = cleanArticleContent(b.content);
       const summary = cleaned
         ? cleaned.slice(0, 260) + "..."
-        : "In-depth engineering analysis and architectural dispatch.";
+        : "In-depth engineering analysis and architectural deep dive.";
       const takeaways = extractKeyTakeaways(b.content, [
         "Production-tested architectural implementation deployed across global infrastructure.",
         "High-throughput performance validation with deterministic low-latency characteristics.",
@@ -466,13 +466,11 @@ export default function ArchitecturalDesk() {
       return {
         id: `backend-${b.id}`,
         company: b.company || "Engineering Blog",
-        blog: b.company ? `${b.company} TechBlog` : "Technical Dispatch",
+        blog: b.company ? `${b.company} TechBlog` : "Engineering Blog",
         title: b.title,
         summary: summary,
         fullContent: cleaned,
         tag: b.company ? `${b.company} Systems` : "Systems Architecture",
-        readingTime: "8 min",
-        level: "Staff / Production",
         url: b.url || "#",
         takeaways: takeaways,
         annotation: "Production system architecture",
@@ -549,7 +547,7 @@ export default function ArchitecturalDesk() {
 
         <div className="nav-stats">
           <span className="live-dot" />
-          <span>25,482 DISPATCHES INDEXED</span>
+          <span>25,482 ARTICLES INDEXED</span>
         </div>
 
         <div className="nav-actions">
@@ -676,7 +674,6 @@ export default function ArchitecturalDesk() {
                 <span className="polaroid-annotation">{card.annotation}</span>
                 <div className="polaroid-meta">
                   <span className="tag">#{card.tag.replace(/\s+/g, "")}</span>
-                  <span>{card.readingTime}</span>
                 </div>
               </div>
             </div>
@@ -693,7 +690,7 @@ export default function ArchitecturalDesk() {
               The Index for <em>Everything</em> Engineering.
             </h1>
             <p className="hero-subtitle">
-              High-signal engineering dispatches from Netflix, Stripe, Cloudflare, Figma, and
+              High-signal engineering articles from Netflix, Stripe, Cloudflare, Figma, and
               600+ teams.
             </p>
           </div>
@@ -731,7 +728,7 @@ export default function ArchitecturalDesk() {
               />
 
               {isSearching ? (
-                <div className="omnibar-spinner" title="Searching dispatches..." />
+                <div className="omnibar-spinner" title="Searching articles..." />
               ) : (
                 <button
                   type="button"
@@ -820,13 +817,13 @@ export default function ArchitecturalDesk() {
               <>
                 <span className="search-indicator-dot" />
                 <span>
-                  Searching 25,000+ dispatches for &ldquo;{searchQuery}&rdquo;...
+                  Searching 25,000+ articles for &ldquo;{searchQuery}&rdquo;...
                 </span>
               </>
             ) : (
               <span>
-                {allDisplayResults.length} Dispatch
-                {allDisplayResults.length === 1 ? "" : "es"}{" "}
+                {allDisplayResults.length} Article
+                {allDisplayResults.length === 1 ? "" : "s"}{" "}
                 Found for &ldquo;{searchQuery.trim()}&rdquo;
               </span>
             )}
@@ -887,7 +884,7 @@ export default function ArchitecturalDesk() {
                   fontSize: "13px",
                 }}
               >
-                Reading dispatches and extracting key engineering decisions...
+                Analyzing articles and extracting key engineering decisions...
               </div>
             ) : (
               <div
@@ -929,7 +926,7 @@ export default function ArchitecturalDesk() {
                 fontStyle: "italic",
               }}
             >
-              No engineering dispatches match your query &mdash; try searching for consensus,
+              No engineering articles match your query &mdash; try searching for consensus,
               eBPF, or databases.
             </div>
           )}
@@ -955,8 +952,8 @@ export default function ArchitecturalDesk() {
                     {highlightText(item.summary, searchQuery)}
                   </p>
                   <div className="result-foot">
-                    <span className="result-foot-tag">{item.level || "Engineering Staff"}</span>
-                    <span>{item.readingTime}</span>
+                    <span className="result-foot-tag">{item.company}</span>
+                    <span>#{item.tag.replace(/\s+/g, "")}</span>
                   </div>
                 </div>
 
@@ -965,8 +962,8 @@ export default function ArchitecturalDesk() {
                     type="button"
                     className={`result-save-btn ${isSaved ? "saved" : ""}`}
                     onClick={(e) => toggleSave(item, e)}
-                    title={isSaved ? "Saved in library" : "Save dispatch"}
-                    aria-label="Save dispatch"
+                    title={isSaved ? "Saved in library" : "Save article"}
+                    aria-label="Save article"
                   >
                     <svg
                       width="15"
@@ -983,7 +980,7 @@ export default function ArchitecturalDesk() {
                   <button
                     type="button"
                     className="result-read-btn"
-                    aria-label="Read dispatch"
+                    aria-label="Read article"
                   >
                     <span>Read</span>
                     <span style={{ fontSize: "11px", opacity: 0.8 }}>&rarr;</span>
@@ -1051,10 +1048,7 @@ export default function ArchitecturalDesk() {
             <div className="sheet-content">
               <div className="sheet-meta-row">
                 <span className="sheet-company">
-                  {activeModalItem.company} &middot; {activeModalItem.tag}
-                </span>
-                <span className="sheet-level">
-                  {activeModalItem.level || "Principal Infrastructure"}
+                  {activeModalItem.company} &middot; #{activeModalItem.tag.replace(/\s+/g, "")}
                 </span>
               </div>
 
@@ -1084,8 +1078,7 @@ export default function ArchitecturalDesk() {
 
               <div className="sheet-footer">
                 <div className="sheet-stats">
-                  {activeModalItem.readingTime} read &middot; Published by{" "}
-                  {activeModalItem.company}
+                  Published by {activeModalItem.company}
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -1121,7 +1114,7 @@ export default function ArchitecturalDesk() {
                     rel="noopener noreferrer"
                     className="sheet-cta"
                   >
-                    <span>Read Original Dispatch</span>
+                    <span>Read Original Article</span>
                     <svg
                       width="13"
                       height="13"

@@ -41,14 +41,13 @@ export default function InspectionSheetModal({
   };
 
   const getCompanyClean = (name = "") => {
-    return name ? name.split(/[-·|]/)[0].trim() : "Engineering Dispatch";
+    return name ? name.split(/[-·|]/)[0].trim() : "Engineering Article";
   };
 
   const companyName = article.company || getCompanyClean(article.subtitle || "");
   const companyInitial = getCompanyInitial(companyName);
   const tag = article.tag || "Production Systems";
   const level = article.level || "Principal Infrastructure";
-  const readingTime = article.readingTime || "8 min";
   const annotation = article.annotation || "Critical Production Architecture";
   const summary = article.summary || article.content || "";
   const takeaways = article.takeaways || [
@@ -111,7 +110,7 @@ export default function InspectionSheetModal({
                       {companyName}
                     </span>
                     <span className="font-mono text-[9.5px] text-stone-400 uppercase tracking-widest block">
-                      Archival Engineering Dispatch
+                      Archival Engineering Article
                     </span>
                   </div>
                 </div>
@@ -170,7 +169,7 @@ export default function InspectionSheetModal({
               {/* Footer Meta & Actions */}
               <div className="border-t border-stone-200/70 pt-5 flex items-center justify-between gap-3 flex-wrap">
                 <span className="font-mono text-[10.5px] text-stone-400">
-                  {readingTime} read · Published by {companyName}
+                  Published by {companyName}
                 </span>
 
                 <div className="flex items-center gap-2 ml-auto">
@@ -187,7 +186,7 @@ export default function InspectionSheetModal({
                       ) : (
                         <>
                           <BookmarkPlus size={14} className="text-stone-500" />
-                          <span>Save Dispatch</span>
+                          <span>Save Article</span>
                         </>
                       )}
                     </button>
@@ -200,7 +199,7 @@ export default function InspectionSheetModal({
                       rel="noopener noreferrer" 
                       className="inline-flex items-center gap-2 px-4 py-2 bg-stone-900 hover:bg-stone-800 text-stone-50 rounded-lg text-xs font-medium transition-all shadow-sm group"
                     >
-                      <span>Read Original Dispatch</span>
+                      <span>Read Original Article</span>
                       <ExternalLink size={13} className="text-stone-400 group-hover:text-stone-100 transition-colors" />
                     </a>
                   )}
