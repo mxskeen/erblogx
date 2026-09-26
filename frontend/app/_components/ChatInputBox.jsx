@@ -4,7 +4,7 @@ import ReactMarkdown from "react-markdown";
 import { useUser, UserButton, SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import { supabase } from "../../services/supabase";
 import { getApiUrl, fetchWithRetry } from "../../lib/config";
-import { CURATED_DISPATCHES, EDITORIAL_SUGGESTIONS } from "../../lib/curatedDispatches";
+import { CURATED_DISPATCHES } from "../../lib/curatedDispatches";
 
 const NATURAL_EXAMPLE_QUERIES = [
   "How does Stripe ensure idempotent payments?",
@@ -118,7 +118,6 @@ export default function ArchitecturalDesk() {
   const userEmail = user?.primaryEmailAddress?.emailAddress;
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const [activeModalItem, setActiveModalItem] = useState(null);
   const [savedIds, setSavedIds] = useState(new Set());
   const [backendResults, setBackendResults] = useState([]);
@@ -287,10 +286,7 @@ export default function ArchitecturalDesk() {
     setAiSummary(null);
 
     if (!val.trim()) {
-      setSuggestionsOpen(true);
       setBackendResults([]);
-    } else {
-      setSuggestionsOpen(false);
     }
 
     if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
@@ -306,7 +302,6 @@ export default function ArchitecturalDesk() {
   // Reset Everything to Center
   const resetToCenter = () => {
     setSearchQuery("");
-    setSuggestionsOpen(false);
     setBackendResults([]);
     setShowSummary(false);
     setAiSummary(null);
@@ -693,12 +688,6 @@ export default function ArchitecturalDesk() {
                 placeholder="Search systems, protocols, postmortems, consensus..."
                 value={searchQuery}
                 onChange={handleInputChange}
-                onFocus={() => {
-                  if (!searchQuery.trim()) setSuggestionsOpen(true);
-                }}
-                onBlur={() => {
-                  setTimeout(() => setSuggestionsOpen(false), 220);
-                }}
                 autoComplete="off"
                 spellCheck="false"
               />
@@ -735,26 +724,6 @@ export default function ArchitecturalDesk() {
                 <span className="kbd-shortcut">&#8984;K</span>
               )}
             </div>
-
-            {/* Editorial Suggestions Drawer */}
-            <div className={`suggestions-tray ${suggestionsOpen ? "open" : ""}`}>
-              <div className="suggestion-header">Editorial Queries</div>
-              {EDITORIAL_SUGGESTIONS.map((s, idx) => (
-                <div
-                  key={idx}
-                  className="suggestion-row"
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    setSearchQuery(s.text);
-                    setSuggestionsOpen(false);
-                    queryBackend(s.text);
-                  }}
-                >
-                  <span>{s.text}</span>
-                  <span className="suggestion-tag">#{s.tag}</span>
-                </div>
-              ))}
-            </div>
           </div>
 
           {/* Natural Semantic Queries Deck — Hides cleanly when searching */}
@@ -771,7 +740,6 @@ export default function ArchitecturalDesk() {
                     className="natural-query-chip"
                     onClick={() => {
                       setSearchQuery(query);
-                      setSuggestionsOpen(false);
                       queryBackend(query);
                     }}
                   >
