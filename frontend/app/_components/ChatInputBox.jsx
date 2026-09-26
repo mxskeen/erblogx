@@ -458,14 +458,18 @@ export default function ArchitecturalDesk() {
         "Comprehensive telemetry tracking and fault-isolation failure domain design.",
       ]);
 
+      const rawCompany = b.company || "Engineering Blog";
+      const cleanCompany = rawCompany.split(/[-·|—]/)[0].trim() || rawCompany;
+      const cleanTag = b.category || b.tag || "Engineering";
+
       return {
         id: `backend-${b.id}`,
-        company: b.company || "Engineering Blog",
-        blog: b.company ? `${b.company} TechBlog` : "Engineering Blog",
+        company: cleanCompany,
+        blog: `${cleanCompany} TechBlog`,
         title: b.title,
         summary: summary,
         fullContent: cleaned,
-        tag: b.company ? `${b.company} Systems` : "Systems Architecture",
+        tag: cleanTag,
         url: b.url || "#",
         takeaways: takeaways,
         annotation: "Production system architecture",
@@ -889,16 +893,15 @@ export default function ArchitecturalDesk() {
 
                 <div className="result-body">
                   <div className="result-company-badge">
-                    {item.company} &middot; {item.tag}
+                    {item.company}
+                    {item.tag && item.tag.toLowerCase() !== item.company.toLowerCase() && (
+                      <> &middot; {item.tag}</>
+                    )}
                   </div>
                   <h4 className="result-title">{highlightText(item.title, searchQuery)}</h4>
                   <p className="result-snippet">
                     {highlightText(item.summary, searchQuery)}
                   </p>
-                  <div className="result-foot">
-                    <span className="result-foot-tag">{item.company}</span>
-                    <span>#{item.tag.replace(/\s+/g, "")}</span>
-                  </div>
                 </div>
 
                 <div className="result-actions">
@@ -984,7 +987,9 @@ export default function ArchitecturalDesk() {
                 </div>
                 <div className="sheet-header-meta">
                   <span className="sheet-header-company">{activeModalItem.company}</span>
-                  <span className="sheet-header-tag">#{activeModalItem.tag}</span>
+                  {activeModalItem.tag && (
+                    <span className="sheet-header-tag">{activeModalItem.tag}</span>
+                  )}
                 </div>
               </div>
             )}
@@ -992,7 +997,10 @@ export default function ArchitecturalDesk() {
             <div className="sheet-content">
               <div className="sheet-meta-row">
                 <span className="sheet-company">
-                  {activeModalItem.company} &middot; #{activeModalItem.tag.replace(/\s+/g, "")}
+                  {activeModalItem.company}
+                  {activeModalItem.tag && activeModalItem.tag.toLowerCase() !== activeModalItem.company.toLowerCase() && (
+                    <> &middot; {activeModalItem.tag}</>
+                  )}
                 </span>
               </div>
 
