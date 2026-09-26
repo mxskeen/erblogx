@@ -5,60 +5,63 @@ export default function AboutPage() {
     <div className="min-h-screen drafting-canvas py-12 px-4 flex justify-center">
       <div className="max-w-2xl w-full bg-white/95 border border-stone-200/90 rounded-2xl p-6 sm:p-8 shadow-sm text-stone-900 space-y-6">
         <div>
-          <span className="font-mono text-xs uppercase tracking-wider text-amber-800 font-semibold block mb-1">
-            Archival Engineering Index
+          <span className="font-mono text-xs uppercase tracking-wider text-stone-500 font-semibold block mb-1">
+            Architecture Archive
           </span>
           <h1 className="font-serif text-3xl font-normal tracking-tight text-stone-900">
             About ErBlogX
           </h1>
         </div>
 
-        <p className="text-stone-600 text-sm sm:text-base leading-relaxed font-sans">
-          ErBlogX is an architectural intelligence engine indexing 25,000+ technical articles from foundational software engineering organizations including Netflix, Stripe, Google, Cloudflare, Figma, and Uber.
-        </p>
+        <div className="space-y-4 text-stone-600 text-sm sm:text-base leading-relaxed font-sans">
+          <p>
+            ErBlogX is a dedicated search engine for software engineers. It indexes over 25,000 in-depth engineering articles, architecture breakdowns, and incident postmortems published by engineering teams at companies like Netflix, Stripe, Google, Uber, Cloudflare, and Figma.
+          </p>
 
-        <div className="border-t border-stone-100 pt-4 space-y-3">
-          <h2 className="font-mono text-xs uppercase tracking-wider text-stone-400 font-semibold">
-            Architectural Capabilities
-          </h2>
-          <ul className="space-y-2 text-xs sm:text-sm text-stone-700 font-sans">
-            <li className="flex items-start gap-2">
-              <span className="text-amber-700 font-mono select-none">—</span>
-              <span><strong>Semantic Discovery:</strong> Query distributed system patterns, kernel optimizations, and failure postmortems without sign-up.</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-amber-700 font-mono select-none">—</span>
-              <span><strong>AI Synthesis:</strong> Generate executive consensus briefings and trade-off summaries from retrieved articles.</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-amber-700 font-mono select-none">—</span>
-              <span><strong>Personal Library:</strong> Curate, annotate, and archive production benchmarks in a personal vault.</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-amber-700 font-mono select-none">—</span>
-              <span><strong>Live Pipeline:</strong> Bi-weekly ingestion of leading engineering articles across 600+ vetted sources.</span>
-            </li>
-          </ul>
-        </div>
+          <div className="border-t border-stone-100 pt-4">
+            <h2 className="font-mono text-xs uppercase tracking-wider text-stone-400 font-semibold mb-2">
+              Why ErBlogX Was Built
+            </h2>
+            <p className="mb-3">
+              When building real-world systems, engineers want to learn from how other teams solved difficult scaling, database, and reliability problems in production.
+            </p>
+            <p>
+              Standard search engines often prioritize basic tutorials, marketing articles, or SEO spam over deep technical writeups. ErBlogX was built to remove that friction. It gives developers a focused index to explore proven distributed system designs, consensus trade-offs, network architectures, and postmortems without the noise.
+            </p>
+          </div>
 
-        <div className="border-t border-stone-100 pt-4 space-y-3">
-          <h2 className="font-mono text-xs uppercase tracking-wider text-stone-400 font-semibold">
-            Archival Trajectory
-          </h2>
-          <ul className="space-y-2 text-xs sm:text-sm text-stone-700 font-sans">
-            <li className="flex items-start gap-2">
-              <span className="text-stone-400 font-mono select-none">&bull;</span>
-              <span>Interactive dialogue with individual engineering whitepapers</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-stone-400 font-mono select-none">&bull;</span>
-              <span>Synthesized audio briefings and distributed system telemetry graphs</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-stone-400 font-mono select-none">&bull;</span>
-              <span>Automated cross-company consensus cluster mapping</span>
-            </li>
-          </ul>
+          <div className="border-t border-stone-100 pt-4">
+            <h2 className="font-mono text-xs uppercase tracking-wider text-stone-400 font-semibold mb-2">
+              Creator and Connect
+            </h2>
+            <p className="mb-4">
+              ErBlogX was designed and built by Maskeen.
+            </p>
+
+            <div className="flex flex-wrap gap-2.5">
+              <a
+                href="https://maskeen.site/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-action"
+                style={{ textDecoration: "none", color: "var(--ink-primary)", fontWeight: 500 }}
+              >
+                <span>Website: maskeen.site</span>
+                <span style={{ opacity: 0.6 }}>&rarr;</span>
+              </a>
+
+              <a
+                href="https://www.linkedin.com/in/mxskeen/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-action btn-linkedin"
+                style={{ textDecoration: "none" }}
+              >
+                <span>LinkedIn Profile</span>
+                <span style={{ opacity: 0.6 }}>&rarr;</span>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>

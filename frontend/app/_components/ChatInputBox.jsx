@@ -119,6 +119,7 @@ export default function ArchitecturalDesk() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [activeModalItem, setActiveModalItem] = useState(null);
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [savedIds, setSavedIds] = useState(new Set());
   const [backendResults, setBackendResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -232,7 +233,9 @@ export default function ArchitecturalDesk() {
         searchInputRef.current?.select();
       }
       if (e.key === "Escape") {
-        if (activeModalItem) {
+        if (isAboutOpen) {
+          setIsAboutOpen(false);
+        } else if (activeModalItem) {
           setActiveModalItem(null);
         } else if (isElevated) {
           resetToCenter();
@@ -241,7 +244,7 @@ export default function ArchitecturalDesk() {
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [activeModalItem, isElevated]);
+  }, [activeModalItem, isElevated, isAboutOpen]);
 
   // Query Backend Semantic Search
   const queryBackend = useCallback(async (q) => {
@@ -571,10 +574,10 @@ export default function ArchitecturalDesk() {
           <button
             type="button"
             className="btn-action primary"
-            onClick={focusSearch}
-            title="Focus omnibar (⌘K)"
+            onClick={() => setIsAboutOpen(true)}
+            title="About ErBlogX"
           >
-            <span>Search</span>
+            <span>About</span>
           </button>
 
           <SignedIn>
@@ -1094,6 +1097,102 @@ export default function ArchitecturalDesk() {
                       <line x1="7" y1="17" x2="17" y2="7" />
                       <polyline points="7 7 17 7 17 17" />
                     </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* About ErBlogX Modal */}
+      <div
+        className={`sheet-scrim ${isAboutOpen ? "open" : ""}`}
+        onClick={(e) => {
+          if (e.target.classList.contains("sheet-scrim")) {
+            setIsAboutOpen(false);
+          }
+        }}
+      >
+        {isAboutOpen && (
+          <div className="sheet-modal" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              className="sheet-close"
+              onClick={() => setIsAboutOpen(false)}
+              aria-label="Close about modal"
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+
+            <div className="sheet-content" style={{ padding: "32px 28px" }}>
+              <div className="sheet-meta-row" style={{ marginBottom: "8px" }}>
+                <span className="sheet-company">Architecture Archive</span>
+              </div>
+
+              <h2
+                className="sheet-title"
+                style={{ fontSize: "24px", marginBottom: "16px", lineHeight: "1.3" }}
+              >
+                About ErBlogX
+              </h2>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "14px", color: "var(--ink-secondary)", fontSize: "14px", lineHeight: "1.6" }}>
+                <p>
+                  ErBlogX is a dedicated search engine for software engineers. It indexes over 25,000 in-depth engineering articles, architecture breakdowns, and incident postmortems published by engineering teams at companies like Netflix, Stripe, Google, Uber, Cloudflare, and Figma.
+                </p>
+
+                <div className="sheet-section-title" style={{ marginTop: "8px", marginBottom: "4px" }}>
+                  Why ErBlogX Was Built
+                </div>
+                <p>
+                  When building real-world systems, engineers want to learn from how other teams solved difficult scaling, database, and reliability problems in production.
+                </p>
+                <p>
+                  Standard search engines often prioritize basic tutorials, marketing articles, or SEO spam over deep technical writeups. ErBlogX was built to remove that friction. It gives developers a focused index to explore proven distributed system designs, consensus trade-offs, network architectures, and postmortems without the noise.
+                </p>
+
+                <div className="sheet-section-title" style={{ marginTop: "8px", marginBottom: "4px" }}>
+                  Creator and Connect
+                </div>
+                <p>
+                  ErBlogX was designed and built by Maskeen.
+                </p>
+
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginTop: "6px" }}>
+                  <a
+                    href="https://maskeen.site/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-action"
+                    style={{ textDecoration: "none", color: "var(--ink-primary)", fontWeight: 500 }}
+                  >
+                    <span>Website: maskeen.site</span>
+                    <span style={{ opacity: 0.6 }}>&rarr;</span>
+                  </a>
+
+                  <a
+                    href="https://www.linkedin.com/in/mxskeen/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-action btn-linkedin"
+                    style={{ textDecoration: "none" }}
+                  >
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9h2.79v8.37H6.46V10.9M7.86 6.54a1.62 1.62 0 1 0 0 3.24 1.62 1.62 0 0 0 0-3.24" />
+                    </svg>
+                    <span>LinkedIn</span>
+                    <span style={{ opacity: 0.6 }}>&rarr;</span>
                   </a>
                 </div>
               </div>
