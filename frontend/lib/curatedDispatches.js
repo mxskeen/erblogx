@@ -17,7 +17,7 @@ export const CURATED_DISPATCHES = [
         annotation: "Sub-second cross-region failover",
         readingTime: "9 min",
         level: "Staff / Infrastructure",
-        url: "https://netflixtechblog.com",
+        url: "https://netflixtechblog.com/active-active-for-multi-regional-resiliency-c47719f6685b",
         diagram: `
           <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -103,7 +103,7 @@ export const CURATED_DISPATCHES = [
         annotation: "Classic system design benchmark",
         readingTime: "12 min",
         level: "Senior / Fintech",
-        url: "https://stripe.com/blog/engineering",
+        url: "https://stripe.com/blog/idempotency",
         diagram: `
           <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -191,7 +191,7 @@ export const CURATED_DISPATCHES = [
         annotation: "Dropped at wire speed in NIC",
         readingTime: "7 min",
         level: "Principal / Networking",
-        url: "https://blog.cloudflare.com",
+        url: "https://blog.cloudflare.com/how-cloudflare-auto-mitigated-world-record-3-8-tbps-ddos-attack/",
         diagram: `
           <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -278,7 +278,7 @@ export const CURATED_DISPATCHES = [
         annotation: "60 FPS collaborative canvas",
         readingTime: "11 min",
         level: "Graphics / Frontend",
-        url: "https://figma.com/blog",
+        url: "https://www.figma.com/blog/how-figmas-multiplayer-technology-works/",
         diagram: `
           <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -360,7 +360,7 @@ export const CURATED_DISPATCHES = [
         annotation: "How Uber abandoned MySQL",
         readingTime: "10 min",
         level: "Principal / Data Systems",
-        url: "https://eng.uber.com",
+        url: "https://www.uber.com/us/en/blog/schemaless-part-one-mysql-datastore/",
         diagram: `
           <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -440,7 +440,7 @@ export const CURATED_DISPATCHES = [
         annotation: "External consistency via atomic clocks",
         readingTime: "14 min",
         level: "Principal / Database Architect",
-        url: "https://research.google",
+        url: "https://research.google/pubs/spanner-googles-globally-distributed-database/",
         diagram: `
           <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -529,23 +529,24 @@ export const CURATED_DISPATCHES = [
         tag: "Storage",
         readingTime: "9 min",
         level: "Senior / Storage Infrastructure",
-        url: "https://github.blog"
+        url: "https://github.blog/engineering/introducing-dgit/"
       },
       {
         id: "discord-scylladb-migration",
         company: "Discord",
         blog: "Discord Blog",
         title: "How Discord Stores Trillions of Messages",
-        summary: "The multi-year architectural journey migrating from MongoDB to Apache Cassandra, and finally to ScyllaDB in C++ to tame garbage collection latency spikes.",
+        summary: "How Discord eliminated catastrophic p99 tail latency spikes and JVM garbage collection pauses by migrating trillions of messages from Apache Cassandra to ScyllaDB in C++.",
         takeaways: [
           "JVM GC pauses previously caused cascading p99 latency storms under message spikes.",
-          "ScyllaDB's thread-per-core asynchronous architecture delivers deterministic &lt;5ms p99s.",
+          "ScyllaDB's thread-per-core asynchronous architecture delivers deterministic <5ms p99s.",
           "Custom Rust intermediate migration pipeline synced live writes without downtime."
         ],
         tag: "Databases",
+        annotation: "Taming p99 tail latency storms",
         readingTime: "8 min",
         level: "Senior / Performance",
-        url: "https://discord.com/blog"
+        url: "https://discord.com/blog/how-discord-stores-trillions-of-messages"
       },
       {
         id: "shopify-flash-sales",
@@ -561,7 +562,24 @@ export const CURATED_DISPATCHES = [
         tag: "Distributed Systems",
         readingTime: "11 min",
         level: "Staff / Production",
-        url: "https://shopify.engineering"
+        url: "https://shopify.engineering/resiliency-planning-for-high-traffic-events"
+      },
+      {
+        id: "cockroachdb-scaling-raft",
+        company: "CockroachDB",
+        blog: "Cockroach Labs Blog",
+        title: "Scaling Raft: Distributed Consensus at Mission-Critical Scale",
+        summary: "How CockroachDB implements Multi-Raft to manage millions of distinct consensus groups across globally distributed clusters, preventing split-brain leader elections and ensuring zero-loss failover.",
+        takeaways: [
+          "Multi-Raft splits cluster ranges into independent consensus groups to scale throughput linearly.",
+          "Leader leases prevent stale reads without requiring a full Paxos/Raft round-trip on every query.",
+          "Joint consensus membership changes allow dynamic node additions without stopping live writes."
+        ],
+        tag: "Distributed Systems",
+        annotation: "Multi-Raft consensus across clusters",
+        readingTime: "10 min",
+        level: "Staff / Distributed Systems",
+        url: "https://www.cockroachlabs.com/blog/scaling-raft/"
       }
     ];
 
@@ -571,7 +589,8 @@ export const EDITORIAL_SUGGESTIONS = [
   { text: "Dropping multi-terabit volumetric DDoS at wire speed with eBPF and XDP", tag: "Networking" },
   { text: "How Google Spanner achieves external consistency with TrueTime atomic clocks", tag: "Consensus" },
   { text: "Why did Uber abandon MySQL for Schemaless append-only storage?", tag: "Storage" },
-  { text: "Preventing split-brain leader elections and log divergence in Raft", tag: "Distributed Systems" },
+  { text: "Distributed consensus with Raft vs Paxos at scale", tag: "Distributed Systems" },
   { text: "Real-time 60 FPS collaborative canvas with WebAssembly and CRDTs", tag: "Performance" },
   { text: "Migrating billions of chat messages from Cassandra to ScyllaDB", tag: "NoSQL Databases" }
 ];
+

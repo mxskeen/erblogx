@@ -993,14 +993,17 @@ export default function ArchitecturalDesk() {
                     </svg>
                   </button>
 
-                  <button
-                    type="button"
+                  <a
+                    href={item.url || "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="result-read-btn"
-                    aria-label="Read article"
+                    onClick={(e) => e.stopPropagation()}
+                    aria-label="Read original article"
                   >
                     <span>Read</span>
                     <span style={{ fontSize: "11px", opacity: 0.8 }}>&rarr;</span>
-                  </button>
+                  </a>
                 </div>
               </div>
             );
