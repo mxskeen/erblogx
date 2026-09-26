@@ -1198,7 +1198,7 @@ export default function ArchitecturalDesk() {
 
               <div style={{ display: "flex", flexDirection: "column", gap: "14px", color: "var(--ink-secondary)", fontSize: "14px", lineHeight: "1.6" }}>
                 <p>
-                  ErBlogX is a dedicated search engine for software engineers. It indexes over 25,000 in-depth engineering articles, architecture breakdowns, and incident postmortems published by engineering teams at companies like Netflix, Stripe, Google, Uber, Cloudflare, and Figma.
+                  ErBlogX is a semantic search engine over engineering blogs and articles. It indexes over 25,000 in-depth engineering articles, architecture breakdowns, and incident postmortems published by engineering teams at companies like Netflix, Stripe, Google, Uber, Cloudflare, and Figma.
                 </p>
 
                 <div className="sheet-section-title" style={{ marginTop: "8px", marginBottom: "4px" }}>

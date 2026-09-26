@@ -15,7 +15,7 @@ export default function AboutPage() {
 
         <div className="space-y-4 text-stone-600 text-sm sm:text-base leading-relaxed font-sans">
           <p>
-            ErBlogX is a dedicated search engine for software engineers. It indexes over 25,000 in-depth engineering articles, architecture breakdowns, and incident postmortems published by engineering teams at companies like Netflix, Stripe, Google, Uber, Cloudflare, and Figma.
+            ErBlogX is a semantic search engine over engineering blogs and articles. It indexes over 25,000 in-depth engineering articles, architecture breakdowns, and incident postmortems published by engineering teams at companies like Netflix, Stripe, Google, Uber, Cloudflare, and Figma.
           </p>
 
           <div className="border-t border-stone-100 pt-4">
