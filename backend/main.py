@@ -161,6 +161,13 @@ def extract_response_data(response):
 QUERY_CACHE = {}
 CACHE_TTL_SECONDS = 600  # 10 minutes
 
+# In-memory article count cache (5 min TTL) to avoid hammering Supabase on frequent homepage loads
+ARTICLE_COUNT_CACHE = {
+    "count": None,
+    "timestamp": 0
+}
+ARTICLE_COUNT_CACHE_TTL = 300  # 5 minutes
+
 def get_cached_results(query: str):
     q_clean = query.strip().lower()
     if q_clean in QUERY_CACHE:
@@ -176,6 +183,44 @@ def set_cached_results(query: str, results: list):
     if len(QUERY_CACHE) > 500:
         QUERY_CACHE.clear()
     QUERY_CACHE[q_clean] = (time.time(), results)
+
+@app.get("/articles/count")
+def get_articles_count():
+    """
+    Get the exact total count of articles present in the database.
+    Cached in-memory to optimize performance.
+    """
+    global ARTICLE_COUNT_CACHE
+    now = time.time()
+    if ARTICLE_COUNT_CACHE["count"] is not None and (now - ARTICLE_COUNT_CACHE["timestamp"] < ARTICLE_COUNT_CACHE_TTL):
+        return {"count": ARTICLE_COUNT_CACHE["count"]}
+
+    if not supabase:
+        return {"count": 25482, "warning": "Supabase client not initialized"}
+
+    try:
+        response = supabase.table('articles').select('*', count='exact', head=True).execute()
+        count = response.count if hasattr(response, 'count') and response.count is not None else 25482
+        ARTICLE_COUNT_CACHE = {"count": count, "timestamp": now}
+        return {"count": count}
+    except Exception as e:
+        print(f"Error fetching article count: {e}")
+        fallback = ARTICLE_COUNT_CACHE["count"] if ARTICLE_COUNT_CACHE["count"] is not None else 25482
+        return {"count": fallback, "error": str(e)}
+
+@app.get("/stats")
+def get_stats():
+    """
+    Get general platform statistics including article count.
+    """
+    count_data = get_articles_count()
+    return {
+        "article_count": count_data.get("count"),
+        "count": count_data.get("count"),
+        "status": "online",
+        "timestamp": datetime.utcnow().isoformat()
+    }
+
 
 @app.get("/search")
 async def search_query(q: str, user_id: Optional[str] = None):

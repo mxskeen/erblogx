@@ -6,7 +6,9 @@ export const API_CONFIG = {
   ENDPOINTS: {
     SEARCH: '/ai-search',
     SUMMARIZE: '/summarize-results',
-    TEST: '/test'
+    TEST: '/test',
+    ARTICLE_COUNT: '/articles/count',
+    STATS: '/stats'
   },
   
   // Timeout settings

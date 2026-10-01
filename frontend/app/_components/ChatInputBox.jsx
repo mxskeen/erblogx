@@ -5,6 +5,7 @@ import { useUser, UserButton, SignInButton, SignedIn, SignedOut } from "@clerk/n
 import { supabase } from "../../services/supabase";
 import { getApiUrl, fetchWithRetry } from "../../lib/config";
 import { CURATED_DISPATCHES } from "../../lib/curatedDispatches";
+import { useArticleCount } from "../../lib/articlesCount";
 
 const NATURAL_EXAMPLE_QUERIES = [
   "How does Stripe ensure idempotent payments?",
@@ -121,6 +122,7 @@ export default function ArchitecturalDesk() {
   const [activeModalItem, setActiveModalItem] = useState(null);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [savedIds, setSavedIds] = useState(new Set());
+  const { formattedCount, formattedCountPlus } = useArticleCount();
   const [backendResults, setBackendResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [aiSummary, setAiSummary] = useState(null);
@@ -548,7 +550,7 @@ export default function ArchitecturalDesk() {
 
         <div className="nav-stats">
           <span className="live-dot" />
-          <span>25,482 ARTICLES INDEXED</span>
+          <span>{formattedCount} ARTICLES INDEXED</span>
         </div>
 
         <div className="nav-actions">
@@ -834,7 +836,7 @@ export default function ArchitecturalDesk() {
               <>
                 <span className="search-indicator-dot" />
                 <span>
-                  Semantic Search over 25,000+ articles for &ldquo;{searchQuery}&rdquo;...
+                  Semantic Search over {formattedCountPlus} articles for &ldquo;{searchQuery}&rdquo;...
                 </span>
               </>
             ) : (
@@ -1201,7 +1203,7 @@ export default function ArchitecturalDesk() {
 
               <div style={{ display: "flex", flexDirection: "column", gap: "14px", color: "var(--ink-secondary)", fontSize: "14px", lineHeight: "1.6" }}>
                 <p>
-                  ErBlogX is a semantic search engine over engineering blogs and articles. It indexes over 25,000 in-depth engineering articles, architecture breakdowns, and incident postmortems published by engineering teams at companies like Netflix, Stripe, Google, Uber, Cloudflare, and Figma.
+                  ErBlogX is a semantic search engine over engineering blogs and articles. It indexes over {formattedCount} in-depth engineering articles, architecture breakdowns, and incident postmortems published by engineering teams at companies like Netflix, Stripe, Google, Uber, Cloudflare, and Figma.
                 </p>
 
                 <div className="sheet-section-title" style={{ marginTop: "8px", marginBottom: "4px" }}>
