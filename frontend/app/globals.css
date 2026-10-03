@@ -868,6 +868,14 @@ header.apple-nav {
   min-width: 0;
 }
 
+.result-meta-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  margin-bottom: 3px;
+}
+
 .result-company-badge {
   font-family: "JetBrains Mono", monospace;
   font-size: 10px;
@@ -875,7 +883,73 @@ header.apple-nav {
   color: var(--ink-tertiary);
   letter-spacing: 0.4px;
   text-transform: uppercase;
-  margin-bottom: 3px;
+}
+
+.result-similarity-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.22);
+  color: #047857;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9.5px;
+  font-weight: 500;
+  padding: 1.5px 6.5px;
+  border-radius: 4px;
+  letter-spacing: 0.2px;
+  vertical-align: middle;
+  text-transform: none;
+  transition: all 0.15s ease;
+}
+
+.result-card:hover .result-similarity-pill {
+  background: rgba(16, 185, 129, 0.14);
+  border-color: rgba(16, 185, 129, 0.35);
+}
+
+.similarity-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #10b981;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.similarity-score-text {
+  font-weight: 600;
+}
+
+.similarity-score-num {
+  color: #065f46;
+  opacity: 0.85;
+}
+
+.sheet-similarity-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.22);
+  color: #047857;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  font-weight: 500;
+  padding: 2.5px 8.5px;
+  border-radius: 4px;
+  text-transform: none;
+}
+
+.sheet-similarity-badge strong {
+  font-weight: 600;
+  color: #065f46;
+}
+
+@media (max-width: 640px) {
+  .similarity-score-num {
+    display: none;
+  }
 }
 
 .result-title {

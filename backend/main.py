@@ -235,6 +235,19 @@ async def search_query(q: str, user_id: Optional[str] = None):
             .execute()
         search_results = extract_response_data(response)
 
+        # Compute semantic similarity if model is available
+        if model and search_results:
+            try:
+                q_emb = model.encode(q.strip())
+                title_embs = model.encode([a.get('title', '') for a in search_results])
+                norm_q = np.linalg.norm(q_emb)
+                norm_titles = np.linalg.norm(title_embs, axis=1)
+                sims = np.dot(title_embs, q_emb) / (norm_titles * norm_q + 1e-9)
+                for i, a in enumerate(search_results):
+                    a['similarity'] = round(float(sims[i]), 4)
+            except Exception as sim_err:
+                print(f"Error computing similarity for title search: {sim_err}")
+
         # Log the search query only if user_id is provided
         if user_id:
             await log_search_query(
@@ -334,6 +347,28 @@ async def semantic_search_articles(q: str, user_id: Optional[str] = None):
                         break
         except Exception as fb_e:
             print(f"Fallback search error: {str(fb_e)}")
+
+    # Ensure similarity score is present and cleanly rounded on all returned results
+    if search_results:
+        if semantic_success:
+            for a in search_results:
+                if 'similarity' in a and a['similarity'] is not None:
+                    try:
+                        a['similarity'] = round(float(a['similarity']), 4)
+                    except (ValueError, TypeError):
+                        pass
+        elif model:
+            # Fallback keyword match: compute semantic similarity relative to clean_q
+            try:
+                q_emb = np.array(query_embedding) if query_embedding is not None else np.array(model.encode(clean_q))
+                title_embs = model.encode([a.get('title', '') for a in search_results])
+                norm_q = np.linalg.norm(q_emb)
+                norm_titles = np.linalg.norm(title_embs, axis=1)
+                sims = np.dot(title_embs, q_emb) / (norm_titles * norm_q + 1e-9)
+                for i, a in enumerate(search_results):
+                    a['similarity'] = round(float(sims[i]), 4)
+            except Exception as sim_err:
+                print(f"Error computing fallback similarity: {sim_err}")
 
     # Log search query if user_id is provided
     if user_id and search_results:

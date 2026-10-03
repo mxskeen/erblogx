@@ -449,7 +449,7 @@ export default function ArchitecturalDesk() {
       return matchCount >= 1 && (words.length <= 2 || matchCount >= 2);
     });
 
-  // Map backend articles into consistent dispatch schema with clean text and intelligent takeaways
+  // Map backend articles into consistent dispatch schema with clean text, intelligent takeaways, and similarity scores
   const mappedBackend = backendResults
     .filter((b) => !localMatching.some((l) => l.title === b.title))
     .map((b) => {
@@ -466,6 +466,7 @@ export default function ArchitecturalDesk() {
       const rawCompany = b.company || "Engineering Blog";
       const cleanCompany = rawCompany.split(/[-·|—]/)[0].trim() || rawCompany;
       const cleanTag = b.category || b.tag || "Engineering";
+      const rawSim = typeof b.similarity === "number" ? b.similarity : (b.similarity ? parseFloat(b.similarity) : null);
 
       return {
         id: `backend-${b.id}`,
@@ -479,11 +480,25 @@ export default function ArchitecturalDesk() {
         takeaways: takeaways,
         annotation: "Production system architecture",
         diagram: null, // Blogs from backend do NOT have custom diagrams
+        similarity: rawSim !== null && !isNaN(rawSim) ? rawSim : null,
       };
     });
 
+  // Attach similarity score to local curated dispatches if present in backend results
+  const localMatchingWithScores = localMatching.map((item) => {
+    const backendMatch = backendResults.find(
+      (b) =>
+        (b.title && item.title && b.title.toLowerCase() === item.title.toLowerCase()) ||
+        (b.url && item.url && b.url.toLowerCase() === item.url.toLowerCase())
+    );
+    if (backendMatch && typeof backendMatch.similarity === "number") {
+      return { ...item, similarity: backendMatch.similarity };
+    }
+    return item;
+  });
+
   // Curated cards always appear prominently at the top of results when matched
-  const allDisplayResults = [...localMatching, ...mappedBackend];
+  const allDisplayResults = [...localMatchingWithScores, ...mappedBackend];
 
   // AI Summarization using backend /summarize-results
   const handleSummarizeResults = async () => {
@@ -963,10 +978,26 @@ export default function ArchitecturalDesk() {
                 <div className="result-monogram">{initial}</div>
 
                 <div className="result-body">
-                  <div className="result-company-badge">
-                    {item.company}
-                    {item.tag && item.tag.toLowerCase() !== item.company.toLowerCase() && (
-                      <> &middot; {item.tag}</>
+                  <div className="result-meta-header">
+                    <div className="result-company-badge">
+                      {item.company}
+                      {item.tag && item.tag.toLowerCase() !== item.company.toLowerCase() && (
+                        <> &middot; {item.tag}</>
+                      )}
+                    </div>
+                    {typeof item.similarity === "number" && !isNaN(item.similarity) && (
+                      <div
+                        className="result-similarity-pill"
+                        title={`Semantic similarity score: ${item.similarity.toFixed(4)} (${Math.round(item.similarity * 100)}% match)`}
+                      >
+                        <span className="similarity-dot" />
+                        <span className="similarity-score-text">
+                          {(item.similarity * 100).toFixed(0)}% match
+                        </span>
+                        <span className="similarity-score-num">
+                          &middot; Score {item.similarity.toFixed(2)}
+                        </span>
+                      </div>
                     )}
                   </div>
                   <h4 className="result-title">{highlightText(item.title, searchQuery)}</h4>
@@ -1076,6 +1107,17 @@ export default function ArchitecturalDesk() {
                     <> &middot; {activeModalItem.tag}</>
                   )}
                 </span>
+                {typeof activeModalItem.similarity === "number" && !isNaN(activeModalItem.similarity) && (
+                  <div
+                    className="sheet-similarity-badge"
+                    title={`Semantic similarity score: ${activeModalItem.similarity.toFixed(4)}`}
+                  >
+                    <span className="similarity-dot" />
+                    <span>
+                      Similarity: <strong>{activeModalItem.similarity.toFixed(3)}</strong> ({(activeModalItem.similarity * 100).toFixed(0)}% match)
+                    </span>
+                  </div>
+                )}
               </div>
 
               <h2 className="sheet-title">{activeModalItem.title}</h2>
