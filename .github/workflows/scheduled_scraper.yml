@@ -1,53 +1,70 @@
-name: Bi-Weekly Blog Scraper
-
-# --- TRIGGERS ---
+name: Scheduled Blog Scraper & Indexer
 
 on:
- 
   workflow_dispatch:
+    inputs:
+      limit_feeds:
+        description: 'Limit number of feeds to test (leave blank for all)'
+        required: false
+        default: ''
+      dry_run:
+        description: 'Dry run (do not insert into database)'
+        type: boolean
+        required: false
+        default: false
 
   schedule:
-   #3 am, every 15th day
-    - cron:  '0 3 1,15 * *'
+    # Runs every Sunday at 03:00 UTC (weekly)
+    - cron: '0 3 * * 0'
 
-# --- JOBS ---
+concurrency:
+  group: scraper-cron
+  cancel-in-progress: false
 
 jobs:
-
-  scrape-blogs:
-
+  scrape-and-index:
+    name: Scrape & Index Articles
     runs-on: ubuntu-latest
-
+    timeout-minutes: 30
 
     steps:
-
       - name: Check out repository
         uses: actions/checkout@v4
 
-
-      - name: Set up Python
+      - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          cache: 'pip'
 
-      # Step 3: Install Poetry
       - name: Install Poetry
         run: pip install poetry
 
-      # Step 4: Install project dependencies using Poetry
-      - name: Install dependencies
+      - name: Cache Poetry virtualenv
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pypoetry
+          key: ${{ runner.os }}-poetry-${{ hashFiles('backend/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
 
+      - name: Install Dependencies
         run: |
           cd backend
           poetry install --only=main --no-root
-      
-      # Step 5: Run the scraper script
-      - name: Run Python Scraper
 
+      - name: Run Scraper Pipeline
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON: ${{ secrets.SUPABASE_ANON }}
-        # Run the script from within the backend folder
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: |
           cd backend
-          poetry run python scraper.py
+          ARGS=""
+          if [ "${{ inputs.limit_feeds }}" != "" ]; then
+            ARGS="$ARGS --limit-feeds ${{ inputs.limit_feeds }}"
+          fi
+          if [ "${{ inputs.dry_run }}" == "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          poetry run python scraper.py $ARGS
